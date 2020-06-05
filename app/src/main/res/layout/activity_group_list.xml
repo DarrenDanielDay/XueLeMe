@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <LinearLayout
+        android:id="@+id/main_title"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:orientation="vertical"
+        android:background="#CCCCFF">
+
+        <TextView
+            android:id="@+id/Glist"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginTop="15dp"
+            android:layout_gravity="center"
+            android:text="群聊列表"
+            android:textSize="20dp"
+            android:textColor="#CCFFFFFF"/>
+    </LinearLayout>
+    <ListView android:id="@+id/main_listView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:dividerHeight="10sp"
+        android:divider="#00000000"
+        >
+    </ListView>
+</LinearLayout>

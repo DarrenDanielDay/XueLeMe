@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <LinearLayout
+        android:id="@+id/main_title"
+        android:layout_width="match_parent"
+        android:layout_height="50sp"
+        android:orientation="vertical"
+        android:background="#CCCCFF">
+        <TextView
+            android:id="@+id/Gname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text=""
+            android:textStyle="bold"/>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/main_linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/main_content"
+            android:layout_width="0sp"
+            android:layout_height="match_parent"
+            android:layout_weight="7"
+            android:autofillHints=""
+            android:background="@drawable/edittext_background"
+            android:inputType="textMultiLine" />
+        <ImageButton
+            android:id="@+id/img_send"
+            android:layout_width="1sp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:src="@mipmap/add"
+            android:scaleType="fitEnd"
+            android:background="#00FF0000"
+            />
+        <Button
+            android:id="@+id/main_send"
+            android:layout_width="0sp"
+            android:layout_weight="2"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:background="@drawable/button_background"
+            android:text="发送"/>
+
+    </LinearLayout>
+    <ListView
+        android:id="@+id/main_listView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/main_title"
+        android:layout_above="@+id/main_linearLayout"
+        android:dividerHeight="10sp"
+        android:divider="#00000000">
+    </ListView>
+</RelativeLayout>

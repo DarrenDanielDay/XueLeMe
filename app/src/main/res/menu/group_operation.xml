@@ -1,0 +1,10 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item
+        android:id="@+id/create"
+        android:title="创建群聊">
+    </item>
+    <item
+        android:id="@+id/join"
+        android:title="加入群聊">
+    </item>
+</menu>
