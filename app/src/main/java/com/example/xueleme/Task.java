@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.xueleme;
 
 import android.content.ContentValues;
 import android.content.Context;

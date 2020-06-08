@@ -1,18 +1,8 @@
-package com.example.myapplication;
-import android.annotation.SuppressLint;
-import android.content.Context;
-import android.os.Handler;
-import android.os.Message;
-import android.util.Log;
-import android.widget.TextView;
-import android.widget.Toast;
-import androidx.annotation.NonNull;
-import com.google.gson.Gson;
-import org.jetbrains.annotations.NotNull;
+package com.example.xueleme;
+
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.jsoup.helper.HttpConnection;
-import org.w3c.dom.Text;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -20,8 +10,8 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
+
 import okhttp3.Call;
-import okhttp3.Callback;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -135,13 +125,11 @@ public class Users {
                if(response.code()!=200)
                    return "连接失败";
                String state=response.body().string();
-               Gson gson= new Gson();
-               Map<String,Object> map=new HashMap<String, Object>();
-               map=gson.fromJson(state,map.getClass());
-                return (String) map.get("detail");
+               JSONObject jsonObject = new JSONObject(state);
+               return jsonObject.getString("detail");
             }
         };
-        FutureTask<String> futureTask=new FutureTask<String>(stringCallable);
+        FutureTask<String> futureTask= new FutureTask<>(stringCallable);
         Thread thread=new Thread(futureTask);
         thread.start();
         return futureTask.get();
@@ -178,13 +166,11 @@ public class Users {
 
                  }
                  String state=response.body().string();
-                 Gson gson=new Gson();
-                 Map<String,Object> map=new HashMap<String, Object>();
-                 map=gson.fromJson(state,map.getClass());
-                return (String) map.get("detail");
+                 JSONObject jsonObject = new JSONObject(state);
+                 return jsonObject.getString("detail");
             }
         };
-        FutureTask<String> futureTask=new FutureTask<String>(stringCallable);
+        FutureTask<String> futureTask= new FutureTask<>(stringCallable);
         Thread thread=new Thread(futureTask);
         thread.start();
         return futureTask.get();
