@@ -25,12 +25,12 @@
             android:layout_height="wrap_content" />
     </LinearLayout>
     <EditText
-        android:id="@+id/user_register_username"
+        android:id="@+id/user_register_account"
         android:layout_width="320dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="80dp"
-        android:hint="username"
+        android:hint="account"
         android:textSize="20sp" />
     <EditText
         android:id="@+id/user_register_password"
@@ -42,8 +42,8 @@
         android:textSize="20sp"
         android:inputType="textPassword"/>
     <Button
-        android:id="@+id/user_register_loginBtn"
-        android:text="Login"
+        android:id="@+id/user_register_registerBtn"
+        android:text="Register"
         android:background="#1E90FF"
         android:layout_gravity="center"
         android:layout_marginTop="50dp"

@@ -25,12 +25,12 @@
             android:layout_height="wrap_content" />
     </LinearLayout>
     <EditText
-        android:id="@+id/user_login_username"
+        android:id="@+id/user_login_account"
         android:layout_width="320dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="80dp"
-        android:hint="username"
+        android:hint="account"
         android:textSize="20sp" />
     <EditText
         android:id="@+id/user_login_password"
@@ -54,14 +54,14 @@
         android:layout_marginTop="15dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <TextView
+        <Button
             android:id="@+id/user_login_registerTxT"
             android:layout_alignParentRight="true"
             android:layout_marginRight="20dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="新用户注册"/>
-        <TextView
+        <Button
             android:id="@+id/tv_find_psw"
             android:layout_alignParentLeft="true"
             android:layout_marginLeft="20dp"

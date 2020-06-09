@@ -44,7 +44,7 @@ public class Users {
     *6.网络不佳，请求失败,此时会抛出异常，因为异常在函数体内无法添加，所以还请前端自行添加异常时的操作
     * */
     //登录程序
-    public String Login() throws JSONException, IOException, ExecutionException, InterruptedException {
+    public String Login() throws JSONException, ExecutionException, InterruptedException {
         if(account.length()==0)
             return "请输入用户名";
         if(password.length()==0)
@@ -85,9 +85,9 @@ public class Users {
 
              }
          };
-            FutureTask<String> futureTask=new FutureTask<>(callable);
-            Thread thread=new Thread(futureTask);
-            thread.start();
+        FutureTask<String> futureTask=new FutureTask<>(callable);
+        Thread thread=new Thread(futureTask);
+        thread.start();
         return futureTask.get();
       }
     //注册程序
