@@ -54,19 +54,23 @@
         android:layout_marginTop="15dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
         <Button
-            android:id="@+id/user_login_registerTxT"
+            android:id="@+id/user_login_register"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_marginRight="20dp"
+            android:background="@android:color/transparent"
+            android:text="新用户注册" />
+
+        <Button
+            android:id="@+id/user_login_find_password"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="新用户注册"/>
-        <Button
-            android:id="@+id/tv_find_psw"
             android:layout_alignParentLeft="true"
             android:layout_marginLeft="20dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
             android:text="忘记密码？" />
     </RelativeLayout>
     <LinearLayout
