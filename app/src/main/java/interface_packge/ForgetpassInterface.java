@@ -1,6 +1,6 @@
 package interface_packge;
 
-public interface Forgetpass_interface {
+public interface ForgetpassInterface {
     public void account_notexistence();
     public void request_success();
     public void JSON_error();

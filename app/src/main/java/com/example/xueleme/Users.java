@@ -1,29 +1,22 @@
 package com.example.xueleme;
-import android.annotation.SuppressLint;
-import android.content.Context;
-import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
-import android.widget.TextView;
-import android.widget.Toast;
-import androidx.annotation.NonNull;
+
 import com.google.gson.Gson;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 
-import interface_packge.Forgetpass_interface;
+import interface_packge.ConnectionInterface;
+import interface_packge.DetailMessage;
+import interface_packge.ForgetpassInterface;
+import interface_packge.InckName;
 import interface_packge.LoginHandler;
-import interface_packge.Register_interface;
+import interface_packge.RegisterInterface;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.MediaType;
@@ -35,14 +28,49 @@ import okhttp3.Response;
 public class Users {
     private String account;
     private String password;
-    LoginHandler loginHandler;
-    Register_interface register_interface;
-    Forgetpass_interface forgetpass_interface;
+    public LoginHandler loginHandler;
+    public RegisterInterface register_interface;
+    public ForgetpassInterface forgetpassInterface;
+    private String nick_name;
+    private String avatar;//头像的MD5
+    public InckName inickName;
+    public DetailMessage detailMessage;
+    public ConnectionInterface connection_interface;
+    private int userid;
     //构造函数
     public Users(String account, String password) {
         this.account = account;
         this.password = password;
     }
+
+    public int getUserid() {
+        return userid;
+    }
+
+    public void setInickName(InckName inickName) {
+        this.inickName = inickName;
+    }
+
+    public void setDetailMessage(DetailMessage detailMessage) {
+        this.detailMessage = detailMessage;
+    }
+
+    public String getNick_name() {
+        return nick_name;
+    }
+
+    public void setKick_name(String kick_name) {
+        this.nick_name = kick_name;
+    }
+
+    public void setConnection_interface(ConnectionInterface connection_interface) {
+        this.connection_interface = connection_interface;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
     //get方法
     public String getAccount() {
         return account;
@@ -54,8 +82,9 @@ public class Users {
     {
         loginHandler=handler;
     }
-    public void setRegister_interface(Register_interface register_interface1){register_interface=register_interface1;}
-    public void setForgetpass_interface(Forgetpass_interface forgetpass_interface1){forgetpass_interface=forgetpass_interface1;}
+    public void setRegister_interface(RegisterInterface register_interface1){register_interface=register_interface1;}
+    public void setForgetpassInterface(ForgetpassInterface forgetpassInterface1){
+        forgetpassInterface = forgetpassInterface1;}
     /*Login()为登录程序，不接受参数，是通过将Users类的account和password属性发到
      *服务器上接受服务器的结果，返回有五种状态下的字符串：
      *1.请输入用户名：account为空
@@ -172,10 +201,28 @@ public class Users {
                 }
                 else
                 {
-                    forgetpass_interface.request_failed();
+                    forgetpassInterface.request_failed();
                 }
             }
         });
+        //同步任务开始
+       /* Callable<String> stringCallable=new Callable<String>() {
+            @Override
+            public String call() throws Exception {
+               Response response=task.execute();
+               if(response.code()!=200)
+                   return "连接失败";
+               String state=response.body().string();
+               Gson gson= new Gson();
+               Map<String,Object> map=new HashMap<String, Object>();
+               map=gson.fromJson(state,map.getClass());
+                return (String) map.get("detail");
+            }
+        };
+        FutureTask<String> futureTask=new FutureTask<String>(stringCallable);
+        Thread thread=new Thread(futureTask);
+        thread.start();
+        return futureTask.get();*/
     }
     /*忘记密码程序:通过用户名来找回密码
      *1.用户没有输入用户名，返回“请输入用户名”
@@ -185,7 +232,7 @@ public class Users {
     public void Forget_password(){
         if(account.length()==0)
         {
-            forgetpass_interface.account_isnull();
+            forgetpassInterface.account_isnull();
             return;
         }
 
@@ -195,7 +242,8 @@ public class Users {
                 .build();
         MediaType mediaType=MediaType.parse("application/json");
         JSONObject jsonObject=new JSONObject();
-        try{ jsonObject.put("mailAddress",account);}catch (JSONException e){forgetpass_interface.request_failed();}
+        try{ jsonObject.put("mailAddress",account);}catch (JSONException e){
+            forgetpassInterface.request_failed();}
         RequestBody requestbody=RequestBody.create(String.valueOf(jsonObject),mediaType);
         Request request=new Request.Builder()
                 .post(requestbody)
@@ -205,7 +253,7 @@ public class Users {
         task.enqueue(new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                forgetpass_interface.request_failed();
+                forgetpassInterface.request_failed();
             }
 
             @Override
@@ -218,19 +266,171 @@ public class Users {
                 Log.d("sdfs0", String.valueOf(response.code()));
                 if(s.equals("邮箱未注册"))
                 {
-                    forgetpass_interface.account_notexistence();
+                    forgetpassInterface.account_notexistence();
                 }
                 else if(s.equals("请求成功"))
                 {
-                    forgetpass_interface.request_success();
+                    forgetpassInterface.request_success();
                 }
                 else
                 {
-                    forgetpass_interface.request_failed();
+                    forgetpassInterface.request_failed();
                 }
             }
         });
     }
+    /*
+     * 查询用户的UserID,并改写User类中的userid
+     * 这项操作应该是在用户登录成功时执行的
+     * 主要功能就是从服务器获取userid,保存到User类中，以便以后使用
+     * */
+    public void IDquery()
+    {
+        String URL="http://darrendanielday.club/api/Account/MailAuth/QueryId";
+        OkHttpClient okHttpClient=new OkHttpClient.Builder()
+                .connectTimeout(10000,TimeUnit.MILLISECONDS)
+                .build();
+        Request request=new Request.Builder()
+                .get()
+                .url(URL+"?mail="+account)
+                .build();
+        final  Call task=okHttpClient.newCall(request);
+        task.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                connection_interface.connection_failed();
+            }
 
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String state=response.body().string();
+                String[] message=state.split(",");
+                String id_me=message[0];
+                String detail_me=message[2];
+                String[] s1=id_me.split(":");
+                String[] s2=detail_me.split(":");
+                if(s1.length!=2||s2.length!=2)
+                {
+                    connection_interface.connection_failed();
+                    return ;
+                }
+                if(response.code()!=200)
+                {
+                    connection_interface.connection_failed();
+                    return;
+                }
+                String id=s1[1];
+                String detail=new String();
+                int i=1;
+                int length=s2[1].length()-3;
+                while(i<=length)
+                {
+                    detail=detail+(s2[1]).charAt(i);
+                    i++;
+                }
+                if(detail.equals("查询成功"))
+                {
+                    userid=Integer.parseInt(id);
+                    connection_interface.connection_success();
+                }
+                else
+                {
+                    connection_interface.connection_failed();
+                }
+            }
+        });
+    }
+    /*
+     * 修改昵称API
+     * */
+    public void Change_Nickname(final String nickname)
+    {
+        if(nickname.length()==0)
+        {
+            inickName.nick_nameisnull();
+            return;
+        }
+        String URL="http://darrendanielday.club/api/Account/ChangeNickname";
+        MediaType mediaType=MediaType.parse("application/json");
+        OkHttpClient client=new OkHttpClient.Builder()
+                .connectTimeout(10000,TimeUnit.MILLISECONDS)
+                .build();
+        JSONObject json_account_message=new JSONObject();
+        try{json_account_message.put("userId",userid);
+            json_account_message.put("nickname",nickname);}catch (JSONException e){inickName.JSON_ERROR();; return;}
+        RequestBody requestBody=RequestBody.create(String.valueOf(json_account_message),mediaType);
+        Request request=new Request.Builder()
+                .url(URL)
+                .post(requestBody)
+                .build();
+        final Call task=client.newCall(request);
+        task.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                inickName.connection_failed();
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String state=response.body().string();
+                Gson gson= new Gson();
+                Map map=new HashMap<String, Object>();
+                map=gson.fromJson(state,map.getClass());
+                String s= (String) map.get("detail");
+                if(s.equals("修改昵称成功"))
+                {
+                    nick_name=nickname;
+                    inickName.connection_success();
+                    return;
+                }
+                else
+                {
+                    inickName.connection_failed();
+                    return;
+                }
+            }
+        });
+    }
+    /*
+     * 获取用户的具体信息，并将其修改到user中去，修改的是头像MD5和昵称，不过需要发送给服务器id，建议在登录的时候获取userid后使用
+     * */
+    public void getdetails() {
+        String URL="http://darrendanielday.club/api/Account/Detail";
+        OkHttpClient okHttpClient=new OkHttpClient.Builder()
+                .connectTimeout(10000,TimeUnit.MILLISECONDS)
+                .build();
+        Request request=new Request.Builder()
+                .get()
+                .url(URL+"/"+userid)
+                .build();
+        final  Call task=okHttpClient.newCall(request);
+        task.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                detailMessage.connection_failed();
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String message=response.body().string();
+                Gson gson=new Gson();
+                Map map=new HashMap<String, Object>();
+                map=gson.fromJson(message,map.getClass());
+                Map mapp= (Map) map.get("extraData");
+                Double state= (Double) map.get("state");
+                if(state==3)
+                {
+                    detailMessage.Noaccount();
+                    return;
+                }
+                else
+                {
+                    nick_name= (String) mapp.get("nickname");
+                    avatar= (String) mapp.get("avatar");
+                }
+                detailMessage.connection_success();
+            }
+        });
+    }
 }
 

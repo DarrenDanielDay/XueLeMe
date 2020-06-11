@@ -1,6 +1,6 @@
 package interface_packge;
 
-public interface Register_interface {
+public interface RegisterInterface {
     public void already_register();
     public void success_register();
     public void request_failed();
