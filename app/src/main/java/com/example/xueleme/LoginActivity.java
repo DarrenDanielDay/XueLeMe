@@ -60,6 +60,9 @@ public class LoginActivity extends AppCompatActivity {
                         Toast.makeText(LoginActivity.this, "JSON错误", Toast.LENGTH_LONG).show();
                     }
                 });
+                users.Login();
+//                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+//                startActivity(intent);
             }
         });
         btn_goto_register.setOnClickListener(new View.OnClickListener() {

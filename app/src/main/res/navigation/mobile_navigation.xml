@@ -15,11 +15,11 @@
         android:id="@+id/navigation_dashboard"
         android:name="com.example.xueleme.ui.dashboard.DashboardFragment"
         android:label="@string/title_chatroom"
-        tools:layout="@layout/fragment_dashboard" />
+        tools:layout="@layout/fragment_chatroom" />
 
     <fragment
         android:id="@+id/navigation_notifications"
         android:name="com.example.xueleme.ui.notifications.NotificationsFragment"
         android:label="@string/title_forum"
-        tools:layout="@layout/fragment_notifications" />
+        tools:layout="@layout/fragment_forum" />
 </navigation>
