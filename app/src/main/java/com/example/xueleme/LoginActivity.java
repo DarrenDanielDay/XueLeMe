@@ -9,6 +9,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import interface_packge.LoginHandler;
+
 public class LoginActivity extends AppCompatActivity {
 
     private EditText login_account, login_password;
@@ -27,16 +29,37 @@ public class LoginActivity extends AppCompatActivity {
                 String username = login_account.getText().toString();
                 String password = login_password.getText().toString();
                 Users users = new Users(username, password);
-                try {
-                    String msg = users.Login();
-                    if (msg.equals("密码正确")) {
+                users.setLoginHandler(new LoginHandler() {
+                    @Override
+                    public void password_correct() {
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                         startActivity(intent);
                     }
-                    else System.out.println(msg);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+
+                    @Override
+                    public void connection_failed() {
+                        Toast.makeText(LoginActivity.this, "连接错误", Toast.LENGTH_LONG).show();
+                    }
+
+                    @Override
+                    public void password_wrong() {
+                        Toast.makeText(LoginActivity.this, "密码错误", Toast.LENGTH_LONG).show();                    }
+
+                    @Override
+                    public void account_isnull() {
+                        Toast.makeText(LoginActivity.this, "账户为空", Toast.LENGTH_LONG).show();
+                    }
+
+                    @Override
+                    public void password_isnull() {
+                        Toast.makeText(LoginActivity.this, "密码为空", Toast.LENGTH_LONG).show();
+                    }
+
+                    @Override
+                    public void JSON_error() {
+                        Toast.makeText(LoginActivity.this, "JSON错误", Toast.LENGTH_LONG).show();
+                    }
+                });
             }
         });
         btn_goto_register.setOnClickListener(new View.OnClickListener() {

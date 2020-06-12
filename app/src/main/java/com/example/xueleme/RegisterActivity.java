@@ -25,16 +25,16 @@ public class RegisterActivity extends AppCompatActivity {
                 String username = register_account.getText().toString();
                 String password = register_password.getText().toString();
                 Users users = new Users(username, password);
-                try {
-                    String msg = users.Register();
-                    if (msg.equals("注册成功")) {
+//                try {
+//                    String msg = users.Register();
+//                    if (msg.equals("注册成功")) {
                         Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
                         startActivity(intent);
-                    }
-                    else System.out.println(msg);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+//                    }
+//                    else System.out.println(msg);
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
             }
         });
 
