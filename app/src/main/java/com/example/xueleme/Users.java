@@ -1,22 +1,23 @@
 package com.example.xueleme;
 import android.util.Log;
-
 import com.google.gson.Gson;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import interface_packge.ConnectionInterface;
-import interface_packge.DetailMessage;
-import interface_packge.ForgetpassInterface;
-import interface_packge.InckName;
-import interface_packge.LoginHandler;
-import interface_packge.RegisterInterface;
+import interface_packge.GroupCreator;
+import interface_packge.JoinGroup;
+import interface_packge.*;
+import interface_packge.PostmethodInterface;
+import interface_packge.RequestInterface;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.MediaType;
@@ -37,10 +38,27 @@ public class Users {
     public DetailMessage detailMessage;
     public ConnectionInterface connection_interface;
     private int userid;
+    public GroupCreator groupCreator;
+    public JoinGroup joinGroup;
+    public Map<Groupkey, Integer> chatGroupMap;//0表示用户是成员，1表示用户是群主
+
     //构造函数
     public Users(String account, String password) {
         this.account = account;
         this.password = password;
+        chatGroupMap=new HashMap<Groupkey,Integer>();
+    }
+
+    public void setJoinGroup(JoinGroup joinGroup) {
+        this.joinGroup = joinGroup;
+    }
+
+    public void setGroupCreator(GroupCreator groupCreator) {
+        this.groupCreator = groupCreator;
+    }
+
+    public Map<Groupkey, Integer> getChatGroupMap() {
+        return chatGroupMap;
     }
 
     public int getUserid() {
@@ -429,6 +447,356 @@ public class Users {
                     avatar= (String) mapp.get("avatar");
                 }
                 detailMessage.connection_success();
+            }
+        });
+    }
+    /*
+     * 用户创建群聊，并在自己的chatgroupmap里添加群聊信息
+     * */
+    public void CreatGroup(final String groupName)
+    {
+        if(groupName.length()==0)
+        {
+            groupCreator.groupNameIsNull();
+            return;
+        }
+        String URL="http://darrendanielday.club/api/ChatGroup/Create";
+        MediaType mediaType=MediaType.parse("application/json");
+        OkHttpClient client=new OkHttpClient.Builder()
+                .connectTimeout(10000,TimeUnit.MILLISECONDS)
+                .build();
+        JSONObject json_account_message=new JSONObject();
+        try{json_account_message.put("userId",userid);
+            json_account_message.put("groupName",groupName);}catch (JSONException e){groupCreator.JSON_ERROR();; return;}
+        RequestBody requestBody=RequestBody.create(String.valueOf(json_account_message),mediaType);
+        Request request=new Request.Builder()
+                .url(URL)
+                .post(requestBody)
+                .build();
+        final Call task=client.newCall(request);
+        task.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                groupCreator.requestFailed();
+                return ;
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String s=response.body().string();
+                Gson gson= new Gson();
+                Map map=new HashMap<String, Object>();
+                map=gson.fromJson(s,map.getClass());
+                Double state= (Double) map.get("state");
+                if(state!=0)
+                {
+                    groupCreator.requestFailed();
+                    return;
+                }
+                else
+                {;
+                    Map map1= (Map) map.get("extraData");
+                    Integer id= ((Double) map1.get("id")).intValue();
+                    Groupkey groupkey=new Groupkey(groupName, id);
+                    chatGroupMap.put(groupkey,1);
+                    groupCreator.requestSuccess();
+                }
+            }
+        });
+    }
+    /**
+     * 加群申请
+     * */
+    public void JoinGroupRequest(Integer GroupID)
+    {
+        Map map=this.getChatGroupMap();
+        Iterator<Map.Entry<Groupkey,Integer>> iter = map.entrySet().iterator();
+        while(iter.hasNext()){
+            Map.Entry<Groupkey,Integer> entry = iter.next();
+            Groupkey key = entry.getKey();
+            Integer value = entry.getValue();
+            if(key.groupId==GroupID)
+            {
+                joinGroup.AlreadyInGroup();
+                return;
+            }
+        }
+        String URL="http://darrendanielday.club/api/ChatGroup/Join";
+        MediaType mediaType=MediaType.parse("application/json");
+        OkHttpClient client=new OkHttpClient.Builder()
+                .connectTimeout(10000,TimeUnit.MILLISECONDS)
+                .build();
+        JSONObject json_account_message=new JSONObject();
+        try{json_account_message.put("userId",userid);
+            json_account_message.put("groupId",GroupID);}catch (JSONException e){joinGroup.JSON_ERROR(); return;}
+        RequestBody requestBody=RequestBody.create(String.valueOf(json_account_message),mediaType);
+        Request request=new Request.Builder()
+                .url(URL)
+                .post(requestBody)
+                .build();
+        final Call task=client.newCall(request);
+        task.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                joinGroup.requestFailed();
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String s=response.body().string();
+                Gson gson= new Gson();
+                Map map=new HashMap<String, Object>();
+                map=gson.fromJson(s,map.getClass());
+                Double state= (Double) map.get("state");
+                if(state==3)
+                {
+                    joinGroup.GroupNotExist();
+                    return;
+                }
+                else if(state==2)
+                {
+                    joinGroup.HasRequested();
+                    return;
+                }
+                else if(state==0)
+                {
+                    joinGroup.requestSuccess();
+                    return;
+                }
+                else
+                {
+                    joinGroup.requestFailed();
+                }
+            }
+        });
+    }
+    /*
+     * 用户给出群聊ID、群聊名称、和接口任务，修改群聊名称
+     * */
+    public void ChangeGroupName(Integer GroupID, String name, final PostmethodInterface postmethodInterface)
+    {   if(name.length()==0)
+    {
+        postmethodInterface.ISNULL();
+        return;
+    }
+        String URL="http://darrendanielday.club/api/ChatGroup/ChangeName";
+        MediaType mediaType=MediaType.parse("application/json");
+        OkHttpClient client=new OkHttpClient.Builder()
+                .connectTimeout(10000,TimeUnit.MILLISECONDS)
+                .build();
+        JSONObject json_account_message=new JSONObject();
+        try{json_account_message.put("groupId",GroupID);
+            json_account_message.put("newName",name);}catch (JSONException e){postmethodInterface.JSON_ERROR(); return;}
+        RequestBody requestBody=RequestBody.create(String.valueOf(json_account_message),mediaType);
+        Request request=new Request.Builder()
+                .url(URL)
+                .post(requestBody)
+                .build();
+        final Call task=client.newCall(request);
+        task.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                postmethodInterface.postfailed();
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String s=response.body().string();
+                Gson gson= new Gson();
+                Map map=new HashMap<String, Object>();
+                map=gson.fromJson(s,map.getClass());
+                Double state=(Double)map.get("state");
+                if(state!=0)
+                {
+                    postmethodInterface.postfailed();
+                    return;
+                }
+                else
+                {
+                    postmethodInterface.postsuccess();
+                    return;
+                }
+            }
+        });
+    }
+    /*
+     * 查询自己作为成员加入的群，并根据结果修改ChatGroupMap
+     * */
+    public void MyJoinedGroup(final RequestInterface requestInterface)
+    {
+        String URL="http://darrendanielday.club/api/ChatGroup/MyJoinedGroup";
+        OkHttpClient okHttpClient=new OkHttpClient.Builder()
+                .connectTimeout(10000,TimeUnit.MILLISECONDS)
+                .build();
+        Request request=new Request.Builder()
+                .get()
+                .url(URL+"/"+userid)
+                .build();
+        final  Call task=okHttpClient.newCall(request);
+        task.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                requestInterface.requestFailed();
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String s=response.body().string();
+                Gson gson= new Gson();
+                Map map=new HashMap<String, Object>();
+                map=gson.fromJson(s,map.getClass());
+                List<Map> mapList= new ArrayList<>();
+                mapList= (List<Map>) map.get("extraData");
+                Double state= (Double) map.get("state");
+                if(state!=2)
+                {
+                    requestInterface.requestFailed();
+                    return;
+                }
+                else
+                {
+                    for (int i=0;i<mapList.size();i++)
+                    {
+                        Map mapp=mapList.get(i);
+                        Double id= (Double) mapp.get("id");
+                        Integer groupid=id.intValue();
+                        String name= (String) mapp.get("name");
+                        Groupkey groupkey=new Groupkey(name,groupid);
+                        Map mapper=chatGroupMap;
+                        int tag=0;
+                        Iterator<Map.Entry<Groupkey,Integer>> iter = mapper.entrySet().iterator();
+                        while(iter.hasNext()){
+                            Map.Entry<Groupkey,Integer> entry = iter.next();
+                            Groupkey key = entry.getKey();
+                            Integer value = entry.getValue();
+                            if(key.groupId==groupid)
+                                tag=1;
+                        }
+                        if(tag==0)
+                        {chatGroupMap.put(groupkey,0);}
+                    }
+                    requestInterface.requestSuccess();
+                    return;
+                }
+            }
+        });
+    }
+    /*
+     * 查询自己作为群主创建的群，并根据结果修改ChatGroupMap
+     * */
+    public void MyCreateGroup(final RequestInterface requestInterface)
+    {
+        String URL="http://darrendanielday.club/api/ChatGroup/MyCreatedGroup";
+        OkHttpClient okHttpClient=new OkHttpClient.Builder()
+                .connectTimeout(10000,TimeUnit.MILLISECONDS)
+                .build();
+        Request request=new Request.Builder()
+                .get()
+                .url(URL+"/"+userid)
+                .build();
+        final  Call task=okHttpClient.newCall(request);
+        task.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                requestInterface.requestFailed();
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String s=response.body().string();
+                Gson gson= new Gson();
+                Map map=new HashMap<String, Object>();
+                map=gson.fromJson(s,map.getClass());
+                List<Map> mapList= new ArrayList<>();
+                mapList= (List<Map>) map.get("extraData");
+                Double state= (Double) map.get("state");
+                if(state!=2)
+                {
+                    requestInterface.requestFailed();
+                    return;
+                }
+                else
+                {
+                    for (int i=0;i<mapList.size();i++)
+                    {
+                        Map mapp=mapList.get(i);
+                        Double id= (Double) mapp.get("id");
+                        Integer groupid=id.intValue();
+                        String name= (String) mapp.get("name");
+                        Groupkey groupkey=new Groupkey(name,groupid);
+                        Map mapper=chatGroupMap;
+                        int tag=0;
+                        Iterator<Map.Entry<Groupkey,Integer>> iter = mapper.entrySet().iterator();
+                        while(iter.hasNext()){
+                            Map.Entry<Groupkey,Integer> entry = iter.next();
+                            Groupkey key = entry.getKey();
+                            Integer value = entry.getValue();
+                            if(key.groupId==groupid)
+                                tag=1;
+                        }
+                        if(tag==0)
+                        {chatGroupMap.put(groupkey,1);}
+                    }
+                    requestInterface.requestSuccess();
+                    return;
+                }
+            }
+        });
+    }
+    /*
+     *退出群聊,群主不能退群,并改变chatGroupMap的值
+     * */
+    public void QuitGroup(final Integer GroupID, final PostmethodInterface postmethodInterface)
+    {
+        String URL="http://darrendanielday.club/api/ChatGroup/Quit";
+        MediaType mediaType=MediaType.parse("application/json");
+        OkHttpClient client=new OkHttpClient.Builder()
+                .connectTimeout(10000,TimeUnit.MILLISECONDS)
+                .build();
+        JSONObject json_account_message=new JSONObject();
+        try{json_account_message.put("userId",userid);
+            json_account_message.put("groupId",GroupID);}catch (JSONException e){postmethodInterface.JSON_ERROR(); return;}
+        RequestBody requestBody=RequestBody.create(String.valueOf(json_account_message),mediaType);
+        Request request=new Request.Builder()
+                .url(URL)
+                .post(requestBody)
+                .build();
+        final Call task=client.newCall(request);
+        task.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                postmethodInterface.postfailed();
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String s=response.body().string();
+                Gson gson= new Gson();
+                Map map=new HashMap<String, Object>();
+                map=gson.fromJson(s,map.getClass());
+                Double state= (Double) map.get("state");
+                if(state!=0)
+                {
+                    postmethodInterface.postfailed();
+                }
+                else
+                {
+                    Iterator<Map.Entry<Groupkey,Integer>> iter = chatGroupMap.entrySet().iterator();
+                    while(iter.hasNext()){
+                        Map.Entry<Groupkey,Integer> entry = iter.next();
+                        Groupkey key = entry.getKey();
+                        Integer value = entry.getValue();
+                        if(value==0)
+                        {
+                            if(key.groupId.equals(GroupID))
+                            {
+                                iter.remove();
+                                break;
+                            }
+                        }
+                    }
+                    postmethodInterface.postsuccess();
+                }
             }
         });
     }
