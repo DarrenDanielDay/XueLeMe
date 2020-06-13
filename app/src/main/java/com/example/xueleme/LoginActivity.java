@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Looper;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -38,26 +39,37 @@ public class LoginActivity extends AppCompatActivity {
 
                     @Override
                     public void connection_failed() {
+                        Looper.prepare();
                         Toast.makeText(LoginActivity.this, "连接错误", Toast.LENGTH_LONG).show();
+                        Looper.loop();
                     }
 
                     @Override
                     public void password_wrong() {
-                        Toast.makeText(LoginActivity.this, "密码错误", Toast.LENGTH_LONG).show();                    }
+                        Looper.prepare();
+                        Toast.makeText(LoginActivity.this, "密码错误", Toast.LENGTH_LONG).show();
+                        Looper.loop();
+                    }
 
                     @Override
                     public void account_isnull() {
+                        Looper.prepare();
                         Toast.makeText(LoginActivity.this, "账户为空", Toast.LENGTH_LONG).show();
+                        Looper.loop();
                     }
 
                     @Override
                     public void password_isnull() {
+                        Looper.prepare();
                         Toast.makeText(LoginActivity.this, "密码为空", Toast.LENGTH_LONG).show();
+                        Looper.loop();
                     }
 
                     @Override
                     public void JSON_error() {
+                        Looper.prepare();
                         Toast.makeText(LoginActivity.this, "JSON错误", Toast.LENGTH_LONG).show();
+                        Looper.loop();
                     }
                 });
                 users.Login();

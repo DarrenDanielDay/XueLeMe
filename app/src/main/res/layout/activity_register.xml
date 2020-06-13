@@ -49,6 +49,16 @@
         android:layout_marginTop="50dp"
         android:layout_width="320dp"
         android:layout_height="wrap_content"/>
+    <Button
+        android:id="@+id/user_register_loginBtn"
+        android:text="Back to Login"
+        android:background="#1E90FF"
+        android:layout_gravity="center"
+        android:layout_marginTop="50dp"
+        android:layout_width="320dp"
+        android:textAllCaps="false"
+        android:layout_height="wrap_content"/>
+
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
