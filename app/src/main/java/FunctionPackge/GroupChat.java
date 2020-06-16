@@ -1,14 +1,16 @@
-package com.example.xueleme;
+package FunctionPackge;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
-public class Join_group extends AppCompatActivity {
+import com.example.xueleme.R;
+
+public class GroupChat extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_join_group);
+        setContentView(R.layout.activity_group_chat);
     }
 }

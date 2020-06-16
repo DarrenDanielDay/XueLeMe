@@ -1,4 +1,4 @@
-package com.example.xueleme;
+package FunctionPackge;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

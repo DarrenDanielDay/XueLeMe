@@ -1,15 +1,14 @@
-package com.example.xueleme;
+package FunctionPackge;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
-import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+
 /*
 * Task可以看成两种角色：一种是只传入了User和上下文，这个时候它是用户的任务工具
 * 一种是传入了各种参数，这个时候就是具体的任务
