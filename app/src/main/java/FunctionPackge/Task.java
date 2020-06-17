@@ -15,19 +15,19 @@ import java.util.List;
 * 在进行增删改查的时候也会修改Task对象的值
 * */
 public class Task {
-  private Users users;//用户
-  private int year;//年份
-  private int month;//几月
-  private int day;//几号
-  private int start_hour;//开始时间小时,24小时制
-  private int start_min;//开始时间分钟
-  private int end_hour;//结束时间小时
-  private int end_min;//结束时间分钟
-  private String task_name;//任务名
-  private int state;//状态
-  private DB_Tools my_tool;
+    private Users users;//用户
+    private int year;//年份
+    private int month;//几月
+    private int day;//几号
+    private int start_hour;//开始时间小时,24小时制
+    private int start_min;//开始时间分钟
+    private int end_hour;//结束时间小时
+    private int end_min;//结束时间分钟
+    private String task_name;//任务名
+    private int state;//状态
+    private DB_Tools my_tool;
   //构造函数，接收上下文环境和用户类
-  public Task(Context context, Users users) {
+    public Task(Context context, Users users) {
         this.users = users;
         my_tool=new DB_Tools(context,users.getAccount());
     }
@@ -274,3 +274,4 @@ public class Task {
         return task;
     }
 }
+

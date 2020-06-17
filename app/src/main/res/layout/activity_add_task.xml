@@ -9,31 +9,35 @@
     <EditText
         android:id="@+id/editText1"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="70dp"
         android:background="#2196F3"
         android:ems="10"
         android:hint="标题"
         android:inputType="textPersonName"
         android:textColor="@android:color/white"
-        android:textColorHint="@android:color/white"
-        android:textSize="36sp" />
+        android:textColorHint="@android:color/darker_gray"
+        android:paddingLeft="3dp"
+        android:textSize="26sp" />
 
     <Switch
         android:id="@+id/switch3"
         android:layout_width="match_parent"
         android:layout_height="50dp"
+        android:paddingLeft="3dp"
         android:text="全天" />
 
     <TextView
         android:id="@+id/textView2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingLeft="3dp"
         android:text="起始时间" />
 
     <EditText
         android:id="@+id/editText2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingLeft="3dp"
         android:ems="10"
         android:hint="日期"
         android:inputType="date" />
@@ -42,6 +46,7 @@
         android:id="@+id/editText3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingLeft="3dp"
         android:ems="10"
         android:hint="时间"
         android:inputType="time" />
@@ -50,20 +55,14 @@
         android:id="@+id/textView3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingLeft="3dp"
         android:text="结束时间" />
-
-    <EditText
-        android:id="@+id/editText4"
-        android:layout_width="match_parent"
-        android:layout_height="58dp"
-        android:ems="10"
-        android:hint="日期"
-        android:inputType="date" />
 
     <EditText
         android:id="@+id/editText5"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingLeft="3dp"
         android:ems="10"
         android:hint="时间"
         android:inputType="time" />

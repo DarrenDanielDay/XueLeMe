@@ -28,13 +28,15 @@ public class LoginActivity extends AppCompatActivity {
         btn_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String username = login_account.getText().toString();
-                String password = login_password.getText().toString();
-                Users users = new Users(username, password);
+                final String username = login_account.getText().toString();
+                final String password = login_password.getText().toString();
+                final Users users = new Users(username, password);
                 users.setLoginHandler(new LoginHandler() {
                     @Override
                     public void password_correct() {
+
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                        intent.putExtra("extra_data", username+" "+password);
                         startActivity(intent);
                     }
 

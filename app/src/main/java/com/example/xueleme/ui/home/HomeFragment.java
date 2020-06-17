@@ -5,7 +5,9 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -21,9 +23,12 @@ import com.example.xueleme.R;
 import com.example.xueleme.ui.chatroom.ChatroomFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import FunctionPackge.Task;
+
 public class HomeFragment extends Fragment {
 
     private HomeViewModel homeViewModel;
+    private String[] data = {"Apple", "Pear"};
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -35,17 +40,21 @@ public class HomeFragment extends Fragment {
 //            @Override
 //            public void onChanged(@Nullable String s) {
 //                textView.setText(s);
-//        Button btn_fab = root.findViewById(R.id.floatingActionButton1);
         FloatingActionButton btn_fab = root.findViewById(R.id.floatingActionButton1);
         btn_fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), AddTaskActivity.class);
+                intent.putExtra("extra", getActivity().getIntent().getStringExtra("extra_data"));
                 startActivity(intent);
             }
 //            }
 //        });
         });
+//        String data = new Task(user)
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, data);
+        ListView listView = root.findViewById(R.id.listView);
+        listView.setAdapter(adapter);
         return root;
     }
 }
