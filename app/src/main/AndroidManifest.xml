@@ -13,7 +13,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".jc_group"></activity>
+        <activity android:name=".MsgAdapter"></activity>
+        <activity android:name=".QuitGroup" />
+        <activity android:name=".jc_group" />
         <activity android:name=".AddTaskActivity" />
         <activity android:name=".RegisterActivity" />
         <activity android:name=".GroupChat" />

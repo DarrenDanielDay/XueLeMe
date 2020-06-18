@@ -1078,7 +1078,7 @@ public class Users {
             @Override
             public void run() throws Exception {
                 that.IsConnected= true;
-                that.handler.onConnected();
+                that.joinRoom();
             }
         }).doOnError(new Consumer<Throwable>() {
             @Override

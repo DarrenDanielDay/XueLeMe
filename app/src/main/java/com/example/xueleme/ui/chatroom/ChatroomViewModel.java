@@ -17,7 +17,7 @@ import java.util.HashMap;
 import FunctionPackge.Groupkey;
 
 public class ChatroomViewModel extends ViewModel {
-    public List<Groupkey> g_list = new ArrayList<>();
+    public  List<Groupkey> g_list = new ArrayList<>();
     Groupkey groupkey =new Groupkey("测试群",0);
     public ChatroomViewModel() {
         g_list.add(0,groupkey);
