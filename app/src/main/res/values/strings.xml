@@ -2,6 +2,6 @@
     <string name="app_name">XueLeMe</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="title_home">日程表</string>
-    <string name="title_chatroom">群聊</string>
+    <string name="title_chatroom">群聊列表</string>
     <string name="title_forum">论坛</string>
 </resources>

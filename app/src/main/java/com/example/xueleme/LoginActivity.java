@@ -15,7 +15,7 @@ import interface_packge.LoginHandler;
 public class LoginActivity extends AppCompatActivity {
 
     private EditText login_account, login_password;
-
+    public static Users users;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,12 +24,14 @@ public class LoginActivity extends AppCompatActivity {
         Button btn_goto_register = findViewById(R.id.user_login_register);
         login_account = findViewById(R.id.user_login_account);
         login_password = findViewById(R.id.user_login_password);
+
         btn_login.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
                 String username = login_account.getText().toString();
                 String password = login_password.getText().toString();
-                Users users = new Users(username, password);
+                users = new Users(username, password);
                 users.setLoginHandler(new LoginHandler() {
                     @Override
                     public void password_correct() {

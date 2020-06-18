@@ -2,6 +2,8 @@ package com.example.xueleme;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Looper;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -13,12 +15,15 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import interface_packge.ConnectionInterface;
+
 public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         BottomNavigationView navView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
@@ -28,7 +33,22 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
+        LoginActivity.users.setConnection_interface(new ConnectionInterface() {
+            @Override
+            public void connection_success() {
+                Looper.prepare();
+                Log.d("sfs","Success");
+                Looper.loop();
+            }
 
+            @Override
+            public void connection_failed() {
+                Looper.prepare();
+                Log.d("sfs","F");
+                Looper.loop();
+            }
+        });
+        LoginActivity.users.IDquery();
     }
 
 }

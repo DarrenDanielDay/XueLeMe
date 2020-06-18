@@ -13,8 +13,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".AddTaskActivity"></activity>
+        <activity android:name=".jc_group"></activity>
+        <activity android:name=".AddTaskActivity" />
         <activity android:name=".RegisterActivity" />
+        <activity android:name=".GroupChat" />
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main" />

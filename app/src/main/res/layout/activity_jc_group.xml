@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <EditText
+        android:layout_marginTop="100dp"
+        android:layout_width="320dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:id="@+id/c_name"
+        android:hint="请输入群聊名称"
+        />
+    <Button
+        android:id="@+id/create_group"
+        android:layout_width="320dp"
+        android:layout_height="60dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="50dp"
+        android:background="#CC1E90FF"
+        android:textSize="20sp"
+        android:text="创建群聊" />
+    <EditText
+        android:layout_width="320dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:layout_gravity="center"
+        android:hint="请输入群聊号"
+        android:id="@+id/j_id"
+        />
+    <Button
+        android:layout_width="320dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="50dp"
+        android:layout_gravity="center"
+        android:background="#CC1E90FF"
+        android:textSize="20dp"
+        android:text="加入群聊"
+        android:id="@+id/join_group"
+        />
+
+</LinearLayout>
