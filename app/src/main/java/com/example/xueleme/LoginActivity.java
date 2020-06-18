@@ -37,42 +37,42 @@ public class LoginActivity extends AppCompatActivity {
 
                 users.setLoginHandler(new LoginHandler() {
                     @Override
-                    public void password_correct() {
+                    public void passwordCorrect() {
 
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                         startActivity(intent);
                     }
 
                     @Override
-                    public void connection_failed() {
+                    public void connectionFailed() {
                         Looper.prepare();
                         Toast.makeText(LoginActivity.this, "连接错误", Toast.LENGTH_LONG).show();
                         Looper.loop();
                     }
 
                     @Override
-                    public void password_wrong() {
+                    public void passwordWrong() {
                         Looper.prepare();
                         Toast.makeText(LoginActivity.this, "密码错误", Toast.LENGTH_LONG).show();
                         Looper.loop();
                     }
 
                     @Override
-                    public void account_isnull() {
+                    public void accountIsnull() {
                         Looper.prepare();
                         Toast.makeText(LoginActivity.this, "账户为空", Toast.LENGTH_LONG).show();
                         Looper.loop();
                     }
 
                     @Override
-                    public void password_isnull() {
+                    public void passwordIsnull() {
                         Looper.prepare();
                         Toast.makeText(LoginActivity.this, "密码为空", Toast.LENGTH_LONG).show();
                         Looper.loop();
                     }
 
                     @Override
-                    public void JSON_error() {
+                    public void JSONError() {
                         Looper.prepare();
                         Toast.makeText(LoginActivity.this, "JSON错误", Toast.LENGTH_LONG).show();
                         Looper.loop();

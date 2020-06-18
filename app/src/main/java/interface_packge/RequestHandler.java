@@ -1,6 +1,6 @@
 package interface_packge;
 
-public interface RequestInterface {
+public interface RequestHandler {
     public void requestSuccess();
     public void requestFailed();
 }

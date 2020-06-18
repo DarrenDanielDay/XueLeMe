@@ -11,7 +11,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import FunctionPackge.Users;
-import interface_packge.RegisterInterface;
+import interface_packge.RegisterHandler;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -31,44 +31,44 @@ public class RegisterActivity extends AppCompatActivity {
                 String username = register_account.getText().toString();
                 String password = register_password.getText().toString();
                 Users users = new Users(username, password);
-                users.setRegister_interface(new RegisterInterface() {
+                users.setRegisterHandler(new RegisterHandler() {
                     @Override
-                    public void already_register() {
+                    public void alreadyRegister() {
                         Looper.prepare();
                         Toast.makeText(RegisterActivity.this, "已注册", Toast.LENGTH_LONG).show();
                         Looper.loop();
                     }
 
                     @Override
-                    public void success_register() {
+                    public void successRegister() {
                         Looper.prepare();
                         Toast.makeText(RegisterActivity.this, "注册成功", Toast.LENGTH_LONG).show();
                         Looper.loop();
                     }
 
                     @Override
-                    public void request_failed() {
+                    public void requestFailed() {
                         Looper.prepare();
                         Toast.makeText(RegisterActivity.this, "请求错误", Toast.LENGTH_LONG).show();
                         Looper.loop();
                     }
 
                     @Override
-                    public void account_isnull() {
+                    public void accountIsnull() {
                         Looper.prepare();
                         Toast.makeText(RegisterActivity.this, "账户为空", Toast.LENGTH_LONG).show();
                         Looper.loop();
                     }
 
                     @Override
-                    public void password_isnull() {
+                    public void passwordIsnull() {
                         Looper.prepare();
                         Toast.makeText(RegisterActivity.this, "密码为空", Toast.LENGTH_LONG).show();
                         Looper.loop();
                     }
 
                     @Override
-                    public void JSON_error() {
+                    public void JSONError() {
                         Looper.prepare();
                         Toast.makeText(RegisterActivity.this, "JSON错误", Toast.LENGTH_LONG).show();
                         Looper.loop();

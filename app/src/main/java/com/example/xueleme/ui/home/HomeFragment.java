@@ -61,7 +61,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Task data = dataList.get(i);
-                Toast.makeText(getActivity(), data.start_date + " " + data.start_time + "到" + data.end_time, Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), data.startDate + " " + data.startTime + "到" + data.endTime, Toast.LENGTH_LONG).show();
             }
         });
         return root;

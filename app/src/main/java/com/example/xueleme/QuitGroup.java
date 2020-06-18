@@ -15,7 +15,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import FunctionPackge.Groupkey;
-import interface_packge.PostmethodInterface;
+import interface_packge.PostmethodHandler;
 
 public class QuitGroup extends AppCompatActivity {
     private String newname=new String();
@@ -33,7 +33,7 @@ public class QuitGroup extends AppCompatActivity {
         btn_quit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               LoginActivity.users.QuitGroup(g_id, new PostmethodInterface() {
+               LoginActivity.users.QuitGroup(g_id, new PostmethodHandler() {
                    @Override
                    public void postsuccess() {
                        Looper.prepare();
@@ -58,7 +58,7 @@ public class QuitGroup extends AppCompatActivity {
                    }
 
                    @Override
-                   public void JSON_ERROR() {
+                   public void JSONERROR() {
                        Toast.makeText(QuitGroup.this,"退群失败",Toast.LENGTH_LONG).show();
                    }
 
@@ -72,7 +72,7 @@ public class QuitGroup extends AppCompatActivity {
         btn_ctlname.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            LoginActivity.users.ChangeGroupName(g_id,newname, new PostmethodInterface() {
+            LoginActivity.users.ChangeGroupName(g_id,newname, new PostmethodHandler() {
                 @Override
                 public void postsuccess() {
                     Looper.prepare();
@@ -88,7 +88,7 @@ public class QuitGroup extends AppCompatActivity {
                 }
 
                 @Override
-                public void JSON_ERROR() {
+                public void JSONERROR() {
                     Toast.makeText(QuitGroup.this,"请求失败",Toast.LENGTH_LONG).show();
                 }
 

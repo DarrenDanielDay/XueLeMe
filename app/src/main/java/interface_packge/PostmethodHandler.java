@@ -1,9 +1,9 @@
 package interface_packge;
 
-public interface PostmethodInterface {
+public interface PostmethodHandler {
     public void postsuccess();
     public void postfailed();
-    public void JSON_ERROR();
+    public void JSONERROR();
     public void  ISNULL();
 }
 

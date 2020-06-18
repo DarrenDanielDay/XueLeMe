@@ -1,7 +1,5 @@
 package FunctionPackge;
 
-import FunctionPackge.Users;
-
 //群聊成员信息类
 public class Member {
     public Integer id;
@@ -14,7 +12,7 @@ public class Member {
     }
     public Member(Users users) {
         this.id = users.getUserid();
-        this.nickName = users.getNick_name();
+        this.nickName = users.getNickName();
         this.avatar = users.getAvatar();
     }
     public Member()

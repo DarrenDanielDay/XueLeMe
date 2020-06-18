@@ -39,7 +39,7 @@ public class jc_group extends AppCompatActivity {
                     }
 
                     @Override
-                    public void JSON_ERROR() {
+                    public void jsonError() {
                         Toast.makeText(jc_group.this,"群聊昵称不可为空",Toast.LENGTH_LONG).show();
                     }
 
@@ -92,7 +92,7 @@ public class jc_group extends AppCompatActivity {
                    }
 
                    @Override
-                   public void JSON_ERROR() {
+                   public void JSONERROR() {
                        Toast.makeText(jc_group.this,"请求失败",Toast.LENGTH_LONG).show();
                    }
 

@@ -1,14 +1,5 @@
 package FunctionPackge;
 
-import android.content.ContentValues;
-import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-
 /*
 * Task可以看成两种角色：一种是只传入了User和上下文，这个时候它是用户的任务工具
 * 一种是传入了各种参数，这个时候就是具体的任务
@@ -276,13 +267,13 @@ import java.util.List;
 //}
 public class Task {
     public String content;
-    public String start_date;
-    public String start_time;
-    public String end_time;
+    public String startDate;
+    public String startTime;
+    public String endTime;
     public Task(String a, String b, String c, String d) {
         content = a;
-        start_date = b;
-        start_time = c;
-        end_time = d;
+        startDate = b;
+        startTime = c;
+        endTime = d;
     }
 }

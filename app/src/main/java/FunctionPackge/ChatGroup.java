@@ -10,9 +10,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Handler;
 
-import FunctionPackge.Member;
-import interface_packge.RequestInterface;
+import interface_packge.RequestHandler;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
@@ -24,6 +24,7 @@ public class ChatGroup {
     private  String groupName;
     private Member owner;
     private List<Member> memberList;
+    private String Host="http://darrendanielday.club/";
 
     public ChatGroup(Integer groupId, String groupName) {
         this.groupId = groupId;
@@ -61,21 +62,21 @@ public class ChatGroup {
         return memberList;
     }
 
-    public void GetDetail(final RequestInterface requestInterface)//获取群聊的具体信息，群主群成员，并修改到owner和memberList里
+    public void GetDetail(final RequestHandler requestHandler)//获取群聊的具体信息，群主群成员，并修改到owner和memberList里
     {
-        String URL="http://darrendanielday.club/api/ChatGroup/Detail";
+        String URL="api/ChatGroup/Detail";
         OkHttpClient okHttpClient=new OkHttpClient.Builder()
                 .connectTimeout(10000, TimeUnit.MILLISECONDS)
                 .build();
         Request request=new Request.Builder()
                 .get()
-                .url(URL+"/"+groupId)
+                .url(Host+URL+"/"+groupId)
                 .build();
         final Call task=okHttpClient.newCall(request);
         task.enqueue(new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                requestInterface.requestFailed();
+                requestHandler.requestFailed();
             }
 
             @Override
@@ -87,7 +88,7 @@ public class ChatGroup {
                 Double state= (Double) map.get("state");
                 if(state!=2)
                 {
-                    requestInterface.requestFailed();
+                    requestHandler.requestFailed();
                     return;
                 }
                 else
@@ -109,7 +110,7 @@ public class ChatGroup {
                         memberList1.add(m);
                     }
                     memberList=memberList1;
-                    requestInterface.requestSuccess();
+                    requestHandler.requestSuccess();
                 }
             }
         });

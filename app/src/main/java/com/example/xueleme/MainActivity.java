@@ -1,11 +1,8 @@
 package com.example.xueleme;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -15,7 +12,7 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import interface_packge.ConnectionInterface;
+import interface_packge.ConnectionHandler;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -37,16 +34,16 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
-        LoginActivity.users.setConnection_interface(new ConnectionInterface() {
+        LoginActivity.users.setConnectionHandler(new ConnectionHandler() {
             @Override
-        public void connection_success() {
+        public void connectionSuccess() {
             Looper.prepare();
             Log.d("sfs","Success");
             Looper.loop();
         }
 
         @Override
-        public void connection_failed() {
+        public void connectionFailed() {
             Looper.prepare();
             Log.d("sfs","F");
             Looper.loop();

@@ -1,6 +1,6 @@
 package interface_packge;
 
-public interface GroupCreator extends RequestInterface{
+public interface GroupCreator extends RequestHandler {
     public void groupNameIsNull();
-    public void JSON_ERROR();
+    public void jsonError();
 }

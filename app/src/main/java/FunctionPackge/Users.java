@@ -21,16 +21,19 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import interface_packge.ChatHubHandler;
-import interface_packge.ConnectionInterface;
+import interface_packge.ConnectionHandler;
 import interface_packge.DetailMessage;
-import interface_packge.ForgetpassInterface;
+import interface_packge.ForepawsHandler;
 import interface_packge.GroupCreator;
-import interface_packge.InckName;
+import interface_packge.IncName;
 import interface_packge.JoinGroup;
 import interface_packge.LoginHandler;
-import interface_packge.PostmethodInterface;
-import interface_packge.RegisterInterface;
-import interface_packge.RequestInterface;
+import interface_packge.PostmethodHandler;
+import interface_packge.RegisterHandler;
+import interface_packge.ReplyHandler;
+import interface_packge.ReplyOfTopicHandler;
+import interface_packge.RequestHandler;
+import interface_packge.TopicHandler;
 import io.reactivex.Completable;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
@@ -46,19 +49,22 @@ public class Users {
     private String account;
     private String password;
     public LoginHandler loginHandler;
-    public RegisterInterface register_interface;
-    public ForgetpassInterface forgetpassInterface;
-    private String nick_name;
+    public RegisterHandler registerHandler;
+    public ForepawsHandler forepawsHandler;
+    private String nickName;
     private String avatar;//头像的MD5
-    public InckName inickName;
+    public IncName inickName;
     public DetailMessage detailMessage;
-    public ConnectionInterface connection_interface;
+    public ConnectionHandler connectionHandler;
     private int userid;
     public ChatHubHandler handler;
     private HubConnection hubConnection;
     private boolean IsConnected;
     private final String URI="http://129.204.245.98:5000/api/ChatRoom";
+    private final String Host="http://darrendanielday.club/";
     public GroupCreator groupCreator;
+    private List<ZoneMessage> listZone;
+    public List<TopicMessage> topicList;
     public JoinGroup joinGroup;
     public Map<Groupkey, Integer> chatGroupMap;//0表示用户是成员，1表示用户是群主
     public Map<Integer, JoinGroupRequest> GroupJoinMessage;//key--value 表示加群信息，key是服务器给的requestID
@@ -70,6 +76,16 @@ public class Users {
         chatGroupMap=new HashMap<Groupkey,Integer>();
         GroupJoinMessage=new HashMap<Integer, JoinGroupRequest>();
         IsConnected=false;
+        listZone=new ArrayList<ZoneMessage>();
+        topicList=new ArrayList<TopicMessage>();
+    }
+
+    public List<ZoneMessage> getListZone() {
+        return listZone;
+    }
+
+    public List<TopicMessage> getTopicList() {
+        return topicList;
     }
 
     public void setHandler(ChatHubHandler handler) {
@@ -92,7 +108,7 @@ public class Users {
         return userid;
     }
 
-    public void setInickName(InckName inickName) {
+    public void setInickName(IncName inickName) {
         this.inickName = inickName;
     }
 
@@ -100,16 +116,16 @@ public class Users {
         this.detailMessage = detailMessage;
     }
 
-    public String getNick_name() {
-        return nick_name;
+    public String getNickName() {
+        return nickName;
     }
 
     public void setKick_name(String kick_name) {
-        this.nick_name = kick_name;
+        this.nickName = kick_name;
     }
 
-    public void setConnection_interface(ConnectionInterface connection_interface) {
-        this.connection_interface = connection_interface;
+    public void setConnectionHandler(ConnectionHandler connectionHandler) {
+        this.connectionHandler = connectionHandler;
     }
     public Map<Integer, JoinGroupRequest> getGroupJoinMessage() {
         return GroupJoinMessage;
@@ -129,9 +145,10 @@ public class Users {
     {
         loginHandler=handler;
     }
-    public void setRegister_interface(RegisterInterface register_interface1){register_interface=register_interface1;}
-    public void setForgetpassInterface(ForgetpassInterface forgetpassInterface1){
-        forgetpassInterface = forgetpassInterface1;}
+    public void setRegisterHandler(RegisterHandler register_interface1){
+        registerHandler =register_interface1;}
+    public void setForepawsHandler(ForepawsHandler forepawsHandler1){
+        forepawsHandler = forepawsHandler1;}
     /*Login()为登录程序，不接受参数，是通过将Users类的account和password属性发到
      *服务器上接受服务器的结果，返回有五种状态下的字符串：
      *1.请输入用户名：account为空
@@ -144,14 +161,14 @@ public class Users {
     //登录程序
     public void Login() {
         if (account.length() == 0)
-        {loginHandler.account_isnull();
+        {loginHandler.accountIsnull();
             return;
         }
         if (password.length() == 0)
-        {loginHandler.password_isnull();
+        {loginHandler.passwordIsnull();
             return;
         }
-        String URL = "http://darrendanielday.club/api/Account/MailAuth/Login";
+        String URL = "api/Account/MailAuth/Login";
         MediaType mediaType = MediaType.parse("application/json");
         //创建客户端
         OkHttpClient client = new OkHttpClient.Builder()
@@ -162,7 +179,7 @@ public class Users {
         try{
             json_account_message.put("mailAddress", account);
             json_account_message.put("password", password);}catch (JSONException e) {
-            loginHandler.connection_failed();
+            loginHandler.connectionFailed();
             return;
         }
         //创建请求体
@@ -170,14 +187,14 @@ public class Users {
         //创建请求
         Request login_request = new Request.Builder()
                 .post(login_message)
-                .url(URL)
+                .url(Host+URL)
                 .build();
         //创建任务并异步传输
         final Call task = client.newCall(login_request);
         task.enqueue(new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                loginHandler.connection_failed();
+                loginHandler.connectionFailed();
             }
 
             @Override
@@ -187,11 +204,11 @@ public class Users {
                 String r;
                 int code=response.code();
                 if(code!=200)
-                    loginHandler.connection_failed();
+                    loginHandler.connectionFailed();
                 if(!login_state[0].contains("u"))
-                    loginHandler.password_wrong();
+                    loginHandler.passwordWrong();
                 else
-                    loginHandler.password_correct();
+                    loginHandler.passwordCorrect();
             }
         });
     }
@@ -205,30 +222,32 @@ public class Users {
      * */
     public void Register(){
         if(account.length()==0)
-        {register_interface.account_isnull();
+        {
+            registerHandler.accountIsnull();
             return;
         }
         if(password.length()==0){
-            register_interface.password_isnull();
+            registerHandler.passwordIsnull();
             return;}
-        String URL="http://darrendanielday.club/api/Account/MailAuth/Register";
+        String URL="api/Account/MailAuth/Register";
         MediaType mediaType=MediaType.parse("application/json");
         OkHttpClient client=new OkHttpClient.Builder()
                 .connectTimeout(10000,TimeUnit.MILLISECONDS)
                 .build();
         JSONObject json_account_message=new JSONObject();
         try{json_account_message.put("mailAddress",account);
-            json_account_message.put("password",password);}catch (JSONException e){register_interface.JSON_error();}
+            json_account_message.put("password",password);}catch (JSONException e){
+            registerHandler.JSONError();}
         RequestBody requestBody=RequestBody.create(String.valueOf(json_account_message),mediaType);
         Request request=new Request.Builder()
-                .url(URL)
+                .url(Host+URL)
                 .post(requestBody)
                 .build();
         final Call task=client.newCall(request);
         task.enqueue(new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                register_interface.request_failed();
+                registerHandler.requestFailed();
             }
 
             @Override
@@ -240,15 +259,15 @@ public class Users {
                 String s= (String) map.get("detail");
                 if(s.equals("注册成功，请注意查收邮件"))
                 {
-                    register_interface.success_register();
+                    registerHandler.successRegister();
                 }
                 else if(s.equals("邮箱已注册"))
                 {
-                    register_interface.already_register();
+                    registerHandler.alreadyRegister();
                 }
                 else
                 {
-                    forgetpassInterface.request_failed();
+                    forepawsHandler.requestFailed();
                 }
             }
         });
@@ -279,28 +298,28 @@ public class Users {
     public void Forget_password(){
         if(account.length()==0)
         {
-            forgetpassInterface.account_isnull();
+            forepawsHandler.accountIsnull();
             return;
         }
 
-        String URL="http://darrendanielday.club/api/Account/MailAuth/ForgetPassword";
+        String URL="api/Account/MailAuth/ForgetPassword";
         OkHttpClient client=new OkHttpClient.Builder()
                 .connectTimeout(10000,TimeUnit.MILLISECONDS)
                 .build();
         MediaType mediaType=MediaType.parse("application/json");
         JSONObject jsonObject=new JSONObject();
         try{ jsonObject.put("mailAddress",account);}catch (JSONException e){
-            forgetpassInterface.request_failed();}
+            forepawsHandler.requestFailed();}
         RequestBody requestbody=RequestBody.create(String.valueOf(jsonObject),mediaType);
         Request request=new Request.Builder()
                 .post(requestbody)
-                .url(URL)
+                .url(Host+URL)
                 .build();
         final  Call task=client.newCall(request);
         task.enqueue(new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                forgetpassInterface.request_failed();
+                forepawsHandler.requestFailed();
             }
 
             @Override
@@ -313,15 +332,15 @@ public class Users {
                 Log.d("sdfs0", String.valueOf(response.code()));
                 if(s.equals("邮箱未注册"))
                 {
-                    forgetpassInterface.account_notexistence();
+                    forepawsHandler.accountNonexistence();
                 }
                 else if(s.equals("请求成功"))
                 {
-                    forgetpassInterface.request_success();
+                    forepawsHandler.requestSuccess();
                 }
                 else
                 {
-                    forgetpassInterface.request_failed();
+                    forepawsHandler.requestFailed();
                 }
             }
         });
@@ -333,19 +352,19 @@ public class Users {
      * */
     public void IDquery()
     {
-        String URL="http://darrendanielday.club/api/Account/MailAuth/QueryId";
+        String URL="api/Account/MailAuth/QueryId";
         OkHttpClient okHttpClient=new OkHttpClient.Builder()
                 .connectTimeout(10000,TimeUnit.MILLISECONDS)
                 .build();
         Request request=new Request.Builder()
                 .get()
-                .url(URL+"?mail="+account)
+                .url(Host+URL+"?mail="+account)
                 .build();
         final  Call task=okHttpClient.newCall(request);
         task.enqueue(new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                connection_interface.connection_failed();
+                connectionHandler.connectionFailed();
             }
 
             @Override
@@ -358,12 +377,12 @@ public class Users {
                 String[] s2=detail_me.split(":");
                 if(s1.length!=2||s2.length!=2)
                 {
-                    connection_interface.connection_failed();
+                    connectionHandler.connectionFailed();
                     return ;
                 }
                 if(response.code()!=200)
                 {
-                    connection_interface.connection_failed();
+                    connectionHandler.connectionFailed();
                     return;
                 }
                 String id=s1[1];
@@ -378,11 +397,11 @@ public class Users {
                 if(detail.equals("查询成功"))
                 {
                     userid=Integer.parseInt(id);
-                    connection_interface.connection_success();
+                    connectionHandler.connectionSuccess();
                 }
                 else
                 {
-                    connection_interface.connection_failed();
+                    connectionHandler.connectionFailed();
                 }
             }
         });
@@ -394,27 +413,27 @@ public class Users {
     {
         if(nickname.length()==0)
         {
-            inickName.nick_nameisnull();
+            inickName.nickNumskull();
             return;
         }
-        String URL="http://darrendanielday.club/api/Account/ChangeNickname";
+        String URL="api/Account/ChangeNickname";
         MediaType mediaType=MediaType.parse("application/json");
         OkHttpClient client=new OkHttpClient.Builder()
                 .connectTimeout(10000,TimeUnit.MILLISECONDS)
                 .build();
         JSONObject json_account_message=new JSONObject();
         try{json_account_message.put("userId",userid);
-            json_account_message.put("nickname",nickname);}catch (JSONException e){inickName.JSON_ERROR();; return;}
+            json_account_message.put("nickname",nickname);}catch (JSONException e){inickName.JSONERROR();; return;}
         RequestBody requestBody=RequestBody.create(String.valueOf(json_account_message),mediaType);
         Request request=new Request.Builder()
-                .url(URL)
+                .url(Host+URL)
                 .post(requestBody)
                 .build();
         final Call task=client.newCall(request);
         task.enqueue(new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                inickName.connection_failed();
+                inickName.connectionFailed();
             }
 
             @Override
@@ -426,13 +445,13 @@ public class Users {
                 String s= (String) map.get("detail");
                 if(s.equals("修改昵称成功"))
                 {
-                    nick_name=nickname;
-                    inickName.connection_success();
+                    nickName =nickname;
+                    inickName.connectionSuccess();
                     return;
                 }
                 else
                 {
-                    inickName.connection_failed();
+                    inickName.connectionFailed();
                     return;
                 }
             }
@@ -442,19 +461,19 @@ public class Users {
      * 获取用户的具体信息，并将其修改到user中去，修改的是头像MD5和昵称，不过需要发送给服务器id，建议在登录的时候获取userid后使用
      * */
     public void getdetails() {
-        String URL="http://darrendanielday.club/api/Account/Detail";
+        String URL="api/Account/Detail";
         OkHttpClient okHttpClient=new OkHttpClient.Builder()
                 .connectTimeout(10000,TimeUnit.MILLISECONDS)
                 .build();
         Request request=new Request.Builder()
                 .get()
-                .url(URL+"/"+userid)
+                .url(Host+URL+"/"+userid)
                 .build();
         final  Call task=okHttpClient.newCall(request);
         task.enqueue(new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                detailMessage.connection_failed();
+                detailMessage.connectionFailed();
             }
 
             @Override
@@ -467,15 +486,15 @@ public class Users {
                 Double state= (Double) map.get("state");
                 if(state==3)
                 {
-                    detailMessage.Noaccount();
+                    detailMessage.NoAccount();
                     return;
                 }
                 else
                 {
-                    nick_name= (String) mapp.get("nickname");
+                    nickName = (String) mapp.get("nickname");
                     avatar= (String) mapp.get("avatar");
                 }
-                detailMessage.connection_success();
+                detailMessage.connectionSuccess();
             }
         });
     }
@@ -489,17 +508,17 @@ public class Users {
             groupCreator.groupNameIsNull();
             return;
         }
-        String URL="http://darrendanielday.club/api/ChatGroup/Create";
+        String URL="api/ChatGroup/Create";
         MediaType mediaType=MediaType.parse("application/json");
         OkHttpClient client=new OkHttpClient.Builder()
                 .connectTimeout(10000,TimeUnit.MILLISECONDS)
                 .build();
         JSONObject json_account_message=new JSONObject();
         try{json_account_message.put("userId",userid);
-            json_account_message.put("groupName",groupName);}catch (JSONException e){groupCreator.JSON_ERROR();; return;}
+            json_account_message.put("groupName",groupName);}catch (JSONException e){groupCreator.jsonError();; return;}
         RequestBody requestBody=RequestBody.create(String.valueOf(json_account_message),mediaType);
         Request request=new Request.Builder()
-                .url(URL)
+                .url(Host+URL)
                 .post(requestBody)
                 .build();
         final Call task=client.newCall(request);
@@ -550,17 +569,17 @@ public class Users {
                 return;
             }
         }
-        String URL="http://darrendanielday.club/api/ChatGroup/Join";
+        String URL="api/ChatGroup/Join";
         MediaType mediaType=MediaType.parse("application/json");
         OkHttpClient client=new OkHttpClient.Builder()
                 .connectTimeout(10000,TimeUnit.MILLISECONDS)
                 .build();
         JSONObject json_account_message=new JSONObject();
         try{json_account_message.put("userId",userid);
-            json_account_message.put("groupId",GroupID);}catch (JSONException e){joinGroup.JSON_ERROR(); return;}
+            json_account_message.put("groupId",GroupID);}catch (JSONException e){joinGroup.JSONERROR(); return;}
         RequestBody requestBody=RequestBody.create(String.valueOf(json_account_message),mediaType);
         Request request=new Request.Builder()
-                .url(URL)
+                .url(Host+URL)
                 .post(requestBody)
                 .build();
         final Call task=client.newCall(request);
@@ -602,30 +621,31 @@ public class Users {
     /*
      * 用户给出群聊ID、群聊名称、和接口任务，修改群聊名称
      * */
-    public void ChangeGroupName(Integer GroupID, String name, final PostmethodInterface postmethodInterface)
+    public void ChangeGroupName(Integer GroupID, String name, final PostmethodHandler postmethodHandler)
     {   if(name.length()==0)
     {
-        postmethodInterface.ISNULL();
+        postmethodHandler.ISNULL();
         return;
     }
-        String URL="http://darrendanielday.club/api/ChatGroup/ChangeName";
+        String URL="api/ChatGroup/ChangeName";
         MediaType mediaType=MediaType.parse("application/json");
         OkHttpClient client=new OkHttpClient.Builder()
                 .connectTimeout(10000,TimeUnit.MILLISECONDS)
                 .build();
         JSONObject json_account_message=new JSONObject();
         try{json_account_message.put("groupId",GroupID);
-            json_account_message.put("newName",name);}catch (JSONException e){postmethodInterface.JSON_ERROR(); return;}
+            json_account_message.put("newName",name);}catch (JSONException e){
+            postmethodHandler.JSONERROR(); return;}
         RequestBody requestBody=RequestBody.create(String.valueOf(json_account_message),mediaType);
         Request request=new Request.Builder()
-                .url(URL)
+                .url(Host+URL)
                 .post(requestBody)
                 .build();
         final Call task=client.newCall(request);
         task.enqueue(new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                postmethodInterface.postfailed();
+                postmethodHandler.postfailed();
             }
 
             @Override
@@ -637,12 +657,12 @@ public class Users {
                 Double state=(Double)map.get("state");
                 if(state!=0)
                 {
-                    postmethodInterface.postfailed();
+                    postmethodHandler.postfailed();
                     return;
                 }
                 else
                 {
-                    postmethodInterface.postsuccess();
+                    postmethodHandler.postsuccess();
                     return;
                 }
             }
@@ -651,21 +671,21 @@ public class Users {
     /*
      * 查询自己作为成员加入的群，并根据结果修改ChatGroupMap
      * */
-    public void MyJoinedGroup(final RequestInterface requestInterface)
+    public void MyJoinedGroup(final RequestHandler requestHandler)
     {
-        String URL="http://darrendanielday.club/api/ChatGroup/MyJoinedGroup";
+        String URL="api/ChatGroup/MyJoinedGroup";
         OkHttpClient okHttpClient=new OkHttpClient.Builder()
                 .connectTimeout(10000,TimeUnit.MILLISECONDS)
                 .build();
         Request request=new Request.Builder()
                 .get()
-                .url(URL+"/"+userid)
+                .url(Host+URL+"/"+userid)
                 .build();
         final  Call task=okHttpClient.newCall(request);
         task.enqueue(new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                requestInterface.requestFailed();
+                requestHandler.requestFailed();
             }
 
             @Override
@@ -679,7 +699,7 @@ public class Users {
                 Double state= (Double) map.get("state");
                 if(state!=2)
                 {
-                    requestInterface.requestFailed();
+                    requestHandler.requestFailed();
                     return;
                 }
                 else
@@ -704,7 +724,7 @@ public class Users {
                         if(tag==0)
                         {chatGroupMap.put(groupkey,0);}
                     }
-                    requestInterface.requestSuccess();
+                    requestHandler.requestSuccess();
                     return;
                 }
             }
@@ -713,21 +733,21 @@ public class Users {
     /*
      * 查询自己作为群主创建的群，并根据结果修改ChatGroupMap
      * */
-    public void MyCreateGroup(final RequestInterface requestInterface)
+    public void MyCreateGroup(final RequestHandler requestHandler)
     {
-        String URL="http://darrendanielday.club/api/ChatGroup/MyCreatedGroup";
+        String URL="api/ChatGroup/MyCreatedGroup";
         OkHttpClient okHttpClient=new OkHttpClient.Builder()
                 .connectTimeout(10000,TimeUnit.MILLISECONDS)
                 .build();
         Request request=new Request.Builder()
                 .get()
-                .url(URL+"/"+userid)
+                .url(Host+URL+"/"+userid)
                 .build();
         final  Call task=okHttpClient.newCall(request);
         task.enqueue(new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                requestInterface.requestFailed();
+                requestHandler.requestFailed();
             }
 
             @Override
@@ -741,7 +761,7 @@ public class Users {
                 Double state= (Double) map.get("state");
                 if(state!=2)
                 {
-                    requestInterface.requestFailed();
+                    requestHandler.requestFailed();
                     return;
                 }
                 else
@@ -766,7 +786,7 @@ public class Users {
                         if(tag==0)
                         {chatGroupMap.put(groupkey,1);}
                     }
-                    requestInterface.requestSuccess();
+                    requestHandler.requestSuccess();
                     return;
                 }
             }
@@ -775,26 +795,27 @@ public class Users {
     /*
      *退出群聊,群主不能退群,并改变chatGroupMap的值
      * */
-    public void QuitGroup(final Integer GroupID, final PostmethodInterface postmethodInterface)
+    public void QuitGroup(final Integer GroupID, final PostmethodHandler postmethodHandler)
     {
-        String URL="http://darrendanielday.club/api/ChatGroup/Quit";
+        String URL="api/ChatGroup/Quit";
         MediaType mediaType=MediaType.parse("application/json");
         OkHttpClient client=new OkHttpClient.Builder()
                 .connectTimeout(10000,TimeUnit.MILLISECONDS)
                 .build();
         JSONObject json_account_message=new JSONObject();
         try{json_account_message.put("userId",userid);
-            json_account_message.put("groupId",GroupID);}catch (JSONException e){postmethodInterface.JSON_ERROR(); return;}
+            json_account_message.put("groupId",GroupID);}catch (JSONException e){
+            postmethodHandler.JSONERROR(); return;}
         RequestBody requestBody=RequestBody.create(String.valueOf(json_account_message),mediaType);
         Request request=new Request.Builder()
-                .url(URL)
+                .url(Host+URL)
                 .post(requestBody)
                 .build();
         final Call task=client.newCall(request);
         task.enqueue(new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                postmethodInterface.postfailed();
+                postmethodHandler.postfailed();
             }
 
             @Override
@@ -806,7 +827,7 @@ public class Users {
                 Double state= (Double) map.get("state");
                 if(state!=0)
                 {
-                    postmethodInterface.postfailed();
+                    postmethodHandler.postfailed();
                 }
                 else
                 {
@@ -824,7 +845,7 @@ public class Users {
                             }
                         }
                     }
-                    postmethodInterface.postsuccess();
+                    postmethodHandler.postsuccess();
                 }
             }
         });
@@ -832,21 +853,21 @@ public class Users {
     /*
      *获得加群请求，这个方法也是建议轮询的，即隔一段时间运行一下//之前可以使用
      * */
-    public void GetJoinRequest(Integer GroupID, final RequestInterface requestInterface)
+    public void GetJoinRequest(Integer GroupID, final RequestHandler requestHandler)
     {
-        String URL="http://darrendanielday.club/api/ChatGroup/JoinRequests";
+        String URL="api/ChatGroup/JoinRequests";
         OkHttpClient okHttpClient=new OkHttpClient.Builder()
                 .connectTimeout(10000,TimeUnit.MILLISECONDS)
                 .build();
         Request request=new Request.Builder()
                 .get()
-                .url(URL+"/"+GroupID)
+                .url(Host+URL+"/"+GroupID)
                 .build();
         final  Call task=okHttpClient.newCall(request);
         task.enqueue(new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                requestInterface.requestFailed();
+                requestHandler.requestFailed();
             }
 
             @Override
@@ -858,7 +879,7 @@ public class Users {
                 Double state= (Double) map.get("state");
                 if(state!=2)
                 {
-                    requestInterface.requestFailed();
+                    requestHandler.requestFailed();
                     return ;
                 }
                 else
@@ -882,7 +903,7 @@ public class Users {
                         }
                         i++;
                     }
-                    requestInterface.requestSuccess();
+                    requestHandler.requestSuccess();
                 }
             }
         });
@@ -890,26 +911,27 @@ public class Users {
     /**
      * 同意加群请求//未验证
      */
-    public void AgreeJoin(final Integer requestId, final PostmethodInterface postmethodInterface)
+    public void AgreeJoin(final Integer requestId, final PostmethodHandler postmethodHandler)
     {
-        String URL="http://darrendanielday.club/api/ChatGroup/AgreeJoin";
+        String URL="api/ChatGroup/AgreeJoin";
         MediaType mediaType=MediaType.parse("application/json");
         OkHttpClient client=new OkHttpClient.Builder()
                 .connectTimeout(10000,TimeUnit.MILLISECONDS)
                 .build();
         JSONObject json_account_message=new JSONObject();
         try{json_account_message.put("userId",userid);
-            json_account_message.put("requestId",requestId);}catch (JSONException e){postmethodInterface.JSON_ERROR(); return;}
+            json_account_message.put("requestId",requestId);}catch (JSONException e){
+            postmethodHandler.JSONERROR(); return;}
         RequestBody requestBody=RequestBody.create(String.valueOf(json_account_message),mediaType);
         Request request=new Request.Builder()
-                .url(URL)
+                .url(Host+URL)
                 .post(requestBody)
                 .build();
         final Call task=client.newCall(request);
         task.enqueue(new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                postmethodInterface.postfailed();
+                postmethodHandler.postfailed();
             }
 
             @Override
@@ -921,7 +943,7 @@ public class Users {
                 Double state=(Double)map.get("state");
                 if(state!=0)
                 {
-                    postmethodInterface.postfailed();
+                    postmethodHandler.postfailed();
                 }
                 else
                 {   Map mapper=GroupJoinMessage;
@@ -935,7 +957,7 @@ public class Users {
                         }
                     }
                     GroupJoinMessage=mapper;
-                    postmethodInterface.postsuccess();
+                    postmethodHandler.postsuccess();
                 }
             }
         });
@@ -943,26 +965,27 @@ public class Users {
     /**
      * 同意加群请求//未验证
      */
-    public void RejectJoin(final Integer requestId, final PostmethodInterface postmethodInterface)
+    public void RejectJoin(final Integer requestId, final PostmethodHandler postmethodHandler)
     {
-        String URL="http://darrendanielday.club/api/ChatGroup/RejectJoin";
+        String URL="api/ChatGroup/RejectJoin";
         MediaType mediaType=MediaType.parse("application/json");
         OkHttpClient client=new OkHttpClient.Builder()
                 .connectTimeout(10000,TimeUnit.MILLISECONDS)
                 .build();
         JSONObject json_account_message=new JSONObject();
         try{json_account_message.put("userId",userid);
-            json_account_message.put("requestId",requestId);}catch (JSONException e){postmethodInterface.JSON_ERROR(); return;}
+            json_account_message.put("requestId",requestId);}catch (JSONException e){
+            postmethodHandler.JSONERROR(); return;}
         RequestBody requestBody=RequestBody.create(String.valueOf(json_account_message),mediaType);
         Request request=new Request.Builder()
-                .url(URL)
+                .url(Host+URL)
                 .post(requestBody)
                 .build();
         final Call task=client.newCall(request);
         task.enqueue(new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                postmethodInterface.postfailed();
+                postmethodHandler.postfailed();
             }
 
             @Override
@@ -974,7 +997,7 @@ public class Users {
                 Double state=(Double)map.get("state");
                 if(state!=0)
                 {
-                    postmethodInterface.postfailed();
+                    postmethodHandler.postfailed();
                 }
                 else
                 {   Map mapper=GroupJoinMessage;
@@ -988,7 +1011,7 @@ public class Users {
                         }
                     }
                     GroupJoinMessage=mapper;
-                    postmethodInterface.postsuccess();
+                    postmethodHandler.postsuccess();
                 }
             }
         });
@@ -997,10 +1020,10 @@ public class Users {
      * 踢人
      *待验证
      * */
-    public void kick(Integer groupId, Integer userId, final PostmethodInterface postmethodInterface)
+    public void kick(Integer groupId, Integer userId, final PostmethodHandler postmethodHandler)
     {
 
-        String URL="http://darrendanielday.club/api/ChatGroup/Kick";
+        String URL="api/ChatGroup/Kick";
         MediaType mediaType=MediaType.parse("application/json");
         OkHttpClient client=new OkHttpClient.Builder()
                 .connectTimeout(10000,TimeUnit.MILLISECONDS)
@@ -1008,17 +1031,18 @@ public class Users {
         JSONObject json_account_message=new JSONObject();
         try{json_account_message.put("ownerId",userid);
             json_account_message.put("userId",userId);
-            json_account_message.put("groupId",groupId);}catch (JSONException e){postmethodInterface.JSON_ERROR(); return;}
+            json_account_message.put("groupId",groupId);}catch (JSONException e){
+            postmethodHandler.JSONERROR(); return;}
         RequestBody requestBody=RequestBody.create(String.valueOf(json_account_message),mediaType);
         Request request=new Request.Builder()
-                .url(URL)
+                .url(Host+URL)
                 .post(requestBody)
                 .build();
         final Call task=client.newCall(request);
         task.enqueue(new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                postmethodInterface.postsuccess();
+                postmethodHandler.postsuccess();
             }
 
             @Override
@@ -1030,10 +1054,10 @@ public class Users {
                 Double state=(Double)map.get("state");
                 if(state!=0)
                 {
-                    postmethodInterface.postfailed();
+                    postmethodHandler.postfailed();
                 }
                 else {
-                    postmethodInterface.postsuccess();
+                    postmethodHandler.postsuccess();
                 }
             }
         });
@@ -1138,5 +1162,418 @@ public class Users {
             IsConnected = false;
         }
     }
+    /*
+     * -----------------------------------------------------------
+     * 论坛部分
+     * ------------------------------------------------------------
+     * */
+    //创建论坛
+    public void CreateZone(String zoneName, final PostmethodHandler handler)
+    {
+        if(zoneName.length()<=0)
+        {
+            handler.ISNULL();
+        }
+        String URL="http://darrendanielday.club/api/Topic/CreateZone";
+        MediaType mediaType=MediaType.parse("application/json");
+        OkHttpClient client=new OkHttpClient.Builder()
+                .connectTimeout(10000,TimeUnit.MILLISECONDS)
+                .build();
+        JSONObject json_account_message=new JSONObject();
+        try{json_account_message.put("zoneName",zoneName);
+        }catch (JSONException e){handler.JSONERROR(); return;}
+        RequestBody requestBody=RequestBody.create(String.valueOf(json_account_message),mediaType);
+        Request request=new Request.Builder()
+                .url(URL)
+                .post(requestBody)
+                .build();
+        final Call task=client.newCall(request);
+        task.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                handler.postfailed();
+            }
 
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String s=response.body().string();
+                Gson gson= new Gson();
+                Map map=new HashMap<String, Object>();
+                map=gson.fromJson(s,map.getClass());
+                Double state=(Double)map.get("state");
+                if(state!=0||response.code()!=200)
+                {
+                    handler.postfailed();
+                }
+                else
+                {
+                    handler.postsuccess();
+                }
+            }
+        });
+    }
+    //创建话题
+    public void CreateTopic(Topic topic, final PostmethodHandler handler)
+    {
+        topic.userId=userid;
+        String URL="api/Topic/CreateTopic";
+        MediaType mediaType=MediaType.parse("application/json");
+        OkHttpClient client=new OkHttpClient.Builder()
+                .connectTimeout(10000,TimeUnit.MILLISECONDS)
+                .build();
+        JSONObject json_account_message=new JSONObject();
+        Map<String,Object> mapp=new HashMap<String, Object>();
+        mapp.put("title",topic.title);
+        mapp.put("userId",topic.userId);
+        mapp.put("zoneId",topic.zoneId);
+        mapp.put("tags",topic.tags);
+        mapp.put("content",topic.content);
+        mapp.put("images",topic.images);
+        Gson gson1=new Gson();
+        String r=gson1.toJson(mapp);
+        RequestBody requestBody=RequestBody.create(r,mediaType);
+        Request request=new Request.Builder()
+                .url(Host+URL)
+                .post(requestBody)
+                .build();
+        final Call task=client.newCall(request);
+        task.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                handler.postfailed();
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String s=response.body().string();
+                Gson gson= new Gson();
+                Map map=new HashMap<String, Object>();
+                map=gson.fromJson(s,map.getClass());
+                Double state=(Double)map.get("state");
+                if(response.code()!=200||state!=0)
+                {
+                    handler.postfailed();
+                    return;
+                }
+                else
+                {
+                    handler.postsuccess();
+                    return;
+                }
+            }
+        });
+    }
+    //获得所有的分区,并存放到ListZone里
+    public void GetAllZone(final RequestHandler requestHandler)
+    {
+        String URL="api/Topic/AllZones";
+        OkHttpClient okHttpClient=new OkHttpClient.Builder()
+                .connectTimeout(10000,TimeUnit.MILLISECONDS)
+                .build();
+        Request request=new Request.Builder()
+                .get()
+                .url(Host+URL)
+                .build();
+        final  Call task=okHttpClient.newCall(request);
+        task.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                requestHandler.requestFailed();
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String s=response.body().string();
+                Gson gson= new Gson();
+                Map map=new HashMap<String, Object>();
+                map=gson.fromJson(s,map.getClass());
+                Double state=(Double)map.get("state");
+                if(state!=2||response.code()!=200)
+                {
+                    requestHandler.requestFailed();
+                    return;
+                }
+                else
+                {
+                    List<Map<String,Object>> mapList= (List<Map<String, Object>>) map.get("extraData");
+                    List<ZoneMessage> zoneMessageList=new ArrayList<ZoneMessage>();
+                    for(int i=0;i<mapList.size();i++)
+                    {
+                        Map k=mapList.get(i);
+                        Integer id=((Double)k.get("id")).intValue();
+                        String zoneName= (String) k.get("zoneName");
+                        ZoneMessage zoneMessage=new ZoneMessage();
+                        zoneMessage.zoneId=id;
+                        zoneMessage.zoneName=zoneName;
+                        zoneMessageList.add(zoneMessage);
+                    }
+                    listZone=zoneMessageList;
+                    requestHandler.requestSuccess();
+                    return;
+                }
+            }
+        });
+    }
+    //获得某个分区的所有话题
+    public void GetAllTopic(Integer ZoneID, final RequestHandler requestHandler)
+    {
+        String URL="api/Topic/AllTopics";
+        OkHttpClient okHttpClient=new OkHttpClient.Builder()
+                .connectTimeout(10000,TimeUnit.MILLISECONDS)
+                .build();
+        Request request=new Request.Builder()
+                .get()
+                .url(Host+URL+"/"+ZoneID)
+                .build();
+        final  Call task=okHttpClient.newCall(request);
+        task.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                requestHandler.requestFailed();
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String s=response.body().string();
+                Gson gson= new Gson();
+                Map map=new HashMap<String, Object>();
+                map=gson.fromJson(s,map.getClass());
+                Double state=(Double)map.get("state");
+
+                if(state!=2||response.code()!=200)
+                {
+                    requestHandler.requestFailed();
+                    return;
+                }
+                else
+                {   List<TopicMessage> topicMessageList=new ArrayList<TopicMessage>();
+                    List<Map<String,Object>> mapList= (List<Map<String, Object>>) map.get("extraData");
+                    for(int i=0;i<mapList.size();i++)
+                    {
+                        Map map1=mapList.get(i);
+                        TopicMessage topicMessage=new TopicMessage();
+                        topicMessage.topicid= ((Double) map1.get("id")).intValue();
+                        topicMessage.title= (String) map1.get("title");
+                        Map Publisher= (Map) map1.get("publisherDetail");
+                        topicMessage.publisherId= ((Double) Publisher.get("userId")).intValue();
+                        topicMessage.publisherName= (String) Publisher.get("fakename");
+                        topicMessage.zoneId=((Double)map1.get("zoneId")).intValue();
+                        topicMessage.tags= (List<String>) map1.get("tags");
+                        Map map2= (Map) map1.get("contentDetail");
+                        topicMessage.contentId=((Double)map2.get("id")).intValue();
+                        topicMessage.contentext= (String) map2.get("text");
+                        topicMessage.images= (List<String>) map2.get("images");
+                        topicMessageList.add(topicMessage);
+                    }
+                    topicList=topicMessageList;
+                    requestHandler.requestSuccess();
+                    return;
+                }
+            }
+        });
+    }
+    //回复*****
+    public void MakeReply(ReplyMessage replyMessage, final PostmethodHandler postmethodHandler)
+    {
+        replyMessage.userId=userid;
+        String URL="api/Topic/MakeReply";
+        MediaType mediaType=MediaType.parse("application/json");
+        OkHttpClient client=new OkHttpClient.Builder()
+                .connectTimeout(10000,TimeUnit.MILLISECONDS)
+                .build();
+        JSONObject json_account_message=new JSONObject();
+        Map<String,Object> mapp=new HashMap<String, Object>();
+        mapp.put("userId",replyMessage.userId);
+        mapp.put("topicId",replyMessage.topicId);
+        mapp.put("referenceId",replyMessage.referenceId);
+        mapp.put("myProperty",replyMessage.myProperty);
+        mapp.put("content",replyMessage.content);
+        mapp.put("images",replyMessage.images);
+        Gson gson1=new Gson();
+        String r=gson1.toJson(mapp);
+        RequestBody requestBody=RequestBody.create(r,mediaType);
+        Request request=new Request.Builder()
+                .url(Host+URL)
+                .post(requestBody)
+                .build();
+        final Call task=client.newCall(request);
+        task.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                postmethodHandler.postfailed();
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String s=response.body().string();
+                Gson gson= new Gson();
+                Map map=new HashMap<String, Object>();
+                map=gson.fromJson(s,map.getClass());
+                Double state=(Double)map.get("state");
+                if(response.code()!=200||state!=0)
+                {
+                    postmethodHandler.postfailed();
+                    return;
+                }
+                else
+                {
+                    postmethodHandler.postsuccess();
+                    return;
+                }
+            }
+        });
+    }
+    //返回一个topic的细节信息
+    public void GetTopicDetail(Integer topicId, final TopicHandler topicHandler)
+    {
+        String URL="api/Topic/TopicDetail";
+        OkHttpClient okHttpClient=new OkHttpClient.Builder()
+                .connectTimeout(10000,TimeUnit.MILLISECONDS)
+                .build();
+        Request request=new Request.Builder()
+                .get()
+                .url(Host+URL+"/"+topicId)
+                .build();
+        final  Call task=okHttpClient.newCall(request);
+        task.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                topicHandler.GetTopicFailed();
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String s=response.body().string();
+                Gson gson= new Gson();
+                Map map=new HashMap<String, Object>();
+                map=gson.fromJson(s,map.getClass());
+                Double state=(Double)map.get("state");
+                if(response.code()!=200||state!=0)
+                {
+                    topicHandler.GetTopicFailed();
+                    return;
+                }
+                else
+                {
+                    TopicMessage topicMessage=new TopicMessage();
+                    Map map1= (Map) map.get("extraData");
+                    topicMessage.topicid= ((Double) map1.get("id")).intValue();
+                    topicMessage.title= (String) map1.get("title");
+                    Map Publisher= (Map) map1.get("publisherDetail");
+                    topicMessage.publisherId= ((Double) Publisher.get("userId")).intValue();
+                    topicMessage.publisherName= (String) Publisher.get("fakename");
+                    topicMessage.zoneId=((Double)map1.get("zoneId")).intValue();
+                    topicMessage.tags= (List<String>) map1.get("tags");
+                    Map map2= (Map) map1.get("contentDetail");
+                    topicMessage.contentId=((Double)map2.get("id")).intValue();
+                    topicMessage.contentext= (String) map2.get("text");
+                    topicMessage.images= (List<String>) map2.get("images");
+                    topicHandler.GetTopicSuccess(topicMessage);
+                    return;
+                }
+            }
+        });
+    }
+    //返回一个reply的细节信息
+    public void GetReplyDetail(Integer replyid, final ReplyHandler replyHandler)
+    {
+        String URL="api/Topic/ReplyDetail";
+        OkHttpClient okHttpClient=new OkHttpClient.Builder()
+                .connectTimeout(10000,TimeUnit.MILLISECONDS)
+                .build();
+        Request request=new Request.Builder()
+                .get()
+                .url(Host+URL+"/"+replyid)
+                .build();
+        final  Call task=okHttpClient.newCall(request);
+        task.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                replyHandler.GetReplyFailed();
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String s=response.body().string();
+                Gson gson= new Gson();
+                Map mapp=new HashMap<String, Object>();
+                mapp=gson.fromJson(s,mapp.getClass());
+                Double state=(Double)mapp.get("state");
+                if(response.code()!=200||state!=0)
+                {
+                    replyHandler.GetReplyFailed();
+                    return;
+                }
+                else
+                {   Map map= (Map) mapp.get("extraData");
+                    ReplyDetails replyDetails=new ReplyDetails();
+                    replyDetails.replyid= ((Double) map.get("id")).intValue();
+                    replyDetails.topicId= ((Double) map.get("topicId")).intValue();
+                    Map map1= (Map) map.get("user");
+                    replyDetails.userId=((Double)map1.get("userId")).intValue();
+                    replyDetails.fakename= (String) map1.get("fakename");
+                    Map map2= (Map) map.get("contentDetail");
+                    replyDetails.contentId=((Double)map2.get("id")).intValue();
+                    replyDetails.contentext= (String) map2.get("text");
+                    replyDetails.images= (List<String>) map2.get("images");
+                    replyHandler.GetReplySuccessed(replyDetails);
+                    return;
+                }
+            }
+        });
+    }
+    //返回一个Topic里面的所有reply
+    public void GetReplyOfTopic(Integer topicId, final ReplyOfTopicHandler replyOfTopicHandler)
+    {
+        String URL="api/Topic/RepliesOfTopic";
+        OkHttpClient okHttpClient=new OkHttpClient.Builder()
+                .connectTimeout(10000,TimeUnit.MILLISECONDS)
+                .build();
+        Request request=new Request.Builder()
+                .get()
+                .url(Host+URL+"/"+topicId)
+                .build();
+        final  Call task=okHttpClient.newCall(request);
+        task.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                replyOfTopicHandler.GetReplyOfTopicFailed();
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String s=response.body().string();
+                Gson gson= new Gson();
+                Map mapp=new HashMap<String, Object>();
+                mapp=gson.fromJson(s,mapp.getClass());
+                Double state=(Double)mapp.get("state");
+                if(response.code()!=200||state!=2)
+                {
+                    replyOfTopicHandler.GetReplyOfTopicFailed();
+                    return;
+                }
+                else
+                {
+                    List<Map<String,Object>> mapList= (List<Map<String, Object>>) mapp.get("extraData");
+                    List<ReplyDetails> replyDetails=new ArrayList<ReplyDetails>();
+                    for(int i=0;i<mapList.size();i++)
+                    {
+                        Map map=mapList.get(i);
+                        ReplyDetails replyDetails1=new ReplyDetails();
+                        replyDetails1.replyid=((Double)map.get("id")).intValue();
+                        replyDetails1.topicId=((Double)map.get("topicId")).intValue();
+                        Map map1= (Map) map.get("user");
+                        replyDetails1.userId=((Double)map1.get("userId")).intValue();
+                        replyDetails1.fakename= (String) map1.get("fakename");
+                        Map map2= (Map) map.get("contentDetail");
+                        replyDetails1.contentId=((Double)map2.get("id")).intValue();
+                        replyDetails1.contentext= (String) map2.get("text");
+                        replyDetails1.images= (List<String>) map2.get("images");
+                        replyDetails.add(replyDetails1);
+                    }
+                    replyOfTopicHandler.GetReplyOfTopicSucess(replyDetails);
+                }
+            }
+        });
+    }
 }
