@@ -1,6 +1,5 @@
 package com.example.xueleme.ui.chatroom;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,8 +8,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -25,14 +22,14 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.ArrayList;
 import java.util.List;
 
-import FunctionPackge.GroupChat;
+import com.example.xueleme.GroupChat;
 import FunctionPackge.Groupkey;
 
 public class ChatroomFragment extends Fragment {
     private ChatroomViewModel chatroomViewModel;
 
-    public List<Groupkey>g_list= new ArrayList<>();
-    // private String[] groupdata ={"math","PE"};
+    public static List<Groupkey>g_list= new ArrayList<>();
+
 
 
     public View onCreateView(@NonNull final LayoutInflater inflater,
@@ -64,9 +61,10 @@ public class ChatroomFragment extends Fragment {
         mygroup_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String groupname = lists.get(position);
+
                 Intent intent1 =new Intent(getActivity(), GroupChat.class);
-                intent1.putExtra("groupname",groupname);
+
+                intent1.putExtra("position",position+"");
                 startActivity(intent1);
             }
 
