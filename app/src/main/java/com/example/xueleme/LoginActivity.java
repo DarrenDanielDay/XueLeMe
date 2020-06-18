@@ -40,7 +40,6 @@ public class LoginActivity extends AppCompatActivity {
                     public void password_correct() {
 
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                        intent.putExtra("extra_data", username+" "+password);
                         startActivity(intent);
                     }
 
