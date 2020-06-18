@@ -39,20 +39,23 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(navView, navController);
         LoginActivity.users.setConnection_interface(new ConnectionInterface() {
             @Override
-            public void connection_success() {
-                Looper.prepare();
-                Log.d("sfs","Success");
-                Looper.loop();
-            }
+        public void connection_success() {
+            Looper.prepare();
+            Log.d("sfs","Success");
+            Looper.loop();
+        }
 
-            @Override
-            public void connection_failed() {
-                Looper.prepare();
-                Log.d("sfs","F");
-                Looper.loop();
-            }
-        });
+        @Override
+        public void connection_failed() {
+            Looper.prepare();
+            Log.d("sfs","F");
+            Looper.loop();
+        }
+    });
         LoginActivity.users.IDquery();
+}
+
+
     }
 
-}
+

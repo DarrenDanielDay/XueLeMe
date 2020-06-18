@@ -16,8 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
-import com.example.xueleme.GroupChat;
-import com.example.xueleme.Groupkey;
+
 import com.example.xueleme.LoginActivity;
 import com.example.xueleme.R;
 import com.example.xueleme.jc_group;
@@ -26,16 +25,19 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.ArrayList;
 import java.util.List;
 
+import FunctionPackge.GroupChat;
+import FunctionPackge.Groupkey;
+
 public class ChatroomFragment extends Fragment {
     private ChatroomViewModel chatroomViewModel;
 
     public List<Groupkey>g_list= new ArrayList<>();
-
     // private String[] groupdata ={"math","PE"};
 
 
     public View onCreateView(@NonNull final LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
+
         chatroomViewModel =
                 ViewModelProviders.of(this).get(ChatroomViewModel.class);
         View root = inflater.inflate(R.layout.fragment_chatroom, container, false);

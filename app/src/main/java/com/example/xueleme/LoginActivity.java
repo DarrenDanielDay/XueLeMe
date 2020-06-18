@@ -33,7 +33,7 @@ public class LoginActivity extends AppCompatActivity {
 
                 final String username = login_account.getText().toString();
                 final String password = login_password.getText().toString();
-                final Users users = new Users(username, password);
+                users = new Users(username, password);
 
                 users.setLoginHandler(new LoginHandler() {
                     @Override
