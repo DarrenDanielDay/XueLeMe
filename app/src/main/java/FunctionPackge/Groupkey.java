@@ -1,4 +1,4 @@
-package com.example.xueleme;
+package FunctionPackge;
 
 public class Groupkey {
     public String groupName;

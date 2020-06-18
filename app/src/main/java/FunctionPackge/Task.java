@@ -1,34 +1,33 @@
-package com.example.xueleme;
+package FunctionPackge;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
-import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+
 /*
 * Task可以看成两种角色：一种是只传入了User和上下文，这个时候它是用户的任务工具
 * 一种是传入了各种参数，这个时候就是具体的任务
 * 在进行增删改查的时候也会修改Task对象的值
 * */
 public class Task {
-  private Users users;//用户
-  private int year;//年份
-  private int month;//几月
-  private int day;//几号
-  private int start_hour;//开始时间小时,24小时制
-  private int start_min;//开始时间分钟
-  private int end_hour;//结束时间小时
-  private int end_min;//结束时间分钟
-  private String task_name;//任务名
-  private int state;//状态
-  private DB_Tools my_tool;
+    private Users users;//用户
+    private int year;//年份
+    private int month;//几月
+    private int day;//几号
+    private int start_hour;//开始时间小时,24小时制
+    private int start_min;//开始时间分钟
+    private int end_hour;//结束时间小时
+    private int end_min;//结束时间分钟
+    private String task_name;//任务名
+    private int state;//状态
+    private DB_Tools my_tool;
   //构造函数，接收上下文环境和用户类
-  public Task(Context context, Users users) {
+    public Task(Context context, Users users) {
         this.users = users;
         my_tool=new DB_Tools(context,users.getAccount());
     }
@@ -275,3 +274,4 @@ public class Task {
         return task;
     }
 }
+

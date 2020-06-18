@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import FunctionPackge.Users;
 import interface_packge.LoginHandler;
 
 public class LoginActivity extends AppCompatActivity {
@@ -29,13 +30,17 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                String username = login_account.getText().toString();
-                String password = login_password.getText().toString();
-                users = new Users(username, password);
+
+                final String username = login_account.getText().toString();
+                final String password = login_password.getText().toString();
+                final Users users = new Users(username, password);
+
                 users.setLoginHandler(new LoginHandler() {
                     @Override
                     public void password_correct() {
+
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                        intent.putExtra("extra_data", username+" "+password);
                         startActivity(intent);
                     }
 

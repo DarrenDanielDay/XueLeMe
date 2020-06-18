@@ -1,4 +1,4 @@
-package com.example.xueleme;
+package FunctionPackge;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -7,9 +7,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
 
-public class GroupChat extends Activity {
-    private TextView group_name;
 
+import com.example.xueleme.R;
+
+public class GroupChat extends AppCompatActivity {
+
+    private TextView group_name;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

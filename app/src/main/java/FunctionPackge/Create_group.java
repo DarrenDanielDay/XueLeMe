@@ -1,8 +1,10 @@
-package com.example.xueleme;
+package FunctionPackge;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+
+import com.example.xueleme.R;
 
 public class Create_group extends AppCompatActivity {
 
