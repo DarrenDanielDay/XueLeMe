@@ -8,25 +8,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.example.xueleme.AddTaskActivity;
-import com.example.xueleme.LoginActivity;
-import com.example.xueleme.MainActivity;
 import com.example.xueleme.MyDatabaseHelper;
 import com.example.xueleme.R;
-import com.example.xueleme.TaskAdapter;
-import com.example.xueleme.ui.chatroom.ChatroomFragment;
+import com.example.xueleme.Adapter.TaskAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
