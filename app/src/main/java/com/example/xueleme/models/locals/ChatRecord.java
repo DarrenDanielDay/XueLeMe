@@ -1,5 +1,7 @@
 package com.example.xueleme.models.locals;
 
+import com.example.xueleme.models.responses.ChatRecordDetail;
+
 import java.util.Date;
 
 public class ChatRecord {
@@ -13,4 +15,12 @@ public class ChatRecord {
     }
     public MessageType messageType;
     public String content;
+    public static ChatRecord fromDetail(ChatRecordDetail detail) {
+        ChatRecord record = new ChatRecord();
+        record.chatGroup = ChatGroup.fromDetail(detail.group);
+        record.content = detail.content;
+        record.createdTime = detail.createdTime;
+        record.id = detail.id;
+        return record;
+    }
 }

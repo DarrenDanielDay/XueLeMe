@@ -9,6 +9,7 @@ import kotlin.NotImplementedError;
 public class IntegerParser implements JSONParser<Integer> {
     @Override
     public Integer parse(Object source) {
+        if (source == null) return null;
         return ((Double) source).intValue();
     }
 

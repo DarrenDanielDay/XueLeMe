@@ -16,6 +16,7 @@ public class ListParser<TItem> implements JSONParser<List<TItem>> {
 
     @Override
     public List<TItem> parse(Object source) {
+        if (source == null) return null;
         List<TItem> itemList = new ArrayList<>();
         List<Object> targetList = (List<Object>) source;
         JSONParser<?> parser = ReflectiveJSONModel.parserOf(this.itemClass);

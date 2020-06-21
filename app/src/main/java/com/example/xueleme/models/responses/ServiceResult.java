@@ -7,7 +7,7 @@ import com.example.xueleme.models.ReflectiveJSONModel;
 import java.util.List;
 import java.util.Map;
 
-public class ServiceResult<TExtraData> extends ReflectiveJSONModel<ServiceResult<TExtraData>> {
+public class ServiceResult<TExtraData extends Object> extends ReflectiveJSONModel<ServiceResult<TExtraData>> {
     public String detail;
     public Integer state;
     public TExtraData extraData;
@@ -36,4 +36,17 @@ public class ServiceResult<TExtraData> extends ReflectiveJSONModel<ServiceResult
         this.extraData = parser.parse(value);
         return  serviceResult;
     }
+
+    public static <TItem> ServiceResult<List<TItem>> listParser(Class<TItem> itemClass) {
+        return new ServiceResult<List<TItem>>((Class<List<TItem>>) (Object)List.class, itemClass);
+    }
+
+    public static <TExtraData> ServiceResult<TExtraData> ofGeneric(Class<TExtraData> extraDataClass) {
+        return new ServiceResult<>(extraDataClass);
+    }
+
+    public static ServiceResult<Object> noExtra() {
+        return new ServiceResult<>(Object.class);
+    }
 }
+
