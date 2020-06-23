@@ -29,6 +29,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         Button btn_login = findViewById(R.id.user_login_loginBtn);
         Button btn_goto_register = findViewById(R.id.user_login_register);
+        Button btn_goto_forget = findViewById(R.id.user_login_find_password);
         login_account = findViewById(R.id.user_login_account);
         login_password = findViewById(R.id.user_login_password);
 
@@ -61,12 +62,13 @@ public class LoginActivity extends AppCompatActivity {
                 }));
             }
         });
-        btn_goto_register.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View V) {
-                Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
-                startActivity(intent);
-            }
+        btn_goto_register.setOnClickListener(V -> {
+            Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+            startActivity(intent);
+        });
+        btn_goto_forget.setOnClickListener(V -> {
+            Intent intent = new Intent(LoginActivity.this, ForgetPasswordActivity.class);
+            startActivity(intent);
         });
     }
 }
