@@ -4,8 +4,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.os.Looper;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,20 +16,15 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.example.xueleme.AddTaskActivity;
-import com.example.xueleme.LoginActivity;
 import com.example.xueleme.MyDatabaseHelper;
 import com.example.xueleme.R;
 import com.example.xueleme.Adapter.TaskAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
-import FunctionPackge.Groupkey;
 import FunctionPackge.Task;
-import interface_packge.RequestHandler;
 
 public class HomeFragment extends Fragment {
 
@@ -44,7 +37,35 @@ public class HomeFragment extends Fragment {
         homeViewModel =
                 ViewModelProviders.of(this).get(HomeViewModel.class);
         View root = inflater.inflate(R.layout.fragment_home, container, false);
-
+        initTask();
+//        final TextView textView = root.findViewById(R.id.text_home);
+//        homeViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
+//            @Override
+//            public void onChanged(@Nullable String s) {
+//                textView.setText(s);
+        FloatingActionButton btn_fab = root.findViewById(R.id.floatingActionButton1);
+        btn_fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), AddTaskActivity.class);
+                startActivity(intent);
+            }
+//            }
+//        });
+        });
+//        String data = new Task(user)
+        TaskAdapter adapter = new TaskAdapter(getActivity(), R.layout.task_item, dataList);
+        ListView listView = root.findViewById(R.id.listView);
+        listView.setAdapter(adapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Task data = dataList.get(i);
+                Toast.makeText(getActivity(), data.startDate + " " + data.startTime + "到" + data.endTime, Toast.LENGTH_LONG).show();
+            }
+        });
+        return root;
+    }
     private void initTask() {
         dbHelper = new MyDatabaseHelper(getActivity(), "Task.db", null, 2);
         SQLiteDatabase db = dbHelper.getWritableDatabase();

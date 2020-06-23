@@ -10,10 +10,16 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.xueleme.business.AccountController;
+import com.example.xueleme.business.ActionResultHandler;
+import com.example.xueleme.business.IAccountController;
+import com.example.xueleme.business.UserAction;
+import com.example.xueleme.models.forms.account.LoginForm;
 import com.example.xueleme.models.locals.User;
 
 import FunctionPackge.Users;
 import interface_packge.LoginHandler;
+
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -35,54 +41,24 @@ public class LoginActivity extends AppCompatActivity {
 
                 final String username = login_account.getText().toString();
                 final String password = login_password.getText().toString();
-                users = new Users(username, password);
 
-                users.setLoginHandler(new LoginHandler() {
+                LoginForm loginForm = new LoginForm();
+                loginForm.mailAddress = username;
+                loginForm.password = password;
+
+                IAccountController accountController = new AccountController();
+                accountController.login(new UserAction<>(loginForm, new ActionResultHandler<String, String>() {
                     @Override
-                    public void passwordCorrect() {
-
+                    public void onSuccess(String s) {
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                         startActivity(intent);
                     }
 
                     @Override
-                    public void connectionFailed() {
-                        Looper.prepare();
-                        Toast.makeText(LoginActivity.this, "连接错误", Toast.LENGTH_LONG).show();
-                        Looper.loop();
+                    public void onError(String s) {
+                        Toast.makeText(LoginActivity.this, s, Toast.LENGTH_LONG).show();
                     }
-
-                    @Override
-                    public void passwordWrong() {
-                        Looper.prepare();
-                        Toast.makeText(LoginActivity.this, "密码错误", Toast.LENGTH_LONG).show();
-                        Looper.loop();
-                    }
-
-                    @Override
-                    public void accountIsnull() {
-                        Looper.prepare();
-                        Toast.makeText(LoginActivity.this, "账户为空", Toast.LENGTH_LONG).show();
-                        Looper.loop();
-                    }
-
-                    @Override
-                    public void passwordIsnull() {
-                        Looper.prepare();
-                        Toast.makeText(LoginActivity.this, "密码为空", Toast.LENGTH_LONG).show();
-                        Looper.loop();
-                    }
-
-                    @Override
-                    public void JSONError() {
-                        Looper.prepare();
-                        Toast.makeText(LoginActivity.this, "JSON错误", Toast.LENGTH_LONG).show();
-                        Looper.loop();
-                    }
-                });
-                users.Login();
-//                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-//                startActivity(intent);
+                }));
             }
         });
         btn_goto_register.setOnClickListener(new View.OnClickListener() {
