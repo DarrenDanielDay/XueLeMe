@@ -3,6 +3,7 @@ package com.example.xueleme;
 import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -12,7 +13,12 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import java.util.Iterator;
+import java.util.Map;
+
+import FunctionPackge.Groupkey;
 import interface_packge.ConnectionHandler;
+import interface_packge.RequestHandler;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -50,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
         }
     });
         LoginActivity.users.IDquery();
+
 }
 
 

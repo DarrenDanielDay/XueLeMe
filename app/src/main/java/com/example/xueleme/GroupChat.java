@@ -99,11 +99,11 @@ public class GroupChat extends Activity {
           public void onClick(View v) {
               ChatMessage chatMessage=new ChatMessage();
               chatMessage.content=mycontent;
-              chatMessage.groupId=2;
+              chatMessage.groupId=ChatroomFragment.g_list.get(position).groupId;
               chatMessage.senderId=LoginActivity.users.getUserid();
               chatMessage.type=0;
-              //messages.add(chatMessage);
-              //content.add(chatMessage.content);
+              messages.add(chatMessage);
+              content.add(chatMessage.content);
               LoginActivity.users.sendMessage(chatMessage);
               message.setText("");
           }
@@ -116,9 +116,9 @@ public class GroupChat extends Activity {
               startActivity(intent);
           }
       });
-       /* ArrayAdapter<String>adapter =new<String>ArrayAdapter(GroupChat.this,R.layout.group_message,content);
+       ArrayAdapter<String>adapter =new<String>ArrayAdapter(GroupChat.this,android.R.layout.simple_list_item_1,content);
         listView.setAdapter(adapter);
-        adapter.notifyDataSetChanged(); */    //显示消息
+        adapter.notifyDataSetChanged();     //显示消息
     }
 
    /* @Override

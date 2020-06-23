@@ -10,6 +10,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.xueleme.models.locals.User;
+
 import FunctionPackge.Users;
 import interface_packge.LoginHandler;
 

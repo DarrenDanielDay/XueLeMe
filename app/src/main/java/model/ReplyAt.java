@@ -1,6 +1,6 @@
 package model;
 
 public class ReplyAt {
-    User user;
-    Reply reply;
+    public User user;
+    public Reply reply;
 }

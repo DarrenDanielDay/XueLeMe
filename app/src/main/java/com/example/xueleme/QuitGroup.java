@@ -53,7 +53,7 @@ public class QuitGroup extends AppCompatActivity {
                    @Override
                    public void postfailed() {
                        Looper.prepare();
-                       Toast.makeText(QuitGroup.this,"退群失败",Toast.LENGTH_LONG).show();
+                       Toast.makeText(QuitGroup.this,"群主无法退群",Toast.LENGTH_LONG).show();
                        Looper.loop();
                    }
 

@@ -1,6 +1,6 @@
 package model;
 
 public class ReplyContent {
-    String picture;
-    String text;
+   public String picture;
+    public String text;
 }
