@@ -10,6 +10,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.xueleme.business.AccountController;
+import com.example.xueleme.business.ActionResultHandler;
+import com.example.xueleme.business.IAccountController;
+import com.example.xueleme.business.UserAction;
+import com.example.xueleme.models.forms.account.RegisterForm;
+
 import FunctionPackge.Users;
 import interface_packge.RegisterHandler;
 
@@ -30,51 +36,27 @@ public class RegisterActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String username = register_account.getText().toString();
                 String password = register_password.getText().toString();
-                Users users = new Users(username, password);
-                users.setRegisterHandler(new RegisterHandler() {
+
+                RegisterForm registerForm = new RegisterForm();
+                registerForm.mailAddress = username;
+                registerForm.password = password;
+
+                IAccountController accountController = new AccountController();
+                accountController.register(new UserAction<>(registerForm, new ActionResultHandler<String, String>() {
                     @Override
-                    public void alreadyRegister() {
+                    public void onSuccess(String s) {
                         Looper.prepare();
-                        Toast.makeText(RegisterActivity.this, "已注册", Toast.LENGTH_LONG).show();
+                        Toast.makeText(RegisterActivity.this, s, Toast.LENGTH_LONG).show();
                         Looper.loop();
                     }
 
                     @Override
-                    public void successRegister() {
+                    public void onError(String s) {
                         Looper.prepare();
-                        Toast.makeText(RegisterActivity.this, "注册成功", Toast.LENGTH_LONG).show();
+                        Toast.makeText(RegisterActivity.this, s, Toast.LENGTH_LONG).show();
                         Looper.loop();
                     }
-
-                    @Override
-                    public void requestFailed() {
-                        Looper.prepare();
-                        Toast.makeText(RegisterActivity.this, "请求错误", Toast.LENGTH_LONG).show();
-                        Looper.loop();
-                    }
-
-                    @Override
-                    public void accountIsnull() {
-                        Looper.prepare();
-                        Toast.makeText(RegisterActivity.this, "账户为空", Toast.LENGTH_LONG).show();
-                        Looper.loop();
-                    }
-
-                    @Override
-                    public void passwordIsnull() {
-                        Looper.prepare();
-                        Toast.makeText(RegisterActivity.this, "密码为空", Toast.LENGTH_LONG).show();
-                        Looper.loop();
-                    }
-
-                    @Override
-                    public void JSONError() {
-                        Looper.prepare();
-                        Toast.makeText(RegisterActivity.this, "JSON错误", Toast.LENGTH_LONG).show();
-                        Looper.loop();
-                    }
-                });
-                users.Register();
+                }));
             }
         });
         btn_goto_login.setOnClickListener(new View.OnClickListener() {

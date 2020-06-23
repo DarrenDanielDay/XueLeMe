@@ -1,7 +1,5 @@
 package com.example.xueleme;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Looper;
@@ -10,15 +8,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.xueleme.business.AccountController;
 import com.example.xueleme.business.ActionResultHandler;
 import com.example.xueleme.business.IAccountController;
 import com.example.xueleme.business.UserAction;
 import com.example.xueleme.models.forms.account.LoginForm;
-import com.example.xueleme.models.locals.User;
 
 import FunctionPackge.Users;
-import interface_packge.LoginHandler;
 
 
 public class LoginActivity extends AppCompatActivity {
@@ -29,7 +27,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        Button btn_login= findViewById(R.id.user_login_loginBtn);
+        Button btn_login = findViewById(R.id.user_login_loginBtn);
         Button btn_goto_register = findViewById(R.id.user_login_register);
         login_account = findViewById(R.id.user_login_account);
         login_password = findViewById(R.id.user_login_password);
@@ -56,7 +54,9 @@ public class LoginActivity extends AppCompatActivity {
 
                     @Override
                     public void onError(String s) {
+                        Looper.prepare();
                         Toast.makeText(LoginActivity.this, s, Toast.LENGTH_LONG).show();
+                        Looper.loop();
                     }
                 }));
             }
