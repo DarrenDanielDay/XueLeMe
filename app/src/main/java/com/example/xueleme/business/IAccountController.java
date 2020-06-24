@@ -16,5 +16,10 @@ public interface IAccountController {
     void changeNickname(UserAction<ChangeNicknameForm, String, String> action);
     void changeAvatar(UserAction<ChangeAvatarForm, String, String> action);
     void queryUserDetailFromId(UserAction<Integer, UserDetail, String> action);
+
+    /**
+     * 获取当前用户
+     * @return  当前用户，如果为null则为未登录
+     */
     User getCurrentUser();
 }

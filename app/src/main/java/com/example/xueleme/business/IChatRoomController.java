@@ -16,8 +16,8 @@ public interface IChatRoomController {
     void disconnect();
 
     /**
-     * 添加接收消息的“订阅者”，收到消息后onReceive回调会被调用
-     * @param subscriber 订阅者回调
+     * 添加接收消息的Subscriber（订阅者），收到消息后其Consumer回调会被调用
+     * @param subscriber 订阅者
      */
     void subscribe(Subscriber<ChatMessage> subscriber);
 

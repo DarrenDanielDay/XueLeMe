@@ -70,6 +70,7 @@ public class HttpRequester {
 
     void get(String path, JSONParser<TResult> parser, ActionResultHandler<TResult, String> handler) {
         String fullUrl = url(path);
+        Log.d("HttpRequester", "get " + fullUrl);
         Request request = new Request.Builder().url(fullUrl).get().build();
         Call call = client.newCall(request);
         call.enqueue(new Callback() {
@@ -87,8 +88,10 @@ public class HttpRequester {
 
     public  <TData extends ReflectiveJSONModel<TData>, TResult extends ReflectiveJSONModel<TResult>>
     void post(String path, TData data, JSONParser<TResult> parser, ActionResultHandler<TResult, String> handler) {
-        RequestBody body = RequestBody.create(String.valueOf(data.serialize()), mediaType);
+        String bodyString = String.valueOf(data.serialize());
+        RequestBody body = RequestBody.create(bodyString, mediaType);
         String fullUrl = url(path);
+        Log.d("HttpRequester", "post " + fullUrl + " form = " + bodyString);
         Request request = new Request.Builder().url(fullUrl).post(body).build();
         Call call = client.newCall(request);
         call.enqueue(new Callback() {

@@ -102,6 +102,7 @@ public class ChatGroupController extends RequestController implements IChatGroup
                         }
                     }));
                 }
+                while (chatGroups.size() != briefGroups.size());
                 return chatGroups;
             }
         });
@@ -126,6 +127,7 @@ public class ChatGroupController extends RequestController implements IChatGroup
                         }
                     }));
                 }
+                while (chatGroups.size() != briefGroups.size());
                 return chatGroups;
             }
         });
