@@ -11,6 +11,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.xueleme.business.ActionResultHandler;
+import com.example.xueleme.business.ChatGroupController;
+import com.example.xueleme.business.IChatGroupController;
+import com.example.xueleme.business.UserAction;
+import com.example.xueleme.models.forms.chatgroup.ChangeGroupNameForm;
+import com.example.xueleme.models.forms.chatgroup.QuitGroupForm;
+
 import java.util.Iterator;
 import java.util.Map;
 
@@ -33,70 +40,46 @@ public class QuitGroup extends AppCompatActivity {
         btn_quit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               LoginActivity.users.QuitGroup(g_id, new PostmethodHandler() {
-                   @Override
-                   public void postsuccess() {
-                       Looper.prepare();
-                       Toast.makeText(QuitGroup.this,"退群成功",Toast.LENGTH_LONG).show();
-                       Map map=LoginActivity.users.getChatGroupMap();
-                       Iterator<Map.Entry<Groupkey,Integer>> iter = map.entrySet().iterator();
+                QuitGroupForm quitGroupForm =new QuitGroupForm();
+                quitGroupForm.groupId = g_id;
+                quitGroupForm.userId =LoginActivity.users.id;
+                IChatGroupController chatGroupController =new ChatGroupController();
+                chatGroupController.quitGroup(new UserAction<>(quitGroupForm, new ActionResultHandler<String, String>() {
+                    @Override
+                    public void onSuccess(String s) {
+                        Looper.prepare();
+                        Toast.makeText(QuitGroup.this, s, Toast.LENGTH_LONG).show();
+                        Looper.loop();
+                    }
 
-                       while(((Iterator) iter).hasNext()){
-                           Map.Entry<Groupkey,Integer> entry = iter.next();
-                           Groupkey key = entry.getKey();
-                           Integer value = entry.getValue();
-                           Log.d("sfsfsfsf","所有的群："+key.groupName+"$$$$$$"+key.groupId+"&&&&&&"+value);
-                       }
-                       Looper.loop();
-                   }
-
-                   @Override
-                   public void postfailed() {
-                       Looper.prepare();
-                       Toast.makeText(QuitGroup.this,"群主无法退群",Toast.LENGTH_LONG).show();
-                       Looper.loop();
-                   }
-
-                   @Override
-                   public void JSONERROR() {
-                       Toast.makeText(QuitGroup.this,"退群失败",Toast.LENGTH_LONG).show();
-                   }
-
-                   @Override
-                   public void ISNULL() {
-
-                   }
-               });
+                    @Override
+                    public void onError(String s) {
+                        Looper.prepare();
+                        Toast.makeText(QuitGroup.this, s, Toast.LENGTH_LONG).show();
+                        Looper.loop();
+                    }
+                }));
             }
+
+
         });
         btn_ctlname.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            LoginActivity.users.ChangeGroupName(g_id,newname, new PostmethodHandler() {
-                @Override
-                public void postsuccess() {
-                    Looper.prepare();
-                    Toast.makeText(QuitGroup.this,"修改成功",Toast.LENGTH_LONG).show();
-                    Looper.loop();
-                }
+                ChangeGroupNameForm changeGroupNameForm = new ChangeGroupNameForm();
+                changeGroupNameForm.groupId = g_id;
+                IChatGroupController chatGroupController =new ChatGroupController();
+                chatGroupController.changeGroupName(new UserAction<>(changeGroupNameForm, new ActionResultHandler<String, String>() {
+                    @Override
+                    public void onSuccess(String s) {
 
-                @Override
-                public void postfailed() {
-                    Looper.prepare();
-                    Toast.makeText(QuitGroup.this,"请求失败",Toast.LENGTH_LONG).show();
-                    Looper.loop();
-                }
+                    }
 
-                @Override
-                public void JSONERROR() {
-                    Toast.makeText(QuitGroup.this,"请求失败",Toast.LENGTH_LONG).show();
-                }
+                    @Override
+                    public void onError(String s) {
 
-                @Override
-                public void ISNULL() {
-                    Toast.makeText(QuitGroup.this,"群聊名不可为空",Toast.LENGTH_LONG).show();
-                }
-            });
+                    }
+                }));
             }
         });
     }

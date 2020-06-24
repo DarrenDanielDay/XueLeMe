@@ -20,9 +20,7 @@ public class ChatroomViewModel extends ViewModel {
     public  List<Groupkey> g_list = new ArrayList<>();
     Groupkey groupkey =new Groupkey("测试群",0);
     public ChatroomViewModel() {
-        g_list.add(0,groupkey);
-        Set<Groupkey> keySet = LoginActivity.users.chatGroupMap.keySet();
-        g_list.addAll(keySet);
+
 
 
     }

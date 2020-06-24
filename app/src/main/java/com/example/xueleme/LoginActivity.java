@@ -15,6 +15,7 @@ import com.example.xueleme.business.ActionResultHandler;
 import com.example.xueleme.business.IAccountController;
 import com.example.xueleme.business.UserAction;
 import com.example.xueleme.models.forms.account.LoginForm;
+import com.example.xueleme.models.locals.User;
 
 import FunctionPackge.Users;
 
@@ -22,7 +23,7 @@ import FunctionPackge.Users;
 public class LoginActivity extends AppCompatActivity {
 
     private EditText login_account, login_password;
-    public static Users users;
+    public static User users;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,6 +50,7 @@ public class LoginActivity extends AppCompatActivity {
                 accountController.login(new UserAction<>(loginForm, new ActionResultHandler<String, String>() {
                     @Override
                     public void onSuccess(String s) {
+                        users=accountController.getCurrentUser();
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                         startActivity(intent);
                     }

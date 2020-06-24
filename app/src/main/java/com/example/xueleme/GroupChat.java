@@ -51,68 +51,15 @@ public class GroupChat extends Activity {
         String i = intent1.getStringExtra("position");
         final int position =Integer.parseInt(i);
         final String mycontent= message.getText().toString();
-        textView.setText(ChatroomFragment.g_list.get(position).groupName);
+        textView.setText(ChatroomFragment.my_list.get(position).groupName);
 
 
-        LoginActivity.users.setHandler(new ChatHubHandler() {
-            @Override
-            public void onReceiveMessage(ChatMessage message) {
-                Log.d("接受到的消息：", "来自用户:" + message.senderId + "群聊：" + message.groupId + "内容" + message.content + "日期时间：" + message.createdTime);
-             //  messages.add(message);
-            }
 
-            @Override
-            public void onNoConnection() {
-               Toast.makeText(GroupChat.this, "无网络连接", Toast.LENGTH_LONG).show();
-            }
-
-            @Override
-            public void onConnectionFailed(Throwable e) {
-                Toast.makeText(GroupChat.this, "失去连接", Toast.LENGTH_LONG).show();
-            }
-
-            @Override
-            public void onConnected() {
-                Toast.makeText(GroupChat.this, "连接成功", Toast.LENGTH_LONG).show();
-            }
-
-            @Override
-            public void onSendResult(String resultMessage) {
-                Log.d("发送结果：", resultMessage);
-            }
-
-            @Override
-            public void onJoinRoomResult(String resultMessage) {
-                Log.d("加入服务器结果：", resultMessage);
-            }
-
-            @Override
-            public void onDisconnected() {
-                Looper.prepare();
-                Toast.makeText(GroupChat.this, "已断开连接", Toast.LENGTH_LONG).show();
-                Looper.loop();
-            }
-        });
-        LoginActivity.users.connect();
-      button.setOnClickListener(new View.OnClickListener() {
-          @Override
-          public void onClick(View v) {
-              ChatMessage chatMessage=new ChatMessage();
-              chatMessage.content=mycontent;
-              chatMessage.groupId=ChatroomFragment.g_list.get(position).groupId;
-              chatMessage.senderId=LoginActivity.users.getUserid();
-              chatMessage.type=0;
-              messages.add(chatMessage);
-              content.add(chatMessage.content);
-              LoginActivity.users.sendMessage(chatMessage);
-              message.setText("");
-          }
-      });
       imageButton.setOnClickListener(new View.OnClickListener() {
           @Override
           public void onClick(View v) {
               Intent intent =new Intent(GroupChat.this,QuitGroup.class);
-              intent.putExtra("id",ChatroomFragment.g_list.get(position).groupId+"");
+              intent.putExtra("id",ChatroomFragment.my_list.get(position).id+"");
               startActivity(intent);
           }
       });
@@ -121,11 +68,6 @@ public class GroupChat extends Activity {
         adapter.notifyDataSetChanged();     //显示消息
     }
 
-   /* @Override
-    protected void onDestroy() {
 
-        super.onDestroy();
-        LoginActivity.users.disconnect();
-    } */
 
 }
