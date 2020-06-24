@@ -19,6 +19,7 @@ import com.example.xueleme.models.forms.account.ForgetPasswordForm;
 public class ForgetPasswordActivity extends AppCompatActivity {
 
     private EditText forget_account;
+    IAccountController accountController = new AccountController(this);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,7 +33,6 @@ public class ForgetPasswordActivity extends AppCompatActivity {
                 String account = forget_account.getText().toString();
                 ForgetPasswordForm forgetPasswordForm = new ForgetPasswordForm();
                 forgetPasswordForm.mailAddress = account;
-                IAccountController accountController = new AccountController();
                 accountController.forgetPassword(new UserAction<>(forgetPasswordForm, new ActionResultHandler<String, String>() {
                     @Override
                     public void onSuccess(String s) {

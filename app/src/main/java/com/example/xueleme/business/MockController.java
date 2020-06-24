@@ -27,6 +27,11 @@ public class MockController implements IAccountController {
     }
 
     @Override
+    public void logout(UserAction<Integer, String, String> action) {
+        action.resultHandler.onSuccess("退出登录成功");
+    }
+
+    @Override
     public void forgetPassword(UserAction<ForgetPasswordForm, String, String> action) {
         action.resultHandler.onSuccess("重置密码成功");
     }

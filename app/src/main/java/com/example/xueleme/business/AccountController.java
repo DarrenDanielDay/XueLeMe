@@ -1,7 +1,12 @@
 package com.example.xueleme.business;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.example.xueleme.R;
 import com.example.xueleme.models.ResponseModelAdapter;
 import com.example.xueleme.models.forms.account.ChangeAvatarForm;
 import com.example.xueleme.models.forms.account.ChangeNicknameForm;
@@ -16,6 +21,12 @@ import com.example.xueleme.utils.HttpRequester;
 
 public class AccountController extends RequestController implements IAccountController {
     private User currentUser = null;
+    private final Activity activity;
+    public static final String SHARED_PREFERENCE_FILE = "shared_preferences";
+    public static final String USER_ID_KEY = "userId";
+    public AccountController(Activity activity) {
+        this.activity = activity;
+    }
 
     @Override
     public void register(UserAction<RegisterForm, String, String> action) {
@@ -41,6 +52,8 @@ public class AccountController extends RequestController implements IAccountCont
                                     @Override
                                     public void onSuccess(UserDetail userDetail) {
                                         currentUser = User.fromDetail(userDetail);
+                                        SharedPreferences sharedPreferences = activity.getSharedPreferences(SHARED_PREFERENCE_FILE, Context.MODE_PRIVATE);
+                                        sharedPreferences.edit().putInt(USER_ID_KEY, currentUser.id).apply();
                                         action.resultHandler.onSuccess(objectServiceResult.detail);
                                     }
 
@@ -64,6 +77,14 @@ public class AccountController extends RequestController implements IAccountCont
                 action.resultHandler.onError(s);
             }
         });
+    }
+
+    @Override
+    public void logout(UserAction<Integer, String, String> action) {
+        currentUser = null;
+        SharedPreferences sharedPreferences = activity.getSharedPreferences(SHARED_PREFERENCE_FILE, Context.MODE_PRIVATE);
+        sharedPreferences.edit().putInt(USER_ID_KEY, -1).apply();
+        action.resultHandler.onSuccess("退出登录成功");
     }
 
     @Override
@@ -93,6 +114,33 @@ public class AccountController extends RequestController implements IAccountCont
 
     @Override
     public User getCurrentUser() {
+        if (currentUser != null) {
+            return currentUser;
+        }
+        SharedPreferences sharedPreferences = activity.getSharedPreferences(SHARED_PREFERENCE_FILE, Context.MODE_PRIVATE);
+        int userId = sharedPreferences.getInt(USER_ID_KEY, -1);
+        if (userId != -1) {
+            currentUser = new User();
+            currentUser.id = userId;
+            queryUserDetailFromId(new UserAction<>(userId, new ActionResultHandler<UserDetail, String>() {
+                @Override
+                public void onSuccess(UserDetail userDetail) {
+                    currentUser.nickname = userDetail.nickname;
+                    currentUser.avatar = userDetail.avatar;
+                    Log.d("getCurrentUser", "已登录");
+                    Toast.makeText(activity, "已登录", Toast.LENGTH_LONG).show();
+                }
+
+                @Override
+                public void onError(String s) {
+                    currentUser = null;
+                    Log.e("getCurrentUser", s);
+                }
+            }));
+        } else {
+            Log.d("getCurrentUser", "未登录");
+            Toast.makeText(activity, "未登录", Toast.LENGTH_LONG).show();
+        }
         return currentUser;
     }
 }

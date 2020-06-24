@@ -4,4 +4,5 @@ import com.example.xueleme.models.ReflectiveJSONModel;
 
 public class ChangeGroupNameForm extends ReflectiveJSONModel<ChangeGroupNameForm> {
     public Integer groupId;
+    public String newName;
 }
