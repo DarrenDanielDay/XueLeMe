@@ -21,6 +21,7 @@ import interface_packge.RegisterHandler;
 
 public class RegisterActivity extends AppCompatActivity {
 
+    private IAccountController accountController = new AccountController(this);
     private EditText register_account, register_password;
 
     @Override
@@ -41,7 +42,6 @@ public class RegisterActivity extends AppCompatActivity {
                 registerForm.mailAddress = username;
                 registerForm.password = password;
 
-                IAccountController accountController = new AccountController();
                 accountController.register(new UserAction<>(registerForm, new ActionResultHandler<String, String>() {
                     @Override
                     public void onSuccess(String s) {

@@ -22,6 +22,7 @@ import FunctionPackge.Users;
 public class LoginActivity extends AppCompatActivity {
 
     private EditText login_account, login_password;
+    private IAccountController accountController = new AccountController(this);
     public static Users users;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +46,6 @@ public class LoginActivity extends AppCompatActivity {
                 loginForm.mailAddress = username;
                 loginForm.password = password;
 
-                IAccountController accountController = new AccountController();
                 accountController.login(new UserAction<>(loginForm, new ActionResultHandler<String, String>() {
                     @Override
                     public void onSuccess(String s) {

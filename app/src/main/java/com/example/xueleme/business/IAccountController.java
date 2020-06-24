@@ -12,6 +12,7 @@ import com.example.xueleme.models.responses.UserDetail;
 public interface IAccountController {
     void register(UserAction<RegisterForm, String, String> action);
     void login(UserAction<LoginForm, String, String> action);
+    void logout(UserAction<Integer, String, String> action);
     void forgetPassword(UserAction<ForgetPasswordForm, String, String> action);
     void changeNickname(UserAction<ChangeNicknameForm, String, String> action);
     void changeAvatar(UserAction<ChangeAvatarForm, String, String> action);
