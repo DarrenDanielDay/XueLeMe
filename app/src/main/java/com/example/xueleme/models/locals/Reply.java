@@ -7,12 +7,14 @@ public class Reply {
     public Integer topicId;
     public AnonymousUser replier;
     public TextAndImageContent content;
+    public Integer referenceId;
     public static Reply fromDetail(ReplyDetail detail) {
         Reply reply = new Reply();
         reply.content = TextAndImageContent.fromDetail(detail.contentDetail);
         reply.id = detail.id;
         reply.replier = AnonymousUser.fromDetail(detail.user);
         reply.topicId = detail.topicId;
+        reply.referenceId = detail.referenceId;
         return reply;
     }
 }

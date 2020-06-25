@@ -13,11 +13,14 @@ import com.example.xueleme.models.forms.account.ChangeNicknameForm;
 import com.example.xueleme.models.forms.account.ForgetPasswordForm;
 import com.example.xueleme.models.forms.account.LoginForm;
 import com.example.xueleme.models.forms.account.RegisterForm;
+import com.example.xueleme.models.locals.Notification;
 import com.example.xueleme.models.locals.User;
 import com.example.xueleme.models.responses.ServiceResult;
 import com.example.xueleme.models.responses.ServiceResultEnum;
 import com.example.xueleme.models.responses.UserDetail;
 import com.example.xueleme.utils.HttpRequester;
+
+import io.reactivex.functions.Action;
 
 public class AccountController extends RequestController implements IAccountController {
     private User currentUser = null;
@@ -54,6 +57,9 @@ public class AccountController extends RequestController implements IAccountCont
                                         currentUser = User.fromDetail(userDetail);
                                         SharedPreferences sharedPreferences = activity.getSharedPreferences(SHARED_PREFERENCE_FILE, Context.MODE_PRIVATE);
                                         sharedPreferences.edit().putInt(USER_ID_KEY, currentUser.id).apply();
+                                        NotificationHub.getInstance().connect();
+                                        while (!NotificationHub.getInstance().isConnected());
+                                        NotificationHub.getInstance().joinAsUser(userDetail.id);
                                         action.resultHandler.onSuccess(objectServiceResult.detail);
                                     }
 
@@ -84,6 +90,7 @@ public class AccountController extends RequestController implements IAccountCont
         currentUser = null;
         SharedPreferences sharedPreferences = activity.getSharedPreferences(SHARED_PREFERENCE_FILE, Context.MODE_PRIVATE);
         sharedPreferences.edit().putInt(USER_ID_KEY, -1).apply();
+        NotificationHub.getInstance().disconnect();
         action.resultHandler.onSuccess("退出登录成功");
     }
 

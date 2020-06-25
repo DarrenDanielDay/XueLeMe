@@ -33,12 +33,24 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 public class HttpRequester {
+    /*
+    // developing host
+    public static final String HOST = "http://192.168.1.101";
+    public static final String PORT = ":5000";
+    //*/
+
+    //*
+    // production host
     public static final String HOST = "http://129.204.245.98";
+    public static final String PORT = ":80";
+    //*/
+
     public static final String BASE_PATH = "/";
     public static String url(String path) {
-        return HOST + BASE_PATH + path;
+        return HOST + PORT + BASE_PATH + path;
     }
     private HttpRequester() {}
     private static HttpRequester httpRequester = null;
@@ -115,6 +127,28 @@ public class HttpRequester {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 handleResponse(fullUrl, response, parser, handler);
+            }
+        });
+    }
+
+    public void delete(String path, String body, ActionResultHandler<ServiceResult<Object>, String> handler) {
+        String fullUrl = url(path);
+        Request request = null;
+        if (body != null) {
+            request = new Request.Builder().url(fullUrl).delete(RequestBody.create(body, mediaType)).build();
+        } else {
+            request = new Request.Builder().url(fullUrl).delete().build();
+        }
+        Call call = client.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                handleError(fullUrl, e, handler);
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                handleResponse(fullUrl, response, ServiceResult.noExtra(), handler);
             }
         });
     }

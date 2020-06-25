@@ -7,4 +7,5 @@ public class ReplyDetail extends ReflectiveJSONModel<ReplyDetail> {
     public Integer topicId;
     public AnonymousDetail user;
     public TextAndImageContentDetail contentDetail;
+    public Integer referenceId;
 }
