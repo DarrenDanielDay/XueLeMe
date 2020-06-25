@@ -1,5 +1,6 @@
 package com.example.xueleme.ui.forum;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +17,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.example.xueleme.Lists;
 import com.example.xueleme.R;
 
 public class ForumFragment extends Fragment {
@@ -35,8 +37,8 @@ public class ForumFragment extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                String onr_data = data[i];
-                Toast.makeText(getActivity(), onr_data, Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(getActivity(), Lists.class);
+                startActivity(intent);
             }
         });
         return root;
