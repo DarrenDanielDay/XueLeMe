@@ -22,4 +22,10 @@
         android:name="com.example.xueleme.ui.forum.ForumFragment"
         android:label="@string/title_forum"
         tools:layout="@layout/fragment_forum" />
+    <fragment
+        android:id="@+id/navigation_account"
+        android:label="个人信息"
+        tools:layout="@layout/fragment_account"
+        android:name="com.example.xueleme.ui.AccountMessageFragment"
+        />
 </navigation>
