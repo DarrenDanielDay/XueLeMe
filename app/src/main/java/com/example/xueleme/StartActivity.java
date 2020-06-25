@@ -15,12 +15,13 @@ public class StartActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
         // token验证
-        if (accountController.getCurrentUser() == null) {
-            Intent intent = new Intent(StartActivity.this, LoginActivity.class);
-            startActivity(intent);
-        } else {
-            startActivity(new Intent(this, MainActivity.class));
-        }
-
+//        if (accountController.getCurrentUser() == null) {
+//            Intent intent = new Intent(StartActivity.this, LoginActivity.class);
+//            startActivity(intent);
+//        } else {
+//            startActivity(new Intent(this, MainActivity.class));
+//        }
+        Intent intent = new Intent(StartActivity.this, LoginActivity.class);
+        startActivity(intent);
     }
 }

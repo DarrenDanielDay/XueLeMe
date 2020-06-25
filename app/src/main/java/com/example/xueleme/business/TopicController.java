@@ -5,11 +5,13 @@ import com.example.xueleme.models.forms.topic.CreateTopicForm;
 import com.example.xueleme.models.forms.topic.MakeReplyForm;
 import com.example.xueleme.models.locals.Reply;
 import com.example.xueleme.models.locals.Topic;
+import com.example.xueleme.models.locals.Zone;
 import com.example.xueleme.models.responses.CreatedDetail;
 import com.example.xueleme.models.responses.ReplyDetail;
 import com.example.xueleme.models.responses.ServiceResult;
 import com.example.xueleme.models.responses.ServiceResultEnum;
 import com.example.xueleme.models.responses.TopicDetail;
+import com.example.xueleme.models.responses.ZoneDetail;
 import com.example.xueleme.utils.HttpRequester;
 
 import java.util.ArrayList;
@@ -71,15 +73,38 @@ public class TopicController extends RequestController implements ITopicControll
                 action.resultHandler.onError(s);
             }
         });
-        /*
-        handleGetAction(action, "api/Topic/TopicDetail/" + action.data, ServiceResultEnum.EXIST, ServiceResult.ofGeneric(TopicDetail.class), new ResponseModelAdapter<TopicDetail, Topic>() {
-            @Override
-            public Topic convert(TopicDetail topicDetail) {
+    }
 
-                HttpRequester.getInstance();
-                return Topic.fromDetail(topicDetail);
+    @Override
+    public void getAllZones(ActionResultHandler<List<Zone>, String> handler) {
+        HttpRequester.getInstance().get("api/Topic/AllZones", ServiceResult.listParser(ZoneDetail.class), new ActionResultHandler<ServiceResult<List<ZoneDetail>>, String>() {
+            @Override
+            public void onSuccess(ServiceResult<List<ZoneDetail>> listServiceResult) {
+                List<Zone> zones = new ArrayList<>();
+                for (ZoneDetail zoneDetail: listServiceResult.extraData) {
+                    zones.add(Zone.fromDetail(zoneDetail));
+                }
+                handler.onSuccess(zones);
+            }
+
+            @Override
+            public void onError(String s) {
+                handler.onError(s);
             }
         });
-        //*/
+    }
+
+    @Override
+    public void getAllTopicsOfZone(UserAction<Zone, List<Topic>, String> action) {
+        handleGetAction(action, "api/Topic/AllTopics/" + action.data.id, ServiceResultEnum.EXIST, ServiceResult.listParser(TopicDetail.class), new ResponseModelAdapter<List<TopicDetail>, List<Topic>>() {
+            @Override
+            public List<Topic> convert(List<TopicDetail> topicDetails) {
+                List<Topic> topics = new ArrayList<>();
+                for(TopicDetail detail: topicDetails) {
+                    topics.add(Topic.fromDetail(detail));
+                }
+                return topics;
+            }
+        });
     }
 }
