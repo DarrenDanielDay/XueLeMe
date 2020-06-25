@@ -27,7 +27,7 @@ public class AccountMessageFragment extends Fragment {
         View root=inflater.inflate(R.layout.fragment_account,container,false);
                 listView=root.findViewById(R.id.line1);
                 final int[]heads=new int[]{R.drawable.ic_baseline_person_pin_24,R.drawable.ic_baseline_create_24,R.drawable.ic_baseline_comment_24,R.drawable.ic_baseline_cancel_24};
-                final String[] strings={"头像","修改昵称","评论","退出登录"};
+                final String[] strings={"头像","修改昵称","回复","退出登录"};
                 List list= new ArrayList();
                 for(int i=0;i<strings.length;i++)
                 {
