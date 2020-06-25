@@ -68,6 +68,7 @@ public class QuitGroup extends AppCompatActivity {
             public void onClick(View v) {
                 ChangeGroupNameForm changeGroupNameForm = new ChangeGroupNameForm();
                 changeGroupNameForm.groupId = g_id;
+                changeGroupNameForm.newName =newname;
                 IChatGroupController chatGroupController =new ChatGroupController();
                 chatGroupController.changeGroupName(new UserAction<>(changeGroupNameForm, new ActionResultHandler<String, String>() {
                     @Override

@@ -47,10 +47,8 @@ public class InvitationAdapter extends BaseAdapter {
         View view =inflater.inflate(R.layout.reply_item,null);
         ReplyAt mRelyAt = (ReplyAt)getItem(position);
         String uname=new String();
-        TextView quote =(TextView)view.findViewById(R.id.quote);
         TextView user_name =(TextView) view.findViewById(R.id.reply_user);
         TextView reply_content =(TextView) view.findViewById(R.id.reply_content);
-        quote.setText(mRelyAt.reply.quote);
         user_name.setText(uname);
         reply_content.setText(mRelyAt.reply.replyContent.text);
         return null;
