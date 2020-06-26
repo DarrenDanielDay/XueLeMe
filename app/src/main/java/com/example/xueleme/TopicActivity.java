@@ -1,5 +1,6 @@
 package com.example.xueleme;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -7,6 +8,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -25,6 +27,7 @@ import java.util.List;
 public class TopicActivity extends AppCompatActivity {
 //    private String[] data = {"数学", "英语"};
     public static final int UPDATE_TEXT = 1;
+
     private ITopicController topicController = new TopicController();
     private List<Topic> topicList = new ArrayList<>();
     private ListView listView;
@@ -50,11 +53,27 @@ public class TopicActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.add_topic:
+                int data = getIntent().getIntExtra("extra_data", -1);
+                Intent intent = new Intent(TopicActivity.this, AddTopicActivity.class);
+                intent.putExtra("zoneId", data);
+                startActivity(intent);
+                break;
+            default:
+                break;
+        }
+        return true;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_topic);
-        Intent intent = getIntent();
+//        Intent intent = getIntent();
         listView = findViewById(R.id.topic_lv);
+        Intent intent = getIntent();
         int data = intent.getIntExtra("extra_data", -1);
         Zone zone = new Zone();
         System.out.println(data);

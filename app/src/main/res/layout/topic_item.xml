@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal" android:layout_width="match_parent"
+    android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <TextView android:id="@+id/topic_item_tv1"
+    <TextView
+        android:id="@+id/topic_item_tv1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:textAppearance="?attr/textAppearanceListItem" />
+        android:textSize="20dp"
+        android:layout_marginLeft="15dp" />
 
-    <TextView android:id="@+id/topic_item_tv2"
+    <TextView
+        android:id="@+id/topic_item_tv2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/topic_item_tv1"
-        android:layout_alignStart="@+id/topic_item_tv1"
-        android:textAppearance="?attr/textAppearanceListItemSecondary" />
+        android:layout_marginLeft="15dp"/>
 </LinearLayout>
