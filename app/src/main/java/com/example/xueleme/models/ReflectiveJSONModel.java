@@ -63,6 +63,9 @@ public class ReflectiveJSONModel<T> implements JSONParser<T> {
             for (Field field: fields) {
                 String name = field.getName();
                 Object value = field.get(data);
+                if (value == null) {
+                    value = JSONObject.NULL;
+                }
                 jsonObject.put(name, value);
             }
         } catch (Throwable throwable) {
