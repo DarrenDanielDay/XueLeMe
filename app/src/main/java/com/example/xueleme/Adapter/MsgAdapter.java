@@ -1,6 +1,7 @@
 package com.example.xueleme.Adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,10 +29,13 @@ public class MsgAdapter extends BaseAdapter {
     Context context;
     List<ChatMessage> chatMessages =new ArrayList<>();
     LayoutInflater inflater;
+    private IAccountController accountController;
     private int ViewType;
-    public MsgAdapter(Context context,List<ChatMessage>chatMessages){
+    public MsgAdapter(Context context,List<ChatMessage>chatMessages) {
+        super();
         this.context=context;
         this.chatMessages=chatMessages;
+        accountController = new AccountController(this.context);
         inflater =LayoutInflater.from(context);
     }
     @Override
@@ -41,7 +45,7 @@ public class MsgAdapter extends BaseAdapter {
     @Override
     public  int getItemViewType(int position){
 
-        if(chatMessages.get(position).senderId== LoginActivity.users.id){
+        if(chatMessages.get(position).senderId== accountController.getCurrentUser().id){
             return 1;
         }
         else {
@@ -64,6 +68,7 @@ public class MsgAdapter extends BaseAdapter {
         View view;
         ChatMessage msg =getItem(position);
         if(convertView==null){
+            Log.d("converterView", "是空的");
             holder =new ViewHolder();
             convertView =inflater.inflate(R.layout.group_message,null);
             holder.leftLayout=convertView.findViewById(R.id.left_layout);
@@ -77,22 +82,24 @@ public class MsgAdapter extends BaseAdapter {
             convertView.setTag(holder);
         }
         else {
+            Log.d("converterView", "不是空的");
             holder =(ViewHolder)convertView.getTag();
         }
         if(getItemViewType(position)==0){
             holder.leftLayout.setVisibility(View.VISIBLE);
             holder.rightLayout.setVisibility(View.GONE);
             holder.LeftMsg.setText(msg.content);
-            holder.Leftname.setText(msg.senderId); //暂时没有昵称
+            holder.Leftname.setText(Integer.toString(msg.senderId)); //暂时没有昵称
             // 暂时无头像 holder.Leftimg=
         }
         else if(getItemViewType(position)==1){
             holder.rightLayout.setVisibility(View.VISIBLE);
             holder.leftLayout.setVisibility(View.GONE);
             holder.RightMsg.setText(msg.content);
-            holder.Rightname.setText(new Integer(msg.senderId).toString()); //暂时没有昵称
+            holder.Rightname.setText(Integer.toString(msg.senderId)); //暂时没有昵称
             // 暂时无头像 holder.Leftimg=
         }
+        Log.d("MsGAdapter正在渲染内容", msg.content);
         return convertView;
     }
     private static class ViewHolder{

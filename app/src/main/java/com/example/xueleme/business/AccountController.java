@@ -24,10 +24,10 @@ import io.reactivex.functions.Action;
 
 public class AccountController extends RequestController implements IAccountController {
     private User currentUser = null;
-    private final Activity activity;
+    private final Context activity;
     public static final String SHARED_PREFERENCE_FILE = "shared_preferences";
     public static final String USER_ID_KEY = "userId";
-    public AccountController(Activity activity) {
+    public AccountController(Context activity) {
         this.activity = activity;
     }
 
@@ -57,9 +57,7 @@ public class AccountController extends RequestController implements IAccountCont
                                         currentUser = User.fromDetail(userDetail);
                                         SharedPreferences sharedPreferences = activity.getSharedPreferences(SHARED_PREFERENCE_FILE, Context.MODE_PRIVATE);
                                         sharedPreferences.edit().putInt(USER_ID_KEY, currentUser.id).apply();
-                                        NotificationHub.getInstance().connect();
-                                        while (!NotificationHub.getInstance().isConnected());
-                                        NotificationHub.getInstance().joinAsUser(userDetail.id);
+                                        ensureNotificationJoined();
                                         action.resultHandler.onSuccess(objectServiceResult.detail);
                                     }
 
@@ -122,6 +120,7 @@ public class AccountController extends RequestController implements IAccountCont
     @Override
     public User getCurrentUser() {
         if (currentUser != null) {
+            ensureNotificationJoined();
             return currentUser;
         }
         SharedPreferences sharedPreferences = activity.getSharedPreferences(SHARED_PREFERENCE_FILE, Context.MODE_PRIVATE);
@@ -149,5 +148,15 @@ public class AccountController extends RequestController implements IAccountCont
    //         Toast.makeText(activity, "未登录", Toast.LENGTH_LONG).show();
         }
         return currentUser;
+    }
+
+    private void ensureNotificationJoined() {
+        if (!NotificationHub.getInstance().isJoined()) {
+            if (!NotificationHub.getInstance().isConnected()) {
+                NotificationHub.getInstance().connect();
+            }
+            while (!NotificationHub.getInstance().isConnected());
+            NotificationHub.getInstance().joinAsUser(currentUser.id);
+        }
     }
 }

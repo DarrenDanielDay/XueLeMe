@@ -1,5 +1,7 @@
 package com.example.xueleme.business;
 
+import android.util.Log;
+
 import java.util.Collection;
 import java.util.HashSet;
 
@@ -21,7 +23,9 @@ public class Publisher<TMessage> {
     }
 
     protected void publish(TMessage message) {
+        Log.d("发布消息", message.toString());
         for (Subscriber<TMessage> subscriber: subscribers) {
+            Log.d("通知订阅者", subscriber.toString());
             subscriber.onReceive(message);
         }
     }

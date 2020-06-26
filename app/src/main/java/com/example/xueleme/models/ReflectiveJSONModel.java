@@ -22,7 +22,11 @@ public class ReflectiveJSONModel<T> implements JSONParser<T> {
         T model = null;
         Class<?> thisClass = this.getClass();
         try {
-            model = (T) this;
+            try {
+                model = (T) thisClass.newInstance();
+            } catch (Exception e) {
+                model = (T) this;
+            }
             Field[] fields = this.getClass().getFields();
             for (Field field : fields) {
                 String fieldName = field.getName();

@@ -21,7 +21,8 @@ public class ListParser<TItem> implements JSONParser<List<TItem>> {
         List<Object> targetList = (List<Object>) source;
         JSONParser<?> parser = ReflectiveJSONModel.parserOf(this.itemClass);
         for (Object item: targetList) {
-            itemList.add((TItem) parser.parse(item));
+            TItem tItem = (TItem) parser.parse(item);
+            itemList.add(tItem);
         }
         return itemList;
     }

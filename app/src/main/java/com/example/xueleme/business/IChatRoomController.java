@@ -13,7 +13,7 @@ public interface IChatRoomController {
 
     /**
      * 向服务器的聊天室发送一条实时消息
-     * @param message 消息，包含了发送者、发送到的群聊、内容等信息
+     * @param action 发送消息的动作，包含了发送者、发送到的群聊、内容等信息
      */
     void send(UserAction<SendMessageForm, String, String> action);
 }

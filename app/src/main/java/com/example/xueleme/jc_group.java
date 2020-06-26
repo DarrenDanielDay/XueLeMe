@@ -10,8 +10,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.xueleme.business.AccountController;
 import com.example.xueleme.business.ActionResultHandler;
 import com.example.xueleme.business.ChatGroupController;
+import com.example.xueleme.business.IAccountController;
 import com.example.xueleme.business.IChatGroupController;
 import com.example.xueleme.business.UserAction;
 import com.example.xueleme.models.forms.chatgroup.CreateGroupForm;
@@ -28,6 +30,7 @@ import interface_packge.JoinGroup;
 public class jc_group extends AppCompatActivity {
     Button bt_c,bt_j;
     private EditText c_group_name,j_group_id;
+    private IAccountController accountController = new AccountController(this);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,10 +47,10 @@ public class jc_group extends AppCompatActivity {
                 Integer join_id =Integer.parseInt(j_group_id.getText().toString());
                 CreateGroupForm createGroupForm =new CreateGroupForm();
                 createGroupForm.groupName = creat_name;
-                createGroupForm.userId =LoginActivity.users.id;
+                createGroupForm.userId =accountController.getCurrentUser().id;
                 JoinGroupForm joinGroupForm =new JoinGroupForm();
                 joinGroupForm.groupId=join_id;
-                joinGroupForm.userId=LoginActivity.users.id;
+                joinGroupForm.userId=accountController.getCurrentUser().id;
                 IChatGroupController iChatGroupController =new ChatGroupController();
                 iChatGroupController.createGroup(new UserAction<>(createGroupForm, new ActionResultHandler<ChatGroup, String>() {
                     @Override

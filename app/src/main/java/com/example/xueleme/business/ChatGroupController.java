@@ -115,6 +115,7 @@ public class ChatGroupController extends RequestController implements IChatGroup
             public List<ChatGroup> convert(List<BriefGroup> briefGroups) {
                 List<ChatGroup> chatGroups = new ArrayList<>();
                 for (BriefGroup briefGroup: briefGroups) {
+                    Log.d("brief group:", briefGroup.id.toString());
                     getChatGroupDetail(new UserAction<>(briefGroup.id, new ActionResultHandler<ChatGroup, String>() {
                         @Override
                         public void onSuccess(ChatGroup chatGroup) {

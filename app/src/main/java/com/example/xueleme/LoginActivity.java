@@ -25,7 +25,6 @@ public class LoginActivity extends AppCompatActivity {
     private EditText login_account, login_password;
 
     private IAccountController accountController = new AccountController(this);
-    public static User users;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +48,6 @@ public class LoginActivity extends AppCompatActivity {
             accountController.login(new UserAction<>(loginForm, new ActionResultHandler<String, String>() {
                 @Override
                 public void onSuccess(String s) {
-                    users=accountController.getCurrentUser();
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     startActivity(intent);
                 }

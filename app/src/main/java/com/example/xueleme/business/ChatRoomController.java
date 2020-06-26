@@ -15,6 +15,9 @@ public class ChatRoomController extends RequestController implements IChatRoomCo
 
     @Override
     public void send(UserAction<SendMessageForm, String, String> action) {
+        if(!NotificationHub.getInstance().isConnected()) {
+            NotificationHub.getInstance().connect();
+        }
         handlePostAction(action, "api/ChatGroup/Message/Send", ServiceResultEnum.SUCCESS);
     }
 }

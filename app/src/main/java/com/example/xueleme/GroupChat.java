@@ -87,7 +87,12 @@ public class GroupChat extends Activity {
                         for(ChatGroup chatGroup:chatGroups){
                             g_list.add(chatGroup);
                         }
-                        textView.setText(g_list.get(position).groupName);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                textView.setText(g_list.get(position).groupName);
+                            }
+                        });
                     }
 
                     @Override
@@ -111,6 +116,11 @@ public class GroupChat extends Activity {
                runOnUiThread(new Runnable() {
                    @Override
                    public void run() {
+                       Log.d("message adapter", "更新界面");
+                       Log.d("界面应该有这么多个元素", Integer.toString(messages.size()));
+                       for (ChatMessage message: messages) {
+                            Log.d("消息内容", message.content);
+                       }
                        msgAdapter.notifyDataSetChanged();
                    }
                });

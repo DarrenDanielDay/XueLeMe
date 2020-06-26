@@ -31,8 +31,10 @@ public class NotificationHub {
     private boolean isJoined = false;
     private static NotificationHub hub = null;
     public static NotificationHub getInstance() {
-        if (hub == null) {
-            hub = new NotificationHub();
+        synchronized (Notification.class) {
+            if (hub == null) {
+                hub = new NotificationHub();
+            }
         }
         return hub;
     }
@@ -128,5 +130,9 @@ public class NotificationHub {
 
     public boolean isConnected() {
         return isConnected;
+    }
+
+    public boolean isJoined() {
+            return isJoined;
     }
 }

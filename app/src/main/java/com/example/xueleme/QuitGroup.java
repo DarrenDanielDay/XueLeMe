@@ -11,8 +11,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.xueleme.business.AccountController;
 import com.example.xueleme.business.ActionResultHandler;
 import com.example.xueleme.business.ChatGroupController;
+import com.example.xueleme.business.IAccountController;
 import com.example.xueleme.business.IChatGroupController;
 import com.example.xueleme.business.UserAction;
 import com.example.xueleme.models.forms.chatgroup.ChangeGroupNameForm;
@@ -26,6 +28,7 @@ import interface_packge.PostmethodHandler;
 
 public class QuitGroup extends AppCompatActivity {
     private String newname=new String();
+    private IAccountController accountController = new AccountController(this);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,7 +45,7 @@ public class QuitGroup extends AppCompatActivity {
             public void onClick(View v) {
                 QuitGroupForm quitGroupForm =new QuitGroupForm();
                 quitGroupForm.groupId = g_id;
-                quitGroupForm.userId =LoginActivity.users.id;
+                quitGroupForm.userId =accountController.getCurrentUser().id;
                 IChatGroupController chatGroupController =new ChatGroupController();
                 chatGroupController.quitGroup(new UserAction<>(quitGroupForm, new ActionResultHandler<String, String>() {
                     @Override

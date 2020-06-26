@@ -79,6 +79,9 @@ public class ChatroomFragment extends Fragment {
                        getActivity().runOnUiThread(new Runnable() {
                            @Override
                            public void run() {
+                               for(String string: lists) {
+                                   Log.d("lists item", string);
+                               }
                                adapter.notifyDataSetChanged();
                            }
                        });
