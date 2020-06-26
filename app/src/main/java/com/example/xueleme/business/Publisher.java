@@ -13,6 +13,7 @@ public class Publisher<TMessage> {
     public void attach(Subscriber<TMessage> subscriber) {
         if (!subscribers.contains(subscriber)) {
             subscribers.add(subscriber);
+            subscriber.setPublisher(this);
         }
     }
     public void detach(Subscriber<TMessage> subscriber) {
