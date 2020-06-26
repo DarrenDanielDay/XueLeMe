@@ -58,6 +58,7 @@ public class MockController implements IAccountController {
 
     private User currentUser = new User();
 
+
     @Override
     public User getCurrentUser() {
         return currentUser;
