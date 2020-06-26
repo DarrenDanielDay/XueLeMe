@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -89,14 +90,14 @@ public class MsgAdapter extends BaseAdapter {
             holder.rightLayout.setVisibility(View.VISIBLE);
             holder.leftLayout.setVisibility(View.GONE);
             holder.RightMsg.setText(msg.content);
-            holder.Rightname.setText(msg.senderId); //暂时没有昵称
+            holder.Rightname.setText(new Integer(msg.senderId).toString()); //暂时没有昵称
             // 暂时无头像 holder.Leftimg=
         }
         return convertView;
     }
     private static class ViewHolder{
-        LinearLayout leftLayout;
-        LinearLayout rightLayout;
+        RelativeLayout leftLayout;
+        RelativeLayout rightLayout;
         TextView LeftMsg;
         TextView RightMsg;
         TextView Leftname;

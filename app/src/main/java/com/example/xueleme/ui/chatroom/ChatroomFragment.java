@@ -19,13 +19,16 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.example.xueleme.MainActivity;
+import com.example.xueleme.business.AccountController;
 import com.example.xueleme.business.ActionResultHandler;
 import com.example.xueleme.business.ChatGroupController;
 import com.example.xueleme.LoginActivity;
 import com.example.xueleme.R;
+import com.example.xueleme.business.IAccountController;
 import com.example.xueleme.business.UserAction;
 import com.example.xueleme.jc_group;
 import com.example.xueleme.models.locals.ChatGroup;
+import com.example.xueleme.models.locals.User;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.example.xueleme.business.IChatGroupController;
 
@@ -41,12 +44,14 @@ import interface_packge.RequestHandler;
 
 public class ChatroomFragment extends Fragment {
     private ChatroomViewModel chatroomViewModel;
-    public static List<ChatGroup>my_list =new ArrayList<>();
     private IChatGroupController chatGroupController = new ChatGroupController();
     private ArrayAdapter<String>adapter;
-    final List <String>lists= new ArrayList<>();
+    private List <String>lists= new ArrayList<>();
+    private IAccountController iAccountController;
+    private User user;
     public View onCreateView(@NonNull final LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
+        iAccountController =new AccountController(getActivity());
 
         chatroomViewModel =
                 ViewModelProviders.of(this).get(ChatroomViewModel.class);
@@ -56,14 +61,16 @@ public class ChatroomFragment extends Fragment {
 
         adapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_list_item_1,lists);
         mygroup_list.setAdapter(adapter);
-        chatGroupController.getMyJoinedGroupList(new UserAction<>(LoginActivity.users, new ActionResultHandler<List<ChatGroup>, String>() {
+
+        user =iAccountController.getCurrentUser();
+        chatGroupController.getMyJoinedGroupList(new UserAction<>(user, new ActionResultHandler<List<ChatGroup>, String>() {
             @Override
             public void onSuccess(List<ChatGroup> chatGroups) {
                 lists.clear();
                 for (ChatGroup chatGroup:chatGroups){
                     lists.add(chatGroup.groupName);
                 }
-                chatGroupController.getMyCreatedGroupList(new UserAction<>(LoginActivity.users, new ActionResultHandler<List<ChatGroup>, String>() {
+                chatGroupController.getMyCreatedGroupList(new UserAction<>(user, new ActionResultHandler<List<ChatGroup>, String>() {
                     @Override
                     public void onSuccess(List<ChatGroup> chatGroups) {
                         for(ChatGroup chatGroup:chatGroups){

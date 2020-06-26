@@ -11,30 +11,28 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.xueleme.R;
+import com.example.xueleme.models.locals.Reply;
 
 import java.util.List;
 
 import FunctionPackge.Posting;
-import model.Reply;
-import model.ReplyAt;
 
 public class InvitationAdapter extends BaseAdapter {
-    private List<ReplyAt>replyAtList;
+    private List<Reply>replyList;
     private LayoutInflater inflater;
-    private ReplyAt a;
 
-    public InvitationAdapter(List<ReplyAt>replyAtList,Context context){
-        this.replyAtList=replyAtList;
+    public InvitationAdapter(List<Reply>replyList,Context context){
+        this.replyList=replyList;
         this.inflater=LayoutInflater.from(context);
     }
     @Override
     public int getCount() {
-        return replyAtList ==null?0:replyAtList.size();
+        return replyList ==null?0:replyList.size();
     }
 
     @Override
-    public Object getItem(int position) {
-        return replyAtList.get(position);
+    public Reply getItem(int position) {
+        return replyList.get(position);
     }
 
     @Override
@@ -45,12 +43,13 @@ public class InvitationAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View view =inflater.inflate(R.layout.reply_item,null);
-        ReplyAt mRelyAt = (ReplyAt)getItem(position);
+        Reply mReply = (Reply) getItem(position);
         String uname=new String();
         TextView user_name =(TextView) view.findViewById(R.id.reply_user);
         TextView reply_content =(TextView) view.findViewById(R.id.reply_content);
+        TextView quote =(TextView) view.findViewById(R.id.quote);
         user_name.setText(uname);
-        reply_content.setText(mRelyAt.reply.replyContent.text);
+        reply_content.setText(mReply.content.text);
         return null;
     }
 }
