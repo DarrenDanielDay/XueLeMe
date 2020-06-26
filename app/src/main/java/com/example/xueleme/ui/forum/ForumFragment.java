@@ -11,27 +11,23 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.example.xueleme.Adapter.ZoneAdapter;
-import com.example.xueleme.Lists;
+import com.example.xueleme.TopicActivity;
 import com.example.xueleme.R;
 import com.example.xueleme.business.ActionResultHandler;
 import com.example.xueleme.business.ITopicController;
 import com.example.xueleme.business.TopicController;
+import com.example.xueleme.models.locals.Topic;
 import com.example.xueleme.models.locals.Zone;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
 
 public class ForumFragment extends Fragment {
 
@@ -70,7 +66,7 @@ public class ForumFragment extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Intent intent = new Intent(getActivity(), Lists.class);
+                Intent intent = new Intent(getActivity(), TopicActivity.class);
                 startActivity(intent);
             }
         });
@@ -85,15 +81,17 @@ public class ForumFragment extends Fragment {
 
             @Override
             public void onError(String s) {
-                Looper.prepare();
-                Toast.makeText(getActivity(), s, Toast.LENGTH_LONG).show();
-                Looper.loop();
+
             }
         });
         listView2.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
+                Zone zone = zoneList.get(i);
+                Intent intent = new Intent(getActivity(), TopicActivity.class);
+                intent.putExtra("extra_data", zone.id);
+                System.out.println(zone.id);
+                startActivity(intent);
             }
         });
         return root;

@@ -30,8 +30,11 @@ public class TopicAdapter extends ArrayAdapter<Topic> {
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         Topic topic = getItem(position);
         View view = LayoutInflater.from(getContext()).inflate(resourceId, parent, false);
-        TextView taskName = view.findViewById(R.id.item_name);
-        taskName.setText(topic.title);
+        TextView title = view.findViewById(R.id.topic_item_tv1);
+        TextView author = view.findViewById(R.id.topic_item_tv2);
+
+        title.setText(topic.title);
+        author.setText(topic.publisher.toString());
         return view;
     }
 
