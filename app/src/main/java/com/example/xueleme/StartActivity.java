@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.xueleme.business.AccountController;
 import com.example.xueleme.business.IAccountController;
+import com.example.xueleme.services.NotificationService;
 
 public class StartActivity extends AppCompatActivity {
     private IAccountController accountController = new AccountController(this);
@@ -14,6 +15,7 @@ public class StartActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
+        startService(new Intent(this, NotificationService.class));
         // token验证
         if (accountController.getCurrentUser() == null) {
             Intent intent = new Intent(StartActivity.this, LoginActivity.class);
