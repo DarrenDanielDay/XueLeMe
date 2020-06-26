@@ -36,6 +36,7 @@ public class AccountMessageFragment extends Fragment {
                     map.put("content",strings[i]);
                     list.add(map);
                 }
+
         SimpleAdapter simpleAdapter=new SimpleAdapter(getActivity(),list,R.layout.item_account,new String[]{"icon","content"},new int[]{R.id.imageView,R.id.textView5});
                 listView.setAdapter(simpleAdapter);
                 return root;
