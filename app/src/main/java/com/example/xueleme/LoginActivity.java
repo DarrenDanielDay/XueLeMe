@@ -37,34 +37,30 @@ public class LoginActivity extends AppCompatActivity {
         login_account = findViewById(R.id.user_login_account);
         login_password = findViewById(R.id.user_login_password);
 
-        btn_login.setOnClickListener(new View.OnClickListener() {
+        btn_login.setOnClickListener(v -> {
 
-            @Override
-            public void onClick(View v) {
+            final String username = login_account.getText().toString();
+            final String password = login_password.getText().toString();
 
-                final String username = login_account.getText().toString();
-                final String password = login_password.getText().toString();
+            LoginForm loginForm = new LoginForm();
+            loginForm.mailAddress = username;
+            loginForm.password = password;
 
-                LoginForm loginForm = new LoginForm();
-                loginForm.mailAddress = username;
-                loginForm.password = password;
+            accountController.login(new UserAction<>(loginForm, new ActionResultHandler<String, String>() {
+                @Override
+                public void onSuccess(String s) {
+                    users=accountController.getCurrentUser();
+                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    startActivity(intent);
+                }
 
-                accountController.login(new UserAction<>(loginForm, new ActionResultHandler<String, String>() {
-                    @Override
-                    public void onSuccess(String s) {
-                        users=accountController.getCurrentUser();
-                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                        startActivity(intent);
-                    }
-
-                    @Override
-                    public void onError(String s) {
-                        Looper.prepare();
-                        Toast.makeText(LoginActivity.this, s, Toast.LENGTH_LONG).show();
-                        Looper.loop();
-                    }
-                }));
-            }
+                @Override
+                public void onError(String s) {
+                    Looper.prepare();
+                    Toast.makeText(LoginActivity.this, s, Toast.LENGTH_LONG).show();
+                    Looper.loop();
+                }
+            }));
         });
         btn_goto_register.setOnClickListener(V -> {
             Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
