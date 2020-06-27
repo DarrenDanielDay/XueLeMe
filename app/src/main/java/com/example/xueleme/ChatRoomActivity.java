@@ -12,7 +12,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 
-import com.example.xueleme.Adapter.MessageAdapter;
+import com.example.xueleme.adapter.MessageAdapter;
 import com.example.xueleme.business.AccountController;
 import com.example.xueleme.business.ActionResultHandler;
 import com.example.xueleme.business.ChatRoomController;
@@ -61,6 +61,9 @@ public class ChatRoomActivity extends Activity {
         messageSubscriber = new Subscriber<>(new Consumer<ChatMessage>() {
             @Override
             public void accept(ChatMessage chatMessage) {
+                if (chatMessage.groupId != group.id) {
+                    return;
+                }
                 messages.add(chatMessage);
                 runOnUiThread(new Runnable() {
                     @Override

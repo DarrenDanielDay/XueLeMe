@@ -13,7 +13,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import com.example.xueleme.Adapter.TopicAdapter;
+import com.example.xueleme.adapter.TopicAdapter;
 import com.example.xueleme.business.ActionResultHandler;
 import com.example.xueleme.business.ITopicController;
 import com.example.xueleme.business.TopicController;
@@ -95,7 +95,7 @@ public class TopicActivity extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                Intent intent1 =new Intent(TopicActivity.this,Invition_content.class);
+                Intent intent1 =new Intent(TopicActivity.this, TopicDetailActivity.class);
                 Integer id =topicList.get(position).id;
                 intent1.putExtra("id",id+"");
                 startActivity(intent1);

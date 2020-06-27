@@ -1,4 +1,4 @@
-package com.example.xueleme.Adapter;
+package com.example.xueleme.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -11,16 +11,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.xueleme.R;
-import com.example.xueleme.models.locals.Topic;
+import com.example.xueleme.models.locals.Zone;
 
 import java.util.List;
 
-import FunctionPackge.Posting;
-
-
-public class TopicAdapter extends ArrayAdapter<Topic> {
+public class ZoneAdapter extends ArrayAdapter<Zone> {
     private int resourceId;
-    public TopicAdapter(@NonNull Context context, int textViewResourceId, @NonNull List<Topic> objects) {
+    public ZoneAdapter(@NonNull Context context, int textViewResourceId, @NonNull List<Zone> objects) {
         super(context, textViewResourceId, objects);
         resourceId = textViewResourceId;
     }
@@ -28,15 +25,10 @@ public class TopicAdapter extends ArrayAdapter<Topic> {
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        Topic topic = getItem(position);
+        Zone zone = getItem(position);
         View view = LayoutInflater.from(getContext()).inflate(resourceId, parent, false);
-        TextView title = view.findViewById(R.id.topic_item_tv1);
-        TextView brief_content = view.findViewById(R.id.topic_item_tv2);
-
-        title.setText(topic.title);
-        String s = topic.content.text.split("\n")[0];
-        brief_content.setText(s.substring(0, Math.min(20, s.length())));
+        TextView taskName = view.findViewById(R.id.zone_item_tv);
+        taskName.setText(zone.zoneName);
         return view;
     }
-
 }

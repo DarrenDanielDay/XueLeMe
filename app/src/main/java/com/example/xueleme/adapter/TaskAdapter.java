@@ -1,4 +1,4 @@
-package com.example.xueleme.Adapter;
+package com.example.xueleme.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -11,13 +11,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.xueleme.R;
-import com.example.xueleme.models.locals.Zone;
 
 import java.util.List;
 
-public class ZoneAdapter extends ArrayAdapter<Zone> {
+import FunctionPackge.Task;
+
+public class TaskAdapter extends ArrayAdapter<Task> {
     private int resourceId;
-    public ZoneAdapter(@NonNull Context context, int textViewResourceId, @NonNull List<Zone> objects) {
+    public TaskAdapter(@NonNull Context context, int textViewResourceId, @NonNull List<Task> objects) {
         super(context, textViewResourceId, objects);
         resourceId = textViewResourceId;
     }
@@ -25,10 +26,10 @@ public class ZoneAdapter extends ArrayAdapter<Zone> {
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        Zone zone = getItem(position);
+        Task task = getItem(position);
         View view = LayoutInflater.from(getContext()).inflate(resourceId, parent, false);
-        TextView taskName = view.findViewById(R.id.zone_item_tv);
-        taskName.setText(zone.zoneName);
+        TextView taskName = view.findViewById(R.id.item_name);
+        taskName.setText(task.content);
         return view;
     }
 }

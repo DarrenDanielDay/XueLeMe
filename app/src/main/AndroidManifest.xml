@@ -24,9 +24,9 @@
         <activity android:name=".AddTopicActivity" />
         <activity android:name=".TopicActivity" />
         <activity android:name=".ForgetPasswordActivity" />
-        <activity android:name=".Invition_content" />
+        <activity android:name=".TopicDetailActivity" />
         <activity android:name=".QuitGroupActivity" />
-        <activity android:name=".jc_group" />
+        <activity android:name=".CreateOrJoinGroupActivity" />
         <activity android:name=".AddTaskActivity" />
         <activity android:name=".RegisterActivity" />
         <activity android:name=".ChatRoomActivity" />

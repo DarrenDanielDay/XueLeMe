@@ -1,4 +1,4 @@
-package com.example.xueleme.Adapter;
+package com.example.xueleme.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -11,14 +11,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.xueleme.R;
+import com.example.xueleme.models.locals.Topic;
 
 import java.util.List;
 
-import FunctionPackge.Task;
 
-public class TaskAdapter extends ArrayAdapter<Task> {
+public class TopicAdapter extends ArrayAdapter<Topic> {
     private int resourceId;
-    public TaskAdapter(@NonNull Context context, int textViewResourceId, @NonNull List<Task> objects) {
+    public TopicAdapter(@NonNull Context context, int textViewResourceId, @NonNull List<Topic> objects) {
         super(context, textViewResourceId, objects);
         resourceId = textViewResourceId;
     }
@@ -26,10 +26,15 @@ public class TaskAdapter extends ArrayAdapter<Task> {
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        Task task = getItem(position);
+        Topic topic = getItem(position);
         View view = LayoutInflater.from(getContext()).inflate(resourceId, parent, false);
-        TextView taskName = view.findViewById(R.id.item_name);
-        taskName.setText(task.content);
+        TextView title = view.findViewById(R.id.topic_item_tv1);
+        TextView brief_content = view.findViewById(R.id.topic_item_tv2);
+
+        title.setText(topic.title);
+        String s = topic.content.text.split("\n")[0];
+        brief_content.setText(s.substring(0, Math.min(20, s.length())));
         return view;
     }
+
 }

@@ -18,7 +18,7 @@ import androidx.lifecycle.ViewModelProviders;
 import com.example.xueleme.AddTaskActivity;
 import com.example.xueleme.MyDatabaseHelper;
 import com.example.xueleme.R;
-import com.example.xueleme.Adapter.TaskAdapter;
+import com.example.xueleme.adapter.TaskAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;

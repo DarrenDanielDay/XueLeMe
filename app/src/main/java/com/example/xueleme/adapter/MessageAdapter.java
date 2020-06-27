@@ -1,4 +1,4 @@
-package com.example.xueleme.Adapter;
+package com.example.xueleme.adapter;
 
 import android.app.Activity;
 import android.view.LayoutInflater;
@@ -88,7 +88,7 @@ public class MessageAdapter extends BaseAdapter {
                 @Override
                 public void onSuccess(UserDetail userDetail) {
                     activity.runOnUiThread(() -> holder.leftName.setText(String.valueOf(userDetail.nickname)));
-                    ImageHelper.setImageView(MessageAdapter.this.activity, holder.rightImage, userDetail.avatar);
+                    ImageHelper.setImageView(MessageAdapter.this.activity, holder.leftImage, userDetail.avatar);
                 }
 
                 @Override

@@ -21,7 +21,7 @@ import com.example.xueleme.business.ChatGroupController;
 import com.example.xueleme.business.IAccountController;
 import com.example.xueleme.business.IChatGroupController;
 import com.example.xueleme.business.UserAction;
-import com.example.xueleme.jc_group;
+import com.example.xueleme.CreateOrJoinGroupActivity;
 import com.example.xueleme.models.locals.ChatGroup;
 import com.example.xueleme.models.locals.User;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -35,11 +35,11 @@ public class ChatRoomFragment extends Fragment {
     private ArrayAdapter<String> adapter;
     private List<ChatGroup> groups = new ArrayList<>();
     private List<String> groupNames = new ArrayList<>();
-    private IAccountController iAccountController;
+    private IAccountController accountController;
     private User user;
     public View onCreateView(@NonNull final LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        iAccountController =new AccountController(getActivity());
+        accountController =new AccountController(getActivity());
 
         View root = inflater.inflate(R.layout.fragment_chatroom, container, false);
         ListView myGroupListView = root.findViewById(R.id.listview2);
@@ -48,7 +48,7 @@ public class ChatRoomFragment extends Fragment {
         adapter = new ArrayAdapter<>(getActivity(),android.R.layout.simple_list_item_1,groupNames);
         myGroupListView.setAdapter(adapter);
 
-        user =iAccountController.getCurrentUser();
+        user = accountController.getCurrentUser();
         chatGroupController.getMyJoinedGroupList(new UserAction<>(user, new ActionResultHandler<List<ChatGroup>, String>() {
             @Override
             public void onSuccess(List<ChatGroup> chatGroups) {
@@ -87,7 +87,7 @@ public class ChatRoomFragment extends Fragment {
         btn_group.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), jc_group.class);
+                Intent intent = new Intent(getActivity(), CreateOrJoinGroupActivity.class);
                 intent.putExtra("extra", getActivity().getIntent().getStringExtra("extra_data"));
                 startActivity(intent);
             }

@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.os.Looper;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -20,14 +19,7 @@ import com.example.xueleme.models.forms.chatgroup.CreateGroupForm;
 import com.example.xueleme.models.forms.chatgroup.JoinGroupForm;
 import com.example.xueleme.models.locals.ChatGroup;
 
-import java.util.Iterator;
-import java.util.Map;
-
-import FunctionPackge.Groupkey;
-import interface_packge.GroupCreator;
-import interface_packge.JoinGroup;
-
-public class jc_group extends AppCompatActivity {
+public class CreateOrJoinGroupActivity extends AppCompatActivity {
     Button bt_c,bt_j;
     private EditText c_group_name,j_group_id;
     private IAccountController accountController = new AccountController(this);
@@ -56,14 +48,14 @@ public class jc_group extends AppCompatActivity {
                     @Override
                     public void onSuccess(ChatGroup chatGroup) {
                         Looper.prepare();
-                        Toast.makeText(jc_group.this,"创建成功",Toast.LENGTH_LONG).show();
+                        Toast.makeText(CreateOrJoinGroupActivity.this,"创建成功",Toast.LENGTH_LONG).show();
                         Looper.loop();
                     }
 
                     @Override
                     public void onError(String s) {
                         Looper.prepare();
-                        Toast.makeText(jc_group.this,s,Toast.LENGTH_LONG).show();
+                        Toast.makeText(CreateOrJoinGroupActivity.this,s,Toast.LENGTH_LONG).show();
                         Looper.loop();
                     }
                 }));
