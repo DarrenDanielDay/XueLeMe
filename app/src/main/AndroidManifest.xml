@@ -16,7 +16,6 @@
         <activity android:name=".TopicActivity"></activity>
         <activity android:name=".ForgetPasswordActivity" />
         <activity android:name=".Invition_content" />
-        <activity android:name=".MsgAdapter" />
         <activity android:name=".QuitGroup" />
         <activity android:name=".jc_group" />
         <activity android:name=".AddTaskActivity" />
