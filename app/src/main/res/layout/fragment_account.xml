@@ -4,9 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:rowCount="5" >
-
+<ImageView
+    android:id="@+id/imageView"
+    android:layout_width="100dp"
+    android:layout_height="100dp"
+    android:src="@drawable/ic_baseline_mood_24"
+    />
     <ListView
         android:id="@+id/line1"
         android:layout_width="1260dp"
