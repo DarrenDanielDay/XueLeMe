@@ -10,7 +10,9 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.Switch;
 
 import FunctionPackge.Task;
 import FunctionPackge.Users;
@@ -20,6 +22,7 @@ public class AddTaskActivity extends AppCompatActivity {
 
     private MyDatabaseHelper dbHelper;
     private EditText e_content, e_start_date, e_start_time, e_end_time;
+    private Switch aSwitch;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,6 +36,22 @@ public class AddTaskActivity extends AppCompatActivity {
         dbHelper = new MyDatabaseHelper(this, "Task.db", null, 2);
         System.out.println("hhh2");
         Button btn_confirm = findViewById(R.id.button);
+        aSwitch = findViewById(R.id.switch3);
+        aSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b) {
+                    e_start_time.setText("00:00");
+                    e_end_time.setText("23:59");
+                }
+                else {
+                    e_start_time.setText("");
+                    e_end_time.setText("");
+                }
+            }
+        });
+
+
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setHomeButtonEnabled(true);

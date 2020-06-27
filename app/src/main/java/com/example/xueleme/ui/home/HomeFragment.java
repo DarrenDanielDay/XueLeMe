@@ -71,6 +71,7 @@ public class HomeFragment extends Fragment {
                 SQLiteDatabase db = dbHelper.getWritableDatabase();
                 db.delete("Task", "content = ?", new String[] {dataList.get(i).content});
                 Toast.makeText(getActivity(), "已经删除了哦", Toast.LENGTH_LONG).show();
+                adapter.remove(dataList.get(i));
                 return true;
             }
         });
