@@ -33,7 +33,7 @@ public class ForumFragment extends Fragment {
 
     private ForumViewModel forumViewModel;
 
-    private String[] data = {"数学", "英语"};
+//    private String[] data = {"数学", "英语"};
     public static final int UPDATE_TEXT = 1;
     private List<Zone> zoneList = new ArrayList<>();
     private ITopicController topicController = new TopicController();
@@ -59,17 +59,14 @@ public class ForumFragment extends Fragment {
         forumViewModel =
                 ViewModelProviders.of(this).get(ForumViewModel.class);
         View root = inflater.inflate(R.layout.fragment_forum, container, false);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, data);
-        ListView listView = root.findViewById(R.id.listView);
+//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, data);
+//        ListView listView = root.findViewById(R.id.listView);
         listView2 = root.findViewById(R.id.listview2);
-        listView.setAdapter(adapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Intent intent = new Intent(getActivity(), TopicActivity.class);
-                startActivity(intent);
-            }
-        });
+//        listView.setAdapter(adapter);
+//        listView.setOnItemClickListener((adapterView, view, i, l) -> {
+//            Intent intent = new Intent(getActivity(), TopicActivity.class);
+//            startActivity(intent);
+//        });
         topicController.getAllZones(new ActionResultHandler<List<Zone>, String>() {
             @Override
             public void onSuccess(List<Zone> zones) {
@@ -84,15 +81,12 @@ public class ForumFragment extends Fragment {
 
             }
         });
-        listView2.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Zone zone = zoneList.get(i);
-                Intent intent = new Intent(getActivity(), TopicActivity.class);
-                intent.putExtra("extra_data", zone.id);
-                System.out.println(zone.id);
-                startActivity(intent);
-            }
+        listView2.setOnItemClickListener((adapterView, view, i, l) -> {
+            Zone zone = zoneList.get(i);
+            Intent intent = new Intent(getActivity(), TopicActivity.class);
+            intent.putExtra("extra_data", zone.id);
+            System.out.println(zone.id);
+            startActivity(intent);
         });
         return root;
     }

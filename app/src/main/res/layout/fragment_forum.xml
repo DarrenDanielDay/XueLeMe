@@ -6,25 +6,26 @@
     android:orientation="vertical">
 
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="20dp"
-        android:text="关注分区" />
+<!--    <TextView-->
+<!--        android:id="@+id/textView"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:background="#FFC107"-->
+<!--        android:text="关注分区"-->
+<!--        android:textSize="20dp" />-->
 
-    <ListView
-        android:id="@+id/listView"
-        android:layout_width="match_parent"
-        android:layout_height="150dp" />
+<!--    <ListView-->
+<!--        android:id="@+id/listView"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="150dp" />-->
 
     <TextView
         android:id="@+id/textView4"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="20dp"
-        android:text="所有分区" />
-
+        android:background="#FFC107"
+        android:text="所有分区"
+        android:textSize="20dp" />
     <ListView
         android:id="@+id/listview2"
         android:layout_width="match_parent"
