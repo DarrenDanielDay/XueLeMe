@@ -16,9 +16,13 @@ import com.example.xueleme.business.TopicController;
 import com.example.xueleme.business.UserAction;
 import com.example.xueleme.models.forms.topic.CreateTopicForm;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class AddTopicActivity extends AppCompatActivity {
 
     private IAccountController accountController = new AccountController(this);
+    ITopicController topicController = new TopicController();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,12 +39,15 @@ public class AddTopicActivity extends AppCompatActivity {
                 createTopicForm.title = title;
                 createTopicForm.content = content;
                 createTopicForm.userId = accountController.getCurrentUser().id;
+                createTopicForm.tags = new ArrayList<>();
+                createTopicForm.images = new ArrayList<>();
                 createTopicForm.zoneId = getIntent().getIntExtra("zoneId", -1);
-                ITopicController topicController = new TopicController();
+
                 topicController.createTopic(new UserAction<>(createTopicForm, new ActionResultHandler<Integer, String>() {
                     @Override
                     public void onSuccess(Integer integer) {
                         Intent intent = new Intent(AddTopicActivity.this, TopicActivity.class);
+                        intent.putExtra("extra_data", createTopicForm.zoneId);
                         startActivity(intent);
                     }
 

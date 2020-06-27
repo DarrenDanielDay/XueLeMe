@@ -72,8 +72,10 @@ public class HomeFragment extends Fragment {
         Cursor cursor = db.query("Task", null, null, null, null, null, null, null);
         if (cursor.moveToFirst()) {
             do {
-                String content = cursor.getString(cursor.getColumnIndex("content"));
                 String start_date = cursor.getString(cursor.getColumnIndex("start_date"));
+//                if (start_date > )
+                String content = cursor.getString(cursor.getColumnIndex("content"));
+//                String start_date = cursor.getString(cursor.getColumnIndex("start_date"));
                 String start_time = cursor.getString(cursor.getColumnIndex("start_time"));
                 String end_time = cursor.getString(cursor.getColumnIndex("end_time"));
                 dataList.add(new Task(content, start_date, start_time, end_time));

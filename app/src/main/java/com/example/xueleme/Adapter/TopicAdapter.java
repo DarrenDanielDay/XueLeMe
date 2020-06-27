@@ -31,10 +31,11 @@ public class TopicAdapter extends ArrayAdapter<Topic> {
         Topic topic = getItem(position);
         View view = LayoutInflater.from(getContext()).inflate(resourceId, parent, false);
         TextView title = view.findViewById(R.id.topic_item_tv1);
-        TextView author = view.findViewById(R.id.topic_item_tv2);
+        TextView brief_content = view.findViewById(R.id.topic_item_tv2);
 
         title.setText(topic.title);
-        author.setText(topic.content.text.substring(0, Math.min(20, topic.content.text.length())));
+        String s = topic.content.text.split("\n")[0];
+        brief_content.setText(s.substring(0, Math.min(20, s.length())));
         return view;
     }
 
