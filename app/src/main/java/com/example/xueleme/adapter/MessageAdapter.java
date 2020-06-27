@@ -23,7 +23,7 @@ import java.util.List;
 
 public class MessageAdapter extends BaseAdapter {
     Activity activity;
-    List<ChatMessage> chatMessages = new ArrayList<>();
+    List<ChatMessage> chatMessages;
     LayoutInflater inflater;
     private IAccountController accountController;
 

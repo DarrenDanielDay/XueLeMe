@@ -149,11 +149,18 @@ public class AccountController extends RequestController implements IAccountCont
     }
 
     private void ensureNotificationJoined() {
+        String tag = "ensureNotificationJoined";
+        Log.d(tag, "正在确保与服务器构建了连接");
         if (!NotificationHub.getInstance().isJoined()) {
+            Log.d(tag, "没有加入服务器");
             if (!NotificationHub.getInstance().isConnected()) {
+                Log.d(tag, "构建连接");
                 NotificationHub.getInstance().connect();
             }
-            while (!NotificationHub.getInstance().isConnected());
+            while (!NotificationHub.getInstance().isConnected()) {
+                Log.d(tag, "循环等待");
+            }
+            Log.d(tag, "调用joinAsUser");
             NotificationHub.getInstance().joinAsUser(currentUser.id);
         }
     }

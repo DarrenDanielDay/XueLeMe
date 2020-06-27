@@ -3,6 +3,7 @@ package com.example.xueleme.services;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.graphics.Color;
@@ -11,6 +12,7 @@ import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 
+import com.example.xueleme.ChatRoomActivity;
 import com.example.xueleme.R;
 import com.example.xueleme.business.AccountController;
 import com.example.xueleme.business.IAccountController;
@@ -24,17 +26,26 @@ import java.util.function.Consumer;
 public class NotificationService extends Service {
     NotificationManager manager = null;
     private int currentNotificationId = 0;
+    private int currentRequestCode = 0;
+
     private int getCurrentNotificationId() {
         return currentNotificationId++;
     }
+
+    public int getCurrentRequestCode() {
+        return currentRequestCode++;
+    }
+
     private static final String CHANNEL_ID = "NotificationServiceChannel";
     private static final NotificationChannel channel = new NotificationChannel(CHANNEL_ID, "myChannel", NotificationManager.IMPORTANCE_HIGH);
+
     static {
         channel.setDescription("this is a description");
         channel.enableLights(true);
         channel.setLightColor(Color.DKGRAY);
         channel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
     }
+
     private Subscriber<ChatMessage> chatMessageSubscriber = new Subscriber<>(new Consumer<ChatMessage>() {
         @Override
         public void accept(ChatMessage message) {
@@ -43,7 +54,16 @@ public class NotificationService extends Service {
             if (user == null || user.id == message.senderId) {
                 return;
             }
-            NotificationService.this.showNotification("您有亿条未读消息", message.content);
+            Intent intent = new Intent(NotificationService.this, ChatRoomActivity.class);
+            intent.putExtra("groupId", message.groupId);
+            intent.putExtra("groupName", message.groupName);
+            PendingIntent pendingIntent = PendingIntent.getActivity(
+                    NotificationService.this,
+                    getCurrentRequestCode(),
+                    intent,
+                    0);
+
+            NotificationService.this.showNotification("您有亿条未读消息", message.content, pendingIntent);
         }
     });
     private Subscriber<com.example.xueleme.models.locals.Notification> notificationSubscriber = new Subscriber<>(new Consumer<com.example.xueleme.models.locals.Notification>() {
@@ -54,11 +74,19 @@ public class NotificationService extends Service {
         }
     });
     private IAccountController accountController;
+
     public NotificationService() {
-        Log.d(this.getClass().getName(), "服务初始化");
-        accountController = new AccountController(this);
+        Log.d(this.getClass().getName(), "通知服务正在初始化");
         NotificationHub.getInstance().chatMessagePublisher.attach(this.chatMessageSubscriber);
         NotificationHub.getInstance().notificationPublisher.attach(this.notificationSubscriber);
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        Log.d("NotificationService", "onCreate");
+        accountController = new AccountController(this);
+        accountController.getCurrentUser();
     }
 
     public void showNotification(String title, String content) {
@@ -72,6 +100,22 @@ public class NotificationService extends Service {
                 .setContentText(content)
                 .setSmallIcon(R.drawable.ic_baseline_comment_24)
                 .setChannelId(CHANNEL_ID)
+                .build();
+        manager.notify(getCurrentNotificationId(), notification);
+    }
+
+    public void showNotification(String title, String content, PendingIntent pendingIntent) {
+        if (manager == null) {
+            manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        }
+        manager.createNotificationChannel(channel);
+        Notification notification = new NotificationCompat.Builder(this)
+                .setContentText(title)
+                .setAutoCancel(true)
+                .setContentTitle(content)
+                .setSmallIcon(R.drawable.ic_baseline_comment_24)
+                .setChannelId(CHANNEL_ID)
+                .setContentIntent(pendingIntent)
                 .build();
         manager.notify(getCurrentNotificationId(), notification);
     }
