@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ChatRoomFragment extends Fragment {
+
     private IChatGroupController chatGroupController = new ChatGroupController();
     private ArrayAdapter<String> adapter;
     private List<ChatGroup> groups = new ArrayList<>();

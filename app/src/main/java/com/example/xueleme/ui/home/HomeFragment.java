@@ -65,6 +65,15 @@ public class HomeFragment extends Fragment {
                 Toast.makeText(getActivity(), data.startDate + " " + data.startTime + "到" + data.endTime, Toast.LENGTH_SHORT).show();
             }
         });
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                SQLiteDatabase db = dbHelper.getWritableDatabase();
+                db.delete("Task", "content = ?", new String[] {dataList.get(i).content});
+                Toast.makeText(getActivity(), "已经删除了哦", Toast.LENGTH_LONG).show();
+                return true;
+            }
+        });
         return root;
     }
     private void initTask() {
