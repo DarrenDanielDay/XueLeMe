@@ -2,6 +2,7 @@ package com.example.xueleme.models;
 
 import androidx.annotation.NonNull;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.InvalidClassException;
@@ -65,6 +66,17 @@ public class ReflectiveJSONModel<T> implements JSONParser<T> {
                 Object value = field.get(data);
                 if (value == null) {
                     value = JSONObject.NULL;
+                } else if (value instanceof List) {
+                    JSONArray jsonArray = new JSONArray();
+                    List<Object> objectList = (List<Object>) value;
+                    for (Object object: objectList) {
+                        if (object instanceof ReflectiveJSONModel) {
+                            jsonArray.put(((ReflectiveJSONModel) object).serialize());
+                        } else {
+                            jsonArray.put(object);
+                        }
+                    }
+                    value = jsonArray;
                 }
                 jsonObject.put(name, value);
             }

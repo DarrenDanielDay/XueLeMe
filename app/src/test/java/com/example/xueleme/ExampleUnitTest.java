@@ -1,6 +1,11 @@
 package com.example.xueleme;
 
+import com.example.xueleme.models.ReflectiveJSONModel;
+
 import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.*;
 

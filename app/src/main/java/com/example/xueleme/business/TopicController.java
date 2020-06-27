@@ -76,6 +76,16 @@ public class TopicController extends RequestController implements ITopicControll
     }
 
     @Override
+    public void getReplyDetail(UserAction<Integer, Reply, String> action) {
+        handleGetAction(action, "api/Topic/ReplyDetail/" + action.data, ServiceResultEnum.EXIST, ServiceResult.ofGeneric(ReplyDetail.class), new ResponseModelAdapter<ReplyDetail, Reply>() {
+            @Override
+            public Reply convert(ReplyDetail detail) {
+                return Reply.fromDetail(detail);
+            }
+        });
+    }
+
+    @Override
     public void getAllZones(ActionResultHandler<List<Zone>, String> handler) {
         HttpRequester.getInstance().get("api/Topic/AllZones", ServiceResult.listParser(ZoneDetail.class), new ActionResultHandler<ServiceResult<List<ZoneDetail>>, String>() {
             @Override
