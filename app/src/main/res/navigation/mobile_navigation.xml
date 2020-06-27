@@ -13,7 +13,7 @@
 
     <fragment
         android:id="@+id/navigation_dashboard"
-        android:name="com.example.xueleme.ui.chatroom.ChatroomFragment"
+        android:name="com.example.xueleme.ui.chatroom.ChatRoomFragment"
         android:label="@string/title_chatroom"
         tools:layout="@layout/fragment_chatroom" />
 

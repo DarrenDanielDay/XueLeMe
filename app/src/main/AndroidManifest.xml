@@ -22,11 +22,11 @@
         <activity android:name=".TopicActivity" />
         <activity android:name=".ForgetPasswordActivity" />
         <activity android:name=".Invition_content" />
-        <activity android:name=".QuitGroup" />
+        <activity android:name=".QuitGroupActivity" />
         <activity android:name=".jc_group" />
         <activity android:name=".AddTaskActivity" />
         <activity android:name=".RegisterActivity" />
-        <activity android:name=".GroupChat" />
+        <activity android:name=".ChatRoomActivity" />
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main" />
