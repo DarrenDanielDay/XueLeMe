@@ -22,6 +22,7 @@ import com.example.xueleme.Adapter.TaskAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import FunctionPackge.Task;
@@ -61,7 +62,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Task data = dataList.get(i);
-                Toast.makeText(getActivity(), data.startDate + " " + data.startTime + "到" + data.endTime, Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), data.startDate + " " + data.startTime + "到" + data.endTime, Toast.LENGTH_SHORT).show();
             }
         });
         return root;
@@ -69,11 +70,25 @@ public class HomeFragment extends Fragment {
     private void initTask() {
         dbHelper = new MyDatabaseHelper(getActivity(), "Task.db", null, 2);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, calendar.get(Calendar.HOUR_OF_DAY));
+        String monthStr = "";
+        String dateStr = "";
+
+        if (calendar.get(Calendar.MONTH) < 9)
+            monthStr = "0" + (calendar.get(Calendar.MONTH) + 1);
+        else monthStr = "" + calendar.get(Calendar.MONTH) + 1;
+        if (calendar.get(Calendar.DATE) < 9)
+            dateStr = "0" + calendar.get(Calendar.DATE);
+        else dateStr = "" + calendar.get(Calendar.DATE);
+        String date_now = calendar.get(Calendar.YEAR) + "-" + monthStr + "-" + dateStr;
         Cursor cursor = db.query("Task", null, null, null, null, null, null, null);
         if (cursor.moveToFirst()) {
             do {
                 String start_date = cursor.getString(cursor.getColumnIndex("start_date"));
-//                if (start_date > )
+
+                if (start_date.compareTo(date_now) < 0)
+                    continue;
                 String content = cursor.getString(cursor.getColumnIndex("content"));
 //                String start_date = cursor.getString(cursor.getColumnIndex("start_date"));
                 String start_time = cursor.getString(cursor.getColumnIndex("start_time"));
