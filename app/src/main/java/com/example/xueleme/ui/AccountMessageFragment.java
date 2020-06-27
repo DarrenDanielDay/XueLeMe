@@ -37,15 +37,21 @@ import androidx.fragment.app.Fragment;
 
 import com.example.xueleme.LoginActivity;
 import com.example.xueleme.MainActivity;
+import com.example.xueleme.NotificationActivity;
 import com.example.xueleme.R;
 import com.example.xueleme.business.AccountController;
 import com.example.xueleme.business.ActionResultHandler;
 import com.example.xueleme.business.FileController;
 import com.example.xueleme.business.IAccountController;
 import com.example.xueleme.business.IFileController;
+import com.example.xueleme.business.INotificationController;
+import com.example.xueleme.business.NotificationController;
+import com.example.xueleme.business.Subscriber;
 import com.example.xueleme.business.UserAction;
 import com.example.xueleme.models.forms.account.ChangeAvatarForm;
 import com.example.xueleme.models.forms.account.ChangeNicknameForm;
+import com.example.xueleme.models.locals.Notification;
+import com.example.xueleme.models.locals.NotificationTypeEnum;
 import com.example.xueleme.models.locals.User;
 import com.example.xueleme.models.responses.UserDetail;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -64,7 +70,6 @@ public class AccountMessageFragment extends Fragment {
     ListView listView;
     ImageView imageView;
     IAccountController iAccountController;
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -73,6 +78,7 @@ public class AccountMessageFragment extends Fragment {
         final int[] heads = new int[]{R.drawable.ic_baseline_person_pin_24, R.drawable.ic_baseline_create_24, R.drawable.ic_baseline_comment_24, R.drawable.ic_baseline_cancel_24};
         final String[] strings = {"头像", "修改昵称", "通知", "退出登录"};
         iAccountController = new AccountController(getActivity());
+        //iNotificationController=new NotificationController();
         List list = new ArrayList();
         imageView = root.findViewById(R.id.imageView);
         disaplayFile(imageView);
@@ -141,7 +147,13 @@ public class AccountMessageFragment extends Fragment {
                         startActivityForResult(intent, 2);
                     }
                 }
+                else if(position==2)
+                {
+                    Intent intent=new Intent(getContext(),NotificationActivity.class);
+                    startActivity(intent);
+                }
             }
+
         });
         return root;
     }
