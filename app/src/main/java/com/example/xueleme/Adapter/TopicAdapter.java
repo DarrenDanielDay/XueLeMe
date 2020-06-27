@@ -34,7 +34,7 @@ public class TopicAdapter extends ArrayAdapter<Topic> {
         TextView author = view.findViewById(R.id.topic_item_tv2);
 
         title.setText(topic.title);
-        author.setText(topic.publisher.toString());
+        author.setText(topic.content.text.substring(0, Math.min(20, topic.content.text.length())));
         return view;
     }
 
