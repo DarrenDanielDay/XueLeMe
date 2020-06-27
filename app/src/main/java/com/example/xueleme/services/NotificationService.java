@@ -12,9 +12,12 @@ import android.util.Log;
 import androidx.core.app.NotificationCompat;
 
 import com.example.xueleme.R;
+import com.example.xueleme.business.AccountController;
+import com.example.xueleme.business.IAccountController;
 import com.example.xueleme.business.NotificationHub;
 import com.example.xueleme.business.Subscriber;
 import com.example.xueleme.models.locals.ChatMessage;
+import com.example.xueleme.models.locals.User;
 
 import java.util.function.Consumer;
 
@@ -36,6 +39,10 @@ public class NotificationService extends Service {
         @Override
         public void accept(ChatMessage message) {
             Log.d("NotificationService", "收到一条聊天消息");
+            User user = accountController.getCurrentUser();
+            if (user == null || user.id == message.senderId) {
+                return;
+            }
             NotificationService.this.showNotification("您有亿条未读消息", message.content);
         }
     });
@@ -46,8 +53,10 @@ public class NotificationService extends Service {
             NotificationService.this.showNotification("学了么", notification.content);
         }
     });
+    private IAccountController accountController;
     public NotificationService() {
         Log.d(this.getClass().getName(), "服务初始化");
+        accountController = new AccountController(this);
         NotificationHub.getInstance().chatMessagePublisher.attach(this.chatMessageSubscriber);
         NotificationHub.getInstance().notificationPublisher.attach(this.notificationSubscriber);
     }

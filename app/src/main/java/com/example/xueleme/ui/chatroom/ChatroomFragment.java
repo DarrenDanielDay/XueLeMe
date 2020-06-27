@@ -2,9 +2,6 @@ package com.example.xueleme.ui.chatroom;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,75 +9,61 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProviders;
 
-import com.example.xueleme.MainActivity;
+import com.example.xueleme.ChatRoomActivity;
+import com.example.xueleme.R;
 import com.example.xueleme.business.AccountController;
 import com.example.xueleme.business.ActionResultHandler;
 import com.example.xueleme.business.ChatGroupController;
-import com.example.xueleme.LoginActivity;
-import com.example.xueleme.R;
 import com.example.xueleme.business.IAccountController;
+import com.example.xueleme.business.IChatGroupController;
 import com.example.xueleme.business.UserAction;
 import com.example.xueleme.jc_group;
 import com.example.xueleme.models.locals.ChatGroup;
 import com.example.xueleme.models.locals.User;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.example.xueleme.business.IChatGroupController;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
-import com.example.xueleme.GroupChat;
-import FunctionPackge.Groupkey;
-import interface_packge.RequestHandler;
-
-public class ChatroomFragment extends Fragment {
-    private ChatroomViewModel chatroomViewModel;
+public class ChatRoomFragment extends Fragment {
     private IChatGroupController chatGroupController = new ChatGroupController();
-    private ArrayAdapter<String>adapter;
-    private List <String>lists= new ArrayList<>();
+    private ArrayAdapter<String> adapter;
+    private List<ChatGroup> groups = new ArrayList<>();
+    private List<String> groupNames = new ArrayList<>();
     private IAccountController iAccountController;
     private User user;
     public View onCreateView(@NonNull final LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         iAccountController =new AccountController(getActivity());
 
-        chatroomViewModel =
-                ViewModelProviders.of(this).get(ChatroomViewModel.class);
         View root = inflater.inflate(R.layout.fragment_chatroom, container, false);
-        ListView mygroup_list =(ListView) root.findViewById(R.id.listview2);
+        ListView myGroupListView = root.findViewById(R.id.listview2);
 
 
-        adapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_list_item_1,lists);
-        mygroup_list.setAdapter(adapter);
+        adapter = new ArrayAdapter<>(getActivity(),android.R.layout.simple_list_item_1,groupNames);
+        myGroupListView.setAdapter(adapter);
 
         user =iAccountController.getCurrentUser();
         chatGroupController.getMyJoinedGroupList(new UserAction<>(user, new ActionResultHandler<List<ChatGroup>, String>() {
             @Override
             public void onSuccess(List<ChatGroup> chatGroups) {
-                lists.clear();
-                for (ChatGroup chatGroup:chatGroups){
-                    lists.add(chatGroup.groupName);
-                }
+                groups.clear();
+                groups.addAll(chatGroups);
                 chatGroupController.getMyCreatedGroupList(new UserAction<>(user, new ActionResultHandler<List<ChatGroup>, String>() {
                     @Override
                     public void onSuccess(List<ChatGroup> chatGroups) {
-                        for(ChatGroup chatGroup:chatGroups){
-                            lists.add(chatGroup.groupName);
-                        }
+                        groups.addAll(chatGroups);
                        getActivity().runOnUiThread(new Runnable() {
                            @Override
                            public void run() {
-                               for(String string: lists) {
-                                   Log.d("lists item", string);
+                               groupNames.clear();
+                               for(ChatGroup group: groups) {
+                                   groupNames.add(group.groupName);
+                                   Log.d("lists item", group.groupName);
                                }
                                adapter.notifyDataSetChanged();
                            }
@@ -109,13 +92,14 @@ public class ChatroomFragment extends Fragment {
             }
         });
 
-        mygroup_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        myGroupListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                Intent intent1 =new Intent(getActivity(), GroupChat.class);
+                Intent intent1 =new Intent(getActivity(), ChatRoomActivity.class);
 
-                intent1.putExtra("position",position+"");
+                intent1.putExtra("groupId", groups.get(position).id);
+                intent1.putExtra("groupName", groups.get(position).groupName);
                 startActivity(intent1);
             }
 

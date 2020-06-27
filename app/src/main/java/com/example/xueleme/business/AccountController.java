@@ -134,7 +134,6 @@ public class AccountController extends RequestController implements IAccountCont
                     currentUser.nickname = userDetail.nickname;
                     currentUser.avatar = userDetail.avatar;
                     Log.d("getCurrentUser", "已登录");
-//                    Toast.makeText(activity, "已登录", Toast.LENGTH_LONG).show();
                 }
 
                 @Override
@@ -145,7 +144,6 @@ public class AccountController extends RequestController implements IAccountCont
             }));
         } else {
             Log.d("getCurrentUser", "未登录");
-   //         Toast.makeText(activity, "未登录", Toast.LENGTH_LONG).show();
         }
         return currentUser;
     }
