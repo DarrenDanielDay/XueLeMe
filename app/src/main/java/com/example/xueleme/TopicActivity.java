@@ -94,8 +94,11 @@ public class TopicActivity extends AppCompatActivity {
         }));
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                Intent intent1 =new Intent(TopicActivity.this,Invition_content.class);
+                Integer id =topicList.get(position).id;
+                intent1.putExtra("id",id+"");
+                startActivity(intent1);
             }
         });
     }
