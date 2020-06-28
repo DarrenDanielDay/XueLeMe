@@ -96,12 +96,8 @@ public class ChatRoomFragment extends Fragment {
         myGroupListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                Intent intent1 =new Intent(getActivity(), ChatRoomActivity.class);
-
-                intent1.putExtra("groupId", groups.get(position).id);
-                intent1.putExtra("groupName", groups.get(position).groupName);
-                startActivity(intent1);
+                Intent intent = ChatRoomActivity.startIntent(getActivity(), groups.get(position).id, groups.get(position).groupName);
+                startActivity(intent);
             }
 
 

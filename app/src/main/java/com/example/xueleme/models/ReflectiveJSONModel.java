@@ -114,6 +114,19 @@ public class ReflectiveJSONModel<T> implements JSONParser<T> {
                     return null;
                 }
             };
+        } else if (targetClass.isEnum()) {
+            return new JSONParser<T>() {
+                @Override
+                public T parse(Object source) {
+                    Integer index = new IntegerParser().parse(source);
+                    return targetClass.getEnumConstants()[index];
+                }
+
+                @Override
+                public JSONObject serialize(T data) {
+                    return null;
+                }
+            };
         }
         return  result;
     }

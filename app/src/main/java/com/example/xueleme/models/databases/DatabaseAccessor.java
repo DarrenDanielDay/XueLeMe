@@ -129,48 +129,52 @@ public final class DatabaseAccessor<T> {
         return items;
     }
 
-    public void insertAll(Collection<T> items, SQLiteDatabase database) {
-        for (T item : items) {
-            ContentValues contentValues = new ContentValues();
-            for (int i = 0; i < columns.length; i++) {
-                Field field = entityFields[i];
-                String column = columns[i];
-                Object value = null;
-                try {
-                    value = field.get(item);
-                } catch (IllegalAccessException e) {
-                    Log.e("convert to database column type", "无法访问column " + column);
+    public void insertOne(T item, SQLiteDatabase database) {
+        ContentValues contentValues = new ContentValues();
+        for (int i = 0; i < columns.length; i++) {
+            Field field = entityFields[i];
+            String column = columns[i];
+            Object value = null;
+            try {
+                value = field.get(item);
+            } catch (IllegalAccessException e) {
+                Log.e("convert to database column type", "无法访问column " + column);
+            }
+            if (value == null) {
+                continue;
+            }
+            if (value instanceof Integer) {
+                contentValues.put(column, (Integer) value);
+            } else if (value instanceof String) {
+                contentValues.put(column, (String) value);
+            } else if (value instanceof Double) {
+                contentValues.put(column, (Double) value);
+            } else if (value instanceof Date) {
+                contentValues.put(column, DateParser.format.format((Date) value));
+            } else if (value.getClass().isEnum()) {
+                Object[] enumArray = value.getClass().getEnumConstants();
+                for (int j = 0; j < enumArray.length; j++) {
+                    if (enumArray[j].equals(value)) {
+                        contentValues.put(column, j);
+                        break;
+                    }
                 }
-                if (value == null) {
+            } else {
+                JSONParser<T> parser = (JSONParser<T>) getParser(value.getClass());
+                if (parser == null) {
+                    Log.e("convert to database column type","无法转换类型" + value.getClass().getName() + "为数据库存储类型");
                     continue;
                 }
-                if (value instanceof Integer) {
-                    contentValues.put(column, (Integer) value);
-                } else if (value instanceof String) {
-                    contentValues.put(column, (String) value);
-                } else if (value instanceof Double) {
-                    contentValues.put(column, (Double) value);
-                } else if (value instanceof Date) {
-                    contentValues.put(column, DateParser.format.format((Date) value));
-                } else if (value.getClass().isEnum()) {
-                    Object[] enumArray = value.getClass().getEnumConstants();
-                    for (int j = 0; j < enumArray.length; j++) {
-                        if (enumArray[j].equals(value)) {
-                            contentValues.put(column, j);
-                            break;
-                        }
-                    }
-                } else {
-                    JSONParser<T> parser = (JSONParser<T>) getParser(value.getClass());
-                    if (parser == null) {
-                        Log.e("convert to database column type","无法转换类型" + value.getClass().getName() + "为数据库存储类型");
-                        continue;
-                    }
-                    contentValues.put(column, parser.serialize(item).toString());
-                }
-
+                contentValues.put(column, parser.serialize(item).toString());
             }
-            database.insert(tableName, null, contentValues);
+
+        }
+        database.insert(tableName, null, contentValues);
+    }
+
+    public void insertAll(Collection<T> items, SQLiteDatabase database) {
+        for (T item : items) {
+            insertOne(item, database);
         }
     }
 

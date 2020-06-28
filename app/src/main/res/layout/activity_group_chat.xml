@@ -17,7 +17,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:textSize="40sp"
+            android:textSize="24sp"
+            android:layout_margin="10dp"
             android:text=""
             android:textStyle="bold"/>
     </LinearLayout>
@@ -26,9 +27,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
 
         <EditText
+            android:layout_margin="4dp"
             android:id="@+id/main_content"
             android:layout_width="0sp"
             android:layout_height="match_parent"
@@ -39,13 +42,14 @@
 
         <Button
             android:id="@+id/main_send"
+            android:layout_margin="4dp"
             android:layout_width="0sp"
             android:layout_weight="2"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
             android:background="@drawable/button_background"
             android:text="发送"/>
         <ImageButton
+            android:layout_margin="4dp"
             android:id="@+id/q_group"
             android:layout_width="1sp"
             android:layout_weight="1"

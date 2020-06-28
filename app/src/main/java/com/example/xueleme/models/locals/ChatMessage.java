@@ -9,7 +9,7 @@ import java.util.Date;
 
 @DatabaseEntity
 public class ChatMessage {
-    @PrimaryKey
+    @PrimaryKey(autoIncrement = false)
     @Column
     public Integer id;
     @Column
@@ -26,6 +26,8 @@ public class ChatMessage {
     public String senderName;
     @Column
     public String groupName;
+    @Column
+    public String senderAvatar;
     public static ChatMessage fromDetail(ChatMessageDetail detail) {
         ChatMessage chatMessage = new ChatMessage();
         chatMessage.id = detail.id;
@@ -36,6 +38,7 @@ public class ChatMessage {
         chatMessage.createdTime = detail.createdTime;
         chatMessage.groupId = detail.group.id;
         chatMessage.senderId = detail.user.id;
-        return  chatMessage;
+        chatMessage.senderAvatar = detail.user.avatar;
+        return chatMessage;
     }
 }

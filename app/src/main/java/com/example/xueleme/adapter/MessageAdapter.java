@@ -21,6 +21,9 @@ import com.example.xueleme.utils.ImageHelper;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @deprecated
+ */
 public class MessageAdapter extends BaseAdapter {
     Activity activity;
     List<ChatMessage> chatMessages;

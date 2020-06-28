@@ -1,6 +1,7 @@
 package com.example.xueleme;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,8 +12,7 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
-
-import com.example.xueleme.adapter.MessageAdapter;
+import com.example.xueleme.adapter.ChatMessageItemAdapter;
 import com.example.xueleme.business.AccountController;
 import com.example.xueleme.business.ActionResultHandler;
 import com.example.xueleme.business.ChatRoomController;
@@ -20,33 +20,36 @@ import com.example.xueleme.business.IAccountController;
 import com.example.xueleme.business.IChatRoomController;
 import com.example.xueleme.business.Subscriber;
 import com.example.xueleme.business.UserAction;
+import com.example.xueleme.models.databases.DatabaseAccessor;
+import com.example.xueleme.models.databases.MyEntityDatabaseHelper;
 import com.example.xueleme.models.forms.chatgroup.SendMessageForm;
 import com.example.xueleme.models.locals.ChatGroup;
+import com.example.xueleme.models.locals.ChatMessage;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-
-import com.example.xueleme.models.locals.ChatMessage;
-
 public class ChatRoomActivity extends Activity {
 
     private EditText message;
-    private List<ChatMessage> messages = new ArrayList<>();
+    private List<ChatMessage> messages;
     private ChatGroup group = new ChatGroup();
     private IAccountController accountController;
     private IChatRoomController chatRoomController = new ChatRoomController();
     private Subscriber<ChatMessage> messageSubscriber;
-    private MessageAdapter messageAdapter;
+    private ChatMessageItemAdapter messageAdapter;
     private SendMessageForm sendMessageForm;
-
+    private DatabaseAccessor<ChatMessage> accessor;
+    private MyEntityDatabaseHelper helper;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group_chat);
         accountController = new AccountController(this);
         accountController.getCurrentUser();
+        accessor = new DatabaseAccessor<>(ChatMessage.class);
+        helper = new MyEntityDatabaseHelper(this);
         ListView listView = findViewById(R.id.main_listView);
         message = findViewById(R.id.main_content);
         ImageButton imageButton = findViewById(R.id.q_group);
@@ -55,13 +58,15 @@ public class ChatRoomActivity extends Activity {
         Intent intent = getIntent();
         group.groupName = intent.getStringExtra("groupName");
         group.id = intent.getIntExtra("groupId", 0);
+        messages = accessor.fetchAll(helper.getReadableDatabase().query(accessor.tableName, null, "groupId = ?", new String[]{group.id.toString()}, null,null,null, "100"));
+        Log.d(getClass().getSimpleName(), "Intent: groutName = " + group.groupName + " groupId = " + group.id);
         groupNameView.setText(group.groupName);
-        messageAdapter = new MessageAdapter(ChatRoomActivity.this, messages);
+        messageAdapter = new ChatMessageItemAdapter(ChatRoomActivity.this, messages);
         listView.setAdapter(messageAdapter);
         messageSubscriber = new Subscriber<>(new Consumer<ChatMessage>() {
             @Override
             public void accept(ChatMessage chatMessage) {
-                if (chatMessage.groupId != group.id) {
+                if (!chatMessage.groupId.equals(group.id)) {
                     return;
                 }
                 messages.add(chatMessage);
@@ -117,5 +122,12 @@ public class ChatRoomActivity extends Activity {
     protected void onDestroy() {
         super.onDestroy();
         messageSubscriber.detach();
+    }
+
+    public static Intent startIntent(Context context, Integer groupId, String groupName) {
+        Intent intent = new Intent(context, ChatRoomActivity.class);
+        intent.putExtra("groupId", groupId);
+        intent.putExtra("groupName", groupName);
+        return intent;
     }
 }

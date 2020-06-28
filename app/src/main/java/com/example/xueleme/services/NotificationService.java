@@ -18,7 +18,9 @@ import com.example.xueleme.business.AccountController;
 import com.example.xueleme.business.IAccountController;
 import com.example.xueleme.business.NotificationHub;
 import com.example.xueleme.business.Subscriber;
+import com.example.xueleme.models.databases.MyEntityDatabaseHelper;
 import com.example.xueleme.models.locals.ChatMessage;
+import com.example.xueleme.models.locals.ChatRecord;
 import com.example.xueleme.models.locals.User;
 
 import java.util.function.Consumer;
@@ -49,21 +51,22 @@ public class NotificationService extends Service {
     private Subscriber<ChatMessage> chatMessageSubscriber = new Subscriber<>(new Consumer<ChatMessage>() {
         @Override
         public void accept(ChatMessage message) {
-            Log.d("NotificationService", "收到一条聊天消息");
+            Log.d(NotificationService.class.getSimpleName(), "收到一条聊天消息");
             User user = accountController.getCurrentUser();
-            if (user == null || user.id == message.senderId) {
+            if (user == null || user.id.equals(message.senderId)) {
                 return;
             }
-            Intent intent = new Intent(NotificationService.this, ChatRoomActivity.class);
-            intent.putExtra("groupId", message.groupId);
-            intent.putExtra("groupName", message.groupName);
+            MyEntityDatabaseHelper helper = new MyEntityDatabaseHelper(NotificationService.this);
+            helper.chatMessageDatabaseAccessor.insertOne(message, helper.getReadableDatabase());
+            Log.d(NotificationService.class.getSimpleName(), "Pending intent groupId = " + message.groupId);
+            Intent intent = ChatRoomActivity.startIntent(NotificationService.this, message.groupId, message.groupName);
             PendingIntent pendingIntent = PendingIntent.getActivity(
                     NotificationService.this,
                     getCurrentRequestCode(),
                     intent,
-                    0);
-
-            NotificationService.this.showNotification("您有亿条未读消息", message.content, pendingIntent);
+                    PendingIntent.FLAG_ONE_SHOT);
+            String display = message.type == ChatRecord.MessageType.IMAGE ? "[图片]" : message.content;
+            NotificationService.this.showNotification("您有亿条未读消息", display, pendingIntent);
         }
     });
     private Subscriber<com.example.xueleme.models.locals.Notification> notificationSubscriber = new Subscriber<>(new Consumer<com.example.xueleme.models.locals.Notification>() {

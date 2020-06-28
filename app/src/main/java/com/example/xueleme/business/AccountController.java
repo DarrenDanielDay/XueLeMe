@@ -128,6 +128,7 @@ public class AccountController extends RequestController implements IAccountCont
         if (userId != -1) {
             currentUser = new User();
             currentUser.id = userId;
+            ensureNotificationJoined();
             queryUserDetailFromId(new UserAction<>(userId, new ActionResultHandler<UserDetail, String>() {
                 @Override
                 public void onSuccess(UserDetail userDetail) {
