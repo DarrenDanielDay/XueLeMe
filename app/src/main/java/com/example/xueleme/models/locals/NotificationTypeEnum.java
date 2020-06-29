@@ -8,4 +8,5 @@ public enum NotificationTypeEnum {
     USER_KICKED,
     REPLIED,
     MENTIONED,
+    FORCED_OUT,
 }

@@ -44,6 +44,16 @@ public class ChatGroupController extends RequestController implements IChatGroup
     }
 
     @Override
+    public void searchGroupsByName(UserAction<String, List<BriefGroup>, String> action) {
+        handleGetAction(action, "api/ChatGroup/Search?name=" + action.data, ServiceResultEnum.EXIST, ServiceResult.listParser(BriefGroup.class), new ResponseModelAdapter<List<BriefGroup>, List<BriefGroup>>() {
+            @Override
+            public List<BriefGroup> convert(List<BriefGroup> briefGroups) {
+                return briefGroups;
+            }
+        });
+    }
+
+    @Override
     public void getJoinGroupRequests(UserAction<ChatGroup, List<JoinGroupRequest>, String> action) {
         handleGetAction(action, "api/ChatGroup/JJoinRequests/" + action.data.id, ServiceResultEnum.EXIST, ServiceResult.listParser(JoinGroupRequestBrief.class), new ResponseModelAdapter<List<JoinGroupRequestBrief>, List<JoinGroupRequest>>() {
             @Override

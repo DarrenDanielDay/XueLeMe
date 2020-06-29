@@ -24,7 +24,7 @@ import com.example.xueleme.models.locals.Zone;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TopicActivity extends AppCompatActivity {
+public class TopicActivity extends BaseActivity {
 //    private String[] data = {"数学", "英语"};
     public static final int UPDATE_TEXT = 1;
 

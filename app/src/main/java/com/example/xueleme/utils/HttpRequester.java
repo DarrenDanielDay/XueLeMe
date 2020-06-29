@@ -172,7 +172,9 @@ public class HttpRequester {
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                ServiceResult<BinaryFile> result = ServiceResult.ofGeneric(BinaryFile.class).parse(response.body().string());
+                String body = response.body().string();
+                Log.d("postFile", body);
+                ServiceResult<BinaryFile> result = ServiceResult.ofGeneric(BinaryFile.class).parse(new Gson().fromJson(body, Map.class));
                 handler.onSuccess(result.extraData);
             }
         });

@@ -14,7 +14,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".NotificationActivity"></activity>
+        <activity android:name=".AskImageFileActivity"></activity>
+        <activity android:name=".HandleJoinRequestActivity" />
+        <activity android:name=".SearchAndJoinGroupActivity" />
+        <activity android:name=".NotificationActivity" />
 
         <service
             android:name=".services.NotificationService"
@@ -25,7 +28,7 @@
         <activity android:name=".TopicActivity" />
         <activity android:name=".ForgetPasswordActivity" />
         <activity android:name=".TopicDetailActivity" />
-        <activity android:name=".QuitGroupActivity" />
+        <activity android:name=".GroupInfoActivity" />
         <activity android:name=".CreateOrJoinGroupActivity" />
         <activity android:name=".AddTaskActivity" />
         <activity android:name=".RegisterActivity" />

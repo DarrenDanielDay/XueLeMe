@@ -10,6 +10,7 @@ import com.example.xueleme.models.forms.chatgroup.RejectJoinForm;
 import com.example.xueleme.models.locals.ChatGroup;
 import com.example.xueleme.models.locals.JoinGroupRequest;
 import com.example.xueleme.models.locals.User;
+import com.example.xueleme.models.responses.BriefGroup;
 
 import java.util.List;
 
@@ -17,6 +18,7 @@ public interface IChatGroupController {
     void createGroup(UserAction<CreateGroupForm, ChatGroup, String> action);
     void changeGroupName(UserAction<ChangeGroupNameForm, String, String> action);
     void joinGroup(UserAction<JoinGroupForm, String, String> action);
+    void searchGroupsByName(UserAction<String, List<BriefGroup>, String> action);
     void getJoinGroupRequests(UserAction<ChatGroup, List<JoinGroupRequest>, String> action);
     void agreeJoin(UserAction<AgreeJoinGroupForm, String, String> action);
     void rejectJoin(UserAction<RejectJoinForm, String, String> action);

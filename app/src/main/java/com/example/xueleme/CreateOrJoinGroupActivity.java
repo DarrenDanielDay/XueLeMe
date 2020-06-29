@@ -1,7 +1,6 @@
 package com.example.xueleme;
 
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Looper;
 import android.view.View;
@@ -19,47 +18,52 @@ import com.example.xueleme.models.forms.chatgroup.CreateGroupForm;
 import com.example.xueleme.models.forms.chatgroup.JoinGroupForm;
 import com.example.xueleme.models.locals.ChatGroup;
 
-public class CreateOrJoinGroupActivity extends AppCompatActivity {
-    Button bt_c,bt_j;
-    private EditText c_group_name,j_group_id;
+public class CreateOrJoinGroupActivity extends BaseActivity {
+    private EditText createGroupNameText, joinGroupIdText;
+    private IChatGroupController chatGroupController =new ChatGroupController();
     private IAccountController accountController = new AccountController(this);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_jc_group);
-        bt_c=findViewById(R.id.create_group);
-        bt_j=findViewById(R.id.join_group);
-        c_group_name=findViewById(R.id.c_name);
-        j_group_id=findViewById(R.id.j_id);
+        Button createButton = findViewById(R.id.create_group);
+        Button joinButton = findViewById(R.id.join_group);
+        Button searchGroupButton = findViewById(R.id.search_group);
+        createGroupNameText =findViewById(R.id.c_name);
+        joinGroupIdText =findViewById(R.id.j_id);
 
-        bt_c.setOnClickListener(new View.OnClickListener() {
+        createButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String creat_name =c_group_name.getText().toString();
-                Integer join_id =Integer.parseInt(j_group_id.getText().toString());
-                CreateGroupForm createGroupForm =new CreateGroupForm();
-                createGroupForm.groupName = creat_name;
-                createGroupForm.userId =accountController.getCurrentUser().id;
-                JoinGroupForm joinGroupForm =new JoinGroupForm();
-                joinGroupForm.groupId=join_id;
-                joinGroupForm.userId=accountController.getCurrentUser().id;
-                IChatGroupController iChatGroupController =new ChatGroupController();
-                iChatGroupController.createGroup(new UserAction<>(createGroupForm, new ActionResultHandler<ChatGroup, String>() {
+                String createName = createGroupNameText.getText().toString();
+                CreateGroupForm createGroupForm = new CreateGroupForm();
+                createGroupForm.groupName = createName;
+                createGroupForm.userId = accountController.getCurrentUser().id;
+                chatGroupController.createGroup(new UserAction<>(createGroupForm, new ActionResultHandler<ChatGroup, String>() {
                     @Override
                     public void onSuccess(ChatGroup chatGroup) {
                         Looper.prepare();
-                        Toast.makeText(CreateOrJoinGroupActivity.this,"创建成功",Toast.LENGTH_LONG).show();
+                        Toast.makeText(CreateOrJoinGroupActivity.this, "创建成功", Toast.LENGTH_LONG).show();
                         Looper.loop();
                     }
 
                     @Override
                     public void onError(String s) {
                         Looper.prepare();
-                        Toast.makeText(CreateOrJoinGroupActivity.this,s,Toast.LENGTH_LONG).show();
+                        Toast.makeText(CreateOrJoinGroupActivity.this, s, Toast.LENGTH_LONG).show();
                         Looper.loop();
                     }
                 }));
-                iChatGroupController.joinGroup(new UserAction<>(joinGroupForm, new ActionResultHandler<String, String>() {
+            }
+        });
+        joinButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Integer joinGroupId = Integer.parseInt(joinGroupIdText.getText().toString());
+                JoinGroupForm joinGroupForm = new JoinGroupForm();
+                joinGroupForm.groupId = joinGroupId;
+                joinGroupForm.userId = accountController.getCurrentUser().id;
+                chatGroupController.joinGroup(new UserAction<>(joinGroupForm, new ActionResultHandler<String, String>() {
                     @Override
                     public void onSuccess(String s) {
 
@@ -71,6 +75,12 @@ public class CreateOrJoinGroupActivity extends AppCompatActivity {
                     }
                 }));
            }
-       });
+        });
+        searchGroupButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(CreateOrJoinGroupActivity.this, SearchAndJoinGroupActivity.class));
+            }
+        });
     }
 }

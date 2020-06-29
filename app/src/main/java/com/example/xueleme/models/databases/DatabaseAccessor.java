@@ -19,6 +19,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 数据库查询工具类，利用反射进行实体类与数据的转换
+ * @param <T> 实体类型
+ */
 public final class DatabaseAccessor<T> {
     public final Class<T> entityClass;
     public final String tableName;

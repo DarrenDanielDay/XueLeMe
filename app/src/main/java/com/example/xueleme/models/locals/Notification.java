@@ -10,7 +10,7 @@ public class Notification {
         Notification notification = new Notification();
         notification.id = detail.id;
         notification.content = detail.content;
-        notification.notificationType = NotificationTypeEnum.values()[detail.notificationTypeEnum];
+        notification.notificationType = NotificationTypeEnum.values()[detail.notificationType];
         return notification;
     }
 }

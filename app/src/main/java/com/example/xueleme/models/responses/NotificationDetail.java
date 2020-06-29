@@ -6,5 +6,5 @@ import com.example.xueleme.models.locals.NotificationTypeEnum;
 public class NotificationDetail extends ReflectiveJSONModel<NotificationDetail> {
     public Integer id;
     public String content;
-    public Integer notificationTypeEnum;
+    public Integer notificationType;
 }

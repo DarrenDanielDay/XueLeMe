@@ -6,7 +6,7 @@ import java.util.Date;
 
 public class BinaryFile extends ReflectiveJSONModel<BinaryFile> {
     public String mD5;
-    public String fileName;
-    public String contentType;
-    public Date createdTime;
+//    public String fileName;
+//    public String contentType;
+//    public Date createdTime;
 }

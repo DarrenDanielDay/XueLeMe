@@ -27,6 +27,7 @@ import com.example.xueleme.models.locals.User;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class ChatRoomFragment extends Fragment {
@@ -58,7 +59,13 @@ public class ChatRoomFragment extends Fragment {
                     @Override
                     public void onSuccess(List<ChatGroup> chatGroups) {
                         groups.addAll(chatGroups);
-                       getActivity().runOnUiThread(new Runnable() {
+                        groups.sort(new Comparator<ChatGroup>() {
+                            @Override
+                            public int compare(ChatGroup o1, ChatGroup o2) {
+                                return o1.id - o2.id;
+                            }
+                        });
+                        getActivity().runOnUiThread(new Runnable() {
                            @Override
                            public void run() {
                                groupNames.clear();

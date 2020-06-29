@@ -16,7 +16,7 @@ import com.example.xueleme.business.IAccountController;
 import com.example.xueleme.business.UserAction;
 import com.example.xueleme.models.forms.account.ForgetPasswordForm;
 
-public class ForgetPasswordActivity extends AppCompatActivity {
+public class ForgetPasswordActivity extends BaseActivity {
 
     private EditText forget_account;
     IAccountController accountController = new AccountController(this);

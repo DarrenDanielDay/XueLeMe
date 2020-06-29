@@ -21,7 +21,7 @@ import com.example.xueleme.models.forms.topic.CreateTopicForm;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AddTopicActivity extends AppCompatActivity {
+public class AddTopicActivity extends BaseActivity {
 
     private IAccountController accountController = new AccountController(this);
     ITopicController topicController = new TopicController();

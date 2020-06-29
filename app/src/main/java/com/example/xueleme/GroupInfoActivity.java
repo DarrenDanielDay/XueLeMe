@@ -1,7 +1,5 @@
 package com.example.xueleme;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Looper;
@@ -19,7 +17,7 @@ import com.example.xueleme.business.UserAction;
 import com.example.xueleme.models.forms.chatgroup.ChangeGroupNameForm;
 import com.example.xueleme.models.forms.chatgroup.QuitGroupForm;
 
-public class QuitGroupActivity extends AppCompatActivity {
+public class GroupInfoActivity extends BaseActivity {
     private IAccountController accountController = new AccountController(this);
 
     @Override
@@ -43,14 +41,14 @@ public class QuitGroupActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(String s) {
                         Looper.prepare();
-                        Toast.makeText(QuitGroupActivity.this, s, Toast.LENGTH_LONG).show();
+                        Toast.makeText(GroupInfoActivity.this, s, Toast.LENGTH_LONG).show();
                         Looper.loop();
                     }
 
                     @Override
                     public void onError(String s) {
                         Looper.prepare();
-                        Toast.makeText(QuitGroupActivity.this, s, Toast.LENGTH_LONG).show();
+                        Toast.makeText(GroupInfoActivity.this, s, Toast.LENGTH_LONG).show();
                         Looper.loop();
                     }
                 }));
@@ -68,12 +66,12 @@ public class QuitGroupActivity extends AppCompatActivity {
                 chatGroupController.changeGroupName(new UserAction<>(changeGroupNameForm, new ActionResultHandler<String, String>() {
                     @Override
                     public void onSuccess(String s) {
-                        runOnUiThread(() -> Toast.makeText(QuitGroupActivity.this, s, Toast.LENGTH_LONG).show());
+                        runOnUiThread(() -> Toast.makeText(GroupInfoActivity.this, s, Toast.LENGTH_LONG).show());
                     }
 
                     @Override
                     public void onError(String s) {
-                        runOnUiThread(() -> Toast.makeText(QuitGroupActivity.this, "修改群名失败：" + s, Toast.LENGTH_LONG).show());
+                        runOnUiThread(() -> Toast.makeText(GroupInfoActivity.this, "修改群名失败：" + s, Toast.LENGTH_LONG).show());
                     }
                 }));
             }

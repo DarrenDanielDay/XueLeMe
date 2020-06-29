@@ -73,7 +73,7 @@ public class NotificationHub {
         });
     }
 
-    public void connect() {
+    public synchronized void connect() {
         if (isConnected) {
             Log.d("already connected", "已连接，请勿重复连接");
             return;
@@ -82,7 +82,9 @@ public class NotificationHub {
         Completable completable = hubConnection.start().doOnComplete(new Action() {
             @Override
             public void run() throws Exception {
-                isConnected = true;
+                synchronized (NotificationHub.this) {
+                    isConnected = true;
+                }
                 Log.d("Hub connect", "成功与服务器Hub构建连接");
             }
         }).doOnError(new Consumer<Throwable>() {
@@ -110,7 +112,20 @@ public class NotificationHub {
                 @Override
                 public void accept(String s) throws Exception {
                     Log.d("Hub invoke joinAsUser", s);
-                    isJoined = true;
+                    synchronized (NotificationHub.this) {
+                        isJoined = true;
+                    }
+                }
+            }, new Consumer<Throwable>() {
+                @Override
+                public void accept(Throwable throwable) throws Exception {
+                    String message;
+                    if (throwable == null) {
+                        message = "未知原因";
+                    } else {
+                        message = throwable.getMessage();
+                    }
+                    Log.d("Hub invoke error", message);
                 }
             });
         } else {
@@ -118,7 +133,7 @@ public class NotificationHub {
         }
     }
 
-    public void disconnect() {
+    public synchronized void disconnect() {
         if (!isConnected) {
             return;
         }
@@ -128,11 +143,11 @@ public class NotificationHub {
         isJoined = false;
     }
 
-    public boolean isConnected() {
+    public synchronized boolean isConnected() {
         return isConnected;
     }
 
-    public boolean isJoined() {
-            return isJoined;
+    public synchronized boolean isJoined() {
+        return isJoined;
     }
 }

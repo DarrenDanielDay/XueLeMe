@@ -19,7 +19,7 @@ import com.example.xueleme.models.forms.account.RegisterForm;
 import FunctionPackge.Users;
 import interface_packge.RegisterHandler;
 
-public class RegisterActivity extends AppCompatActivity {
+public class RegisterActivity extends BaseActivity {
 
     private IAccountController accountController = new AccountController(this);
     private EditText register_account, register_password;

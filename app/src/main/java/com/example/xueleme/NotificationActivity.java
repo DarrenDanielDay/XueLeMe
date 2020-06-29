@@ -26,7 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class NotificationActivity extends AppCompatActivity {
+public class NotificationActivity extends BaseActivity {
     IAccountController iAccountController=new AccountController(NotificationActivity.this);
     INotificationController iNotificationController;
     @Override

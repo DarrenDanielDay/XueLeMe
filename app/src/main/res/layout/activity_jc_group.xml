@@ -39,5 +39,14 @@
         android:text="加入群聊"
         android:id="@+id/join_group"
         />
-
+    <Button
+        android:layout_width="320dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="50dp"
+        android:layout_gravity="center"
+        android:background="#CC1E90FF"
+        android:textSize="20dp"
+        android:text="搜索群聊"
+        android:id="@+id/search_group"
+    />
 </LinearLayout>

@@ -20,7 +20,7 @@ import com.example.xueleme.models.locals.User;
 import FunctionPackge.Users;
 
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends BaseActivity {
 
     private EditText login_account, login_password;
 
@@ -50,6 +50,7 @@ public class LoginActivity extends AppCompatActivity {
                 public void onSuccess(String s) {
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     startActivity(intent);
+                    finish();
                 }
 
                 @Override

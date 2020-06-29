@@ -18,7 +18,7 @@ import FunctionPackge.Task;
 import FunctionPackge.Users;
 import model.User;
 
-public class AddTaskActivity extends AppCompatActivity {
+public class AddTaskActivity extends BaseActivity {
 
     private MyDatabaseHelper dbHelper;
     private EditText e_content, e_start_date, e_start_time, e_end_time;

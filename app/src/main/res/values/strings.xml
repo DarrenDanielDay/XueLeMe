@@ -4,4 +4,6 @@
     <string name="title_home">日程表</string>
     <string name="title_chatroom">群聊列表</string>
     <string name="title_forum">论坛</string>
+    <string name="reject">拒绝</string>
+    <string name="agree">同意</string>
 </resources>

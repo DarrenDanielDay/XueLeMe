@@ -9,7 +9,7 @@ import com.example.xueleme.business.AccountController;
 import com.example.xueleme.business.IAccountController;
 import com.example.xueleme.services.NotificationService;
 
-public class StartActivity extends AppCompatActivity {
+public class StartActivity extends BaseActivity {
     private IAccountController accountController = new AccountController(this);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,5 +23,6 @@ public class StartActivity extends AppCompatActivity {
         } else {
             startActivity(new Intent(this, MainActivity.class));
         }
+        finish();
     }
 }

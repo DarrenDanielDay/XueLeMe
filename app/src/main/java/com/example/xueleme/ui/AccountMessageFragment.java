@@ -41,6 +41,7 @@ import com.example.xueleme.NotificationActivity;
 import com.example.xueleme.R;
 import com.example.xueleme.business.AccountController;
 import com.example.xueleme.business.ActionResultHandler;
+import com.example.xueleme.business.DefaultHandler;
 import com.example.xueleme.business.FileController;
 import com.example.xueleme.business.IAccountController;
 import com.example.xueleme.business.IFileController;
@@ -98,6 +99,7 @@ public class AccountMessageFragment extends Fragment {
                     Intent intent = new Intent(getActivity(), LoginActivity.class);
                     Toast.makeText(getActivity(), "退出成功", Toast.LENGTH_SHORT).show();
                     startActivity(intent);
+                    iAccountController.logout(new UserAction<>(null, new DefaultHandler<>()));
                     getActivity().finish();
                 } else if (position == 1) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());

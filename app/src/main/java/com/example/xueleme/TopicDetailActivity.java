@@ -10,6 +10,8 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.xueleme.adapter.ReplyListAdapter;
 import com.example.xueleme.business.AccountController;
 import com.example.xueleme.business.ActionResultHandler;
@@ -24,7 +26,7 @@ import com.example.xueleme.models.locals.Topic;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TopicDetailActivity extends Activity {
+public class TopicDetailActivity extends AppCompatActivity {
     private Integer topicId; //帖子id
     private String i;
     private List<String> images;
