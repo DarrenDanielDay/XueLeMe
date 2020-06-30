@@ -41,7 +41,7 @@ public class TopicDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_invition_content);
         Intent intent = getIntent();
-        i = intent.getStringExtra("id");
+        i = intent.getStringExtra("id");//i是哪个帖子的id
         topicId = Integer.parseInt(i);
         ListView listView = findViewById(R.id.content1);
         replyListAdapter = new ReplyListAdapter(replyList, TopicDetailActivity.this);
