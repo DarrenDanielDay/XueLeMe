@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.xueleme.R;
 import com.example.xueleme.TopicActivity;
@@ -22,6 +23,7 @@ import com.example.xueleme.business.ActionResultHandler;
 import com.example.xueleme.business.FileController;
 import com.example.xueleme.business.IFileController;
 import com.example.xueleme.business.UserAction;
+import com.example.xueleme.models.forms.topic.ViewHolder;
 import com.example.xueleme.models.locals.Topic;
 
 import java.io.File;
@@ -43,18 +45,25 @@ public class TopicAdapter extends ArrayAdapter<Topic> {
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        Topic topic = getItem(position);
-        View view = LayoutInflater.from(getContext()).inflate(resourceId, parent, false);
-        TextView title = view.findViewById(R.id.topic_item_tv1);
-        TextView brief_content = view.findViewById(R.id.topic_item_tv2);
+       Topic topic = getItem(position);
+       View view = LayoutInflater.from(getContext()).inflate(resourceId, parent, false);
+        ViewHolder viewHolder=new ViewHolder();
+        viewHolder.title=view.findViewById(R.id.topic_item_tv1);
+        viewHolder.content= view.findViewById(R.id.topic_item_tv2);
+        viewHolder.title.setText(topic.title);
+        String s = topic.content.text.split("\n")[0];
+        viewHolder.content.setText(s.substring(0, Math.min(20, s.length())));
+        viewHolder.imageView1=view.findViewById(R.id.imageView7);
+        viewHolder.imageView2=view.findViewById(R.id.imageView8);
+        viewHolder.imageView3=view.findViewById(R.id.imageView9);
+        viewHolder.imageView1.setVisibility(View.GONE);
+        viewHolder.imageView2.setVisibility(View.GONE);
+        viewHolder.imageView3.setVisibility(View.GONE);
         //图片的适配部分
-        ImageView imageView1=view.findViewById(R.id.imageView7);
-        ImageView imageView2=view.findViewById(R.id.imageView8);
-        ImageView imageView3=view.findViewById(R.id.imageView9);
         List <ImageView>list=new ArrayList();
-        list.add(imageView1);
-        list.add(imageView2);
-        list.add(imageView3);
+        list.add(viewHolder.imageView1);
+        list.add( viewHolder.imageView2);
+        list.add(viewHolder.imageView3);
         Handler handler=new Handler(){
             @Override
             public void handleMessage(@NonNull Message msg) {
@@ -64,6 +73,7 @@ public class TopicAdapter extends ArrayAdapter<Topic> {
                         Bitmap bitmap= (Bitmap) mapper.get("img");
                         int id=(int)mapper.get("id");
                         list.get(id).setImageBitmap(bitmap);
+                        list.get(id).setVisibility(View.VISIBLE);
                         break;
                     default:
                         break;
@@ -95,9 +105,6 @@ public class TopicAdapter extends ArrayAdapter<Topic> {
                 }
             }));
         }
-        title.setText(topic.title);
-        String s = topic.content.text.split("\n")[0];
-        brief_content.setText(s.substring(0, Math.min(20, s.length())));
         return view;
     }
 
