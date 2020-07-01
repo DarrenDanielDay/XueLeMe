@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -22,6 +23,7 @@ import com.example.xueleme.business.UserAction;
 import com.example.xueleme.models.forms.topic.MakeReplyForm;
 import com.example.xueleme.models.locals.Reply;
 import com.example.xueleme.models.locals.Topic;
+import com.example.xueleme.utils.ImageHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,9 +34,11 @@ public class TopicDetailActivity extends AppCompatActivity {
     private List<String> images;
     private List<ReplyListAdapter.ReplyModel> replyList = new ArrayList<>();
     private ReplyListAdapter replyListAdapter;
+    private int length;
     ITopicController topicController;
     IAccountController accountController = new AccountController(this);
     private Integer referenceId;
+    private List<String> imglist=new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +52,11 @@ public class TopicDetailActivity extends AppCompatActivity {
         listView.setAdapter(replyListAdapter);
         EditText replyView = findViewById(R.id.reply);
         TextView publish_content = findViewById(R.id.publish_content);
+        TextView title =findViewById(R.id.r_title);
         TextView publisher = findViewById(R.id.publisher);
+        ImageView img1 =findViewById(R.id.img1);
+        ImageView img2 =findViewById(R.id.img2);
+        ImageView img3 =findViewById(R.id.img3);
         Button btn_send = findViewById(R.id.send_reply);
         images = new ArrayList<>();
         topicController = new TopicController();
@@ -57,6 +65,26 @@ public class TopicDetailActivity extends AppCompatActivity {
             public void onSuccess(Topic topic) {
                 publish_content.setText(topic.content.text);
                 publisher.setText(topic.publisher.fakeName);
+                title.setText(topic.title);
+                imglist =topic.content.images;
+                length=imglist.size();
+                switch (length){
+                    case 1:
+                        ImageHelper.setImageView(TopicDetailActivity.this,img1,imglist.get(0));
+                        break;
+                    case 2:
+                        ImageHelper.setImageView(TopicDetailActivity.this,img1,imglist.get(0));
+                        ImageHelper.setImageView(TopicDetailActivity.this,img2,imglist.get(1));
+                        break;
+                    case 3:
+                        ImageHelper.setImageView(TopicDetailActivity.this,img1,imglist.get(0));
+                        ImageHelper.setImageView(TopicDetailActivity.this,img2,imglist.get(1));
+                        ImageHelper.setImageView(TopicDetailActivity.this,img3,imglist.get(2));
+                        break;
+                }
+        //        ImageHelper.setImageView(TopicDetailActivity.this,img1,imglist.get(0));
+       //         ImageHelper.setImageView(TopicDetailActivity.this,img2,imglist.get(1));
+       //         ImageHelper.setImageView(TopicDetailActivity.this,img3,imglist.get(2));
                 int i = 0;
                 for (Reply reply : topic.replies) {
                     ReplyListAdapter.ReplyModel replyModel = new ReplyListAdapter.ReplyModel();

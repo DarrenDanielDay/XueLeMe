@@ -1,14 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:divider="@drawable/line"
+    android:orientation="vertical"
     android:dividerPadding="3px"
     android:showDividers="middle"
 
     >
+    <TextView
+        android:id="@+id/r_title"
+        android:background="#ffffff"
+        android:layout_width="match_parent"
+        android:gravity="center"
+        android:layout_height="40dp" />
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="60dp"
@@ -36,21 +43,39 @@
             android:background="@drawable/textview_border"
             />
     </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:orientation="horizontal"
+        android:id="@+id/imglist">
+        <ImageView
+            android:layout_width="80dp"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="10dp"
+            android:id="@+id/img1"/>
+        <ImageView
+            android:layout_width="80dp"
+            android:layout_height="match_parent"
+            android:id="@+id/img2"
+            android:layout_marginHorizontal="10dp"/>
+        <ImageView
+            android:layout_width="80dp"
+            android:layout_height="match_parent"
+            android:id="@+id/img3"
+            android:layout_marginHorizontal="10dp"/>
+    </LinearLayout>
     <ListView
         android:layout_width="match_parent"
-        android:layout_height="600dp"
+        android:layout_height="380dp"
         android:id="@+id/content1"
         android:divider="#000000"
         android:dividerHeight="2px"
-        android:layout_below="@+id/top"
-        android:layout_above="@+id/end"
 
         />
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:orientation="horizontal"
-        android:layout_alignParentBottom="true"
         android:id="@+id/end"
         >
         <EditText
@@ -68,4 +93,4 @@
             android:text="回复"
             android:textSize="20dp" />
     </LinearLayout>
-</RelativeLayout>
+</LinearLayout>
