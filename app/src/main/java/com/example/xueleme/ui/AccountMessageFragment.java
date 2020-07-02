@@ -179,6 +179,10 @@ public class AccountMessageFragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if(data==null)
+        {
+            return ;
+        }
         String path = new String();
         switch (requestCode) {
             case 2:
