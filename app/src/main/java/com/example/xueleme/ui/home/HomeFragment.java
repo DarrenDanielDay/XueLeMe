@@ -1,5 +1,7 @@
 package com.example.xueleme.ui.home;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -9,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -68,10 +71,28 @@ public class HomeFragment extends Fragment {
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-                SQLiteDatabase db = dbHelper.getWritableDatabase();
+                AlertDialog.Builder builder=new AlertDialog.Builder(getActivity());
+                builder.setTitle("删除确认");
+                TextView textView=new TextView(getContext());
+                textView.setText("      " +
+                        "您确定要删除这一任务吗");
+                builder.setView(textView);
+                builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        SQLiteDatabase db = dbHelper.getWritableDatabase();
                 db.delete("Task", "content = ?", new String[] {dataList.get(i).content});
                 Toast.makeText(getActivity(), "已经删除了哦", Toast.LENGTH_LONG).show();
                 adapter.remove(dataList.get(i));
+                    }
+                });
+                builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+                builder.create().show();
                 return true;
             }
         });
