@@ -93,6 +93,7 @@ public class HandleJoinRequestActivity extends BaseActivity {
         });
     }
 
+
     public static Intent startIntent(Context context, String userName, String avatar, String groupName, Integer userId, Integer groupId, Integer requestId) {
         Intent intent = new Intent(context, HandleJoinRequestActivity.class);
         intent.putExtra("userName", userName);
