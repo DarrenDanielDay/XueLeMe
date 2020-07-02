@@ -70,13 +70,12 @@
         android:divider="#000000"
         android:dividerHeight="2px"
         />
-    <TableLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:orientation="horizontal"
         android:id="@+id/end"
         >
-        
         <EditText
         android:layout_width="300dp"
         android:layout_height="match_parent"
@@ -90,5 +89,5 @@
             android:background="#331E90FF"
             android:text="回复"
             android:textSize="20dp" />
-    </TableLayout>
+    </LinearLayout>
 </LinearLayout>
