@@ -3,21 +3,15 @@ package com.example.xueleme;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Looper;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.xueleme.business.AccountController;
 import com.example.xueleme.business.ActionResultHandler;
 import com.example.xueleme.business.IAccountController;
 import com.example.xueleme.business.UserAction;
 import com.example.xueleme.models.forms.account.LoginForm;
-import com.example.xueleme.models.locals.User;
-
-import FunctionPackge.Users;
 
 
 public class LoginActivity extends BaseActivity {
