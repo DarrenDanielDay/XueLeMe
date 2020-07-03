@@ -14,11 +14,13 @@ public class Publisher<TMessage> {
 
     public void attach(Subscriber<TMessage> subscriber) {
         if (!subscribers.contains(subscriber)) {
+            Log.d(this.toString(), "正在添加订阅者" + subscriber);
             subscribers.add(subscriber);
             subscriber.setPublisher(this);
         }
     }
     public void detach(Subscriber<TMessage> subscriber) {
+        Log.d(this.toString(), "正在解除订阅");
         subscribers.remove(subscriber);
     }
 

@@ -1,6 +1,12 @@
 package com.example.xueleme.business;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageManager;
+
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.example.xueleme.models.responses.BinaryFile;
 import com.example.xueleme.utils.HttpRequester;
@@ -16,6 +22,9 @@ public class FileController extends RequestController implements IFileController
 
     @Override
     public void postFile(UserAction<File, String, String> action) {
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+        }
         HttpRequester.getInstance().postFile(action.data, new ActionResultHandler<BinaryFile, String>() {
             @Override
             public void onSuccess(BinaryFile binaryFile) {

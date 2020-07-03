@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,7 +58,9 @@ public class ChatMessageItemAdapter extends BaseAdapter {
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         View view = null;
         ViewHolder holder = null;
+        Log.d(getClass().getSimpleName(), "with message" + this.messageList.get(position).content);
         if (convertView == null) {
+            Log.d(getClass().getSimpleName(), "inflate");
             view = LayoutInflater.from(getContext()).inflate(R.layout.chat_message_item, null);
             holder = new ViewHolder();
             view.setTag(holder);
@@ -66,6 +69,7 @@ public class ChatMessageItemAdapter extends BaseAdapter {
             holder.itemLineLayout = view.findViewById(R.id.chat_message_item_line);
             setItemContentView(holder, getItem(position));
         } else {
+            Log.d(getClass().getSimpleName(), "use cache");
             view = convertView;
             holder = (ViewHolder) convertView.getTag();
         }

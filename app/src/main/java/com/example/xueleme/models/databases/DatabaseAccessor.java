@@ -68,7 +68,7 @@ public final class DatabaseAccessor<T> {
         if (primaryKey != null && primaryKey.isInteger() && primaryKey.autoIncrement()) {
             constrains = " PRIMARY KEY AUTOINCREMENT";
         } else if (primaryKey != null) {
-            constrains = "PRIMARY KEY";
+            constrains = " PRIMARY KEY";
         }
         return String.format("%s %s%s", columns[i], typeString != null ? typeString : dbTypeOf.get(String.class), constrains);
     }
@@ -83,7 +83,7 @@ public final class DatabaseAccessor<T> {
         stringBuilder.append(columnDescription(columns.length - 1));
         stringBuilder.append("\n)");
         String sql = stringBuilder.toString();
-//        Log.d("createSQL of " + entityClass.getName(), sql);
+        Log.d("createSQL of " + entityClass.getName(), sql);
         return sql;
     }
 
@@ -130,6 +130,9 @@ public final class DatabaseAccessor<T> {
                 e.printStackTrace();
             }
         }
+        for(T item: items) {
+            Log.d(getClass().getSimpleName() + "Data", item.toString());
+        }
         return items;
     }
 
@@ -173,6 +176,7 @@ public final class DatabaseAccessor<T> {
             }
 
         }
+        Log.d("inserting contentValues = " , contentValues.toString());
         database.insert(tableName, null, contentValues);
     }
 

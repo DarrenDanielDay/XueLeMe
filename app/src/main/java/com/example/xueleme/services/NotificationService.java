@@ -21,6 +21,7 @@ import com.example.xueleme.HandleJoinRequestActivity;
 import com.example.xueleme.LoginActivity;
 import com.example.xueleme.R;
 import com.example.xueleme.business.AccountController;
+import com.example.xueleme.business.ActionResultHandler;
 import com.example.xueleme.business.DefaultHandler;
 import com.example.xueleme.business.IAccountController;
 import com.example.xueleme.business.NotificationHub;
@@ -32,7 +33,9 @@ import com.example.xueleme.models.locals.ChatRecord;
 import com.example.xueleme.models.locals.User;
 import com.example.xueleme.models.responses.UserAndGroupDetail;
 import com.example.xueleme.models.responses.UserDetail;
+import com.example.xueleme.utils.FormatHelper;
 import com.google.gson.Gson;
+import com.microsoft.signalr.HubConnection;
 
 import java.util.Map;
 import java.util.function.Consumer;
@@ -62,6 +65,7 @@ public class NotificationService extends Service {
 
     private Subscriber<ChatMessage> chatMessageSubscriber;
     private Subscriber<com.example.xueleme.models.locals.Notification> notificationSubscriber;
+    private Subscriber<Throwable> connectionClosedSubscriber;
     private IAccountController accountController;
 
     public NotificationService() {
@@ -154,8 +158,31 @@ public class NotificationService extends Service {
                 }
             }
         });
-        NotificationHub.getInstance().chatMessagePublisher.attach(this.chatMessageSubscriber);
-        NotificationHub.getInstance().notificationPublisher.attach(this.notificationSubscriber);
+        connectionClosedSubscriber = new Subscriber<>(new Consumer<Throwable>() {
+            @Override
+            public void accept(Throwable throwable) {
+                User user = accountController.getCurrentUser();
+                if (user.id.equals(-1)) {
+                    return;
+                }
+                NotificationHub.getInstance().joinAsUser(user.id, new ActionResultHandler<String, Throwable>() {
+                    @Override
+                    public void onSuccess(String s) {
+                        Log.d(NotificationService.class.getSimpleName(), "自动重连成功:" + s);
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        Log.d(NotificationService.class.getSimpleName(), "自动重连失败:" + FormatHelper.exceptionFormat(throwable));
+                    }
+                });
+            }
+        });
+        synchronized (NotificationHub.class) {
+            NotificationHub.getInstance().chatMessagePublisher.attach(this.chatMessageSubscriber);
+            NotificationHub.getInstance().notificationPublisher.attach(this.notificationSubscriber);
+//            NotificationHub.getInstance().connectionClosedPublisher.attach(this.connectionClosedSubscriber);
+        }
     }
 
     @Override

@@ -41,4 +41,19 @@ public class ChatMessage {
         chatMessage.senderAvatar = detail.user.avatar;
         return chatMessage;
     }
+
+    @Override
+    public String toString() {
+        return "ChatMessage{" +
+                "id=" + id +
+                ", senderId=" + senderId +
+                ", groupId=" + groupId +
+                ", type=" + type +
+                ", content='" + content + '\'' +
+                ", createdTime=" + createdTime +
+                ", senderName='" + senderName + '\'' +
+                ", groupName='" + groupName + '\'' +
+                ", senderAvatar='" + senderAvatar + '\'' +
+                '}';
+    }
 }

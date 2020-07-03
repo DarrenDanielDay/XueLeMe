@@ -158,18 +158,17 @@ public class ChatRoomActivity extends BaseActivity {
                 }));
             }
         });
+        messageSubscriber.attach();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        messageSubscriber.attach();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        messageSubscriber.detach();
     }
 
     @Override
@@ -196,5 +195,11 @@ public class ChatRoomActivity extends BaseActivity {
         intent.putExtra("groupId", groupId);
         intent.putExtra("groupName", groupName);
         return intent;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        messageSubscriber.detach();
     }
 }

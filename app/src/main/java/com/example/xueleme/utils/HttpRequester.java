@@ -38,7 +38,7 @@ import okhttp3.ResponseBody;
 public class HttpRequester {
     /*
     // developing host
-    public static final String HOST = "http://192.168.1.101";
+    public static final String HOST = "http://192.168.124.7";
     public static final String PORT = ":5000";
     //*/
 
@@ -167,7 +167,7 @@ public class HttpRequester {
         call.enqueue(new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                handler.onError("上传文件" + file.getName() + "失败");
+                handler.onError("上传文件" + file.getName() + "失败：" + FormatHelper.exceptionFormat(e));
             }
 
             @Override

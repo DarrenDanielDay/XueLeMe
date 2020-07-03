@@ -1,5 +1,6 @@
 package com.example.xueleme.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -84,7 +85,7 @@ public class TopicAdapter extends ArrayAdapter<Topic> {
         for(int i=0;i<length;i++)
         {
             String img=topic.content.images.get(i);
-            IFileController iFileController=new FileController(getContext());
+            IFileController iFileController=new FileController((Activity) getContext());
             int finalI = i;
             iFileController.getFile(new UserAction<>(img, new ActionResultHandler<File, String>() {
                 @Override

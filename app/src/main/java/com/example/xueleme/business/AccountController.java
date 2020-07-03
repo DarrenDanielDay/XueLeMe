@@ -18,6 +18,7 @@ import com.example.xueleme.models.locals.User;
 import com.example.xueleme.models.responses.ServiceResult;
 import com.example.xueleme.models.responses.ServiceResultEnum;
 import com.example.xueleme.models.responses.UserDetail;
+import com.example.xueleme.utils.FormatHelper;
 import com.example.xueleme.utils.HttpRequester;
 
 import io.reactivex.functions.Action;
@@ -27,6 +28,9 @@ public class AccountController extends RequestController implements IAccountCont
     private final Context activity;
     public static final String SHARED_PREFERENCE_FILE = "shared_preferences";
     public static final String USER_ID_KEY = "userId";
+    public static final String USER_MAIL_ADDRESS_KEY = "mailAddress";
+    public static final String USER_PASSWORD_KEY = "password";
+
     public AccountController(Context activity) {
         this.activity = activity;
     }
@@ -56,9 +60,21 @@ public class AccountController extends RequestController implements IAccountCont
                                     public void onSuccess(UserDetail userDetail) {
                                         currentUser = User.fromDetail(userDetail);
                                         SharedPreferences sharedPreferences = activity.getSharedPreferences(SHARED_PREFERENCE_FILE, Context.MODE_PRIVATE);
-                                        sharedPreferences.edit().putInt(USER_ID_KEY, currentUser.id).apply();
-                                        ensureNotificationJoined();
-                                        action.resultHandler.onSuccess(objectServiceResult.detail);
+                                        sharedPreferences.edit()
+                                                .putInt(USER_ID_KEY, currentUser.id)
+                                                .putString(USER_PASSWORD_KEY, action.data.password)
+                                                .putString(USER_MAIL_ADDRESS_KEY, action.data.mailAddress).apply();
+                                        ensureNotificationJoined(new ActionResultHandler<String, Throwable>() {
+                                            @Override
+                                            public void onSuccess(String s) {
+                                                action.resultHandler.onSuccess(objectServiceResult.detail);
+                                            }
+
+                                            @Override
+                                            public void onError(Throwable throwable) {
+                                                action.resultHandler.onError(FormatHelper.exceptionFormat(throwable));
+                                            }
+                                        });
                                     }
 
                                     @Override
@@ -88,7 +104,9 @@ public class AccountController extends RequestController implements IAccountCont
         currentUser = null;
         SharedPreferences sharedPreferences = activity.getSharedPreferences(SHARED_PREFERENCE_FILE, Context.MODE_PRIVATE);
         sharedPreferences.edit().putInt(USER_ID_KEY, -1).apply();
-        NotificationHub.getInstance().disconnect();
+        synchronized (NotificationHub.class) {
+            NotificationHub.getInstance().disconnect();
+        }
         action.resultHandler.onSuccess("退出登录成功");
     }
 
@@ -118,29 +136,37 @@ public class AccountController extends RequestController implements IAccountCont
     }
 
     @Override
-    public User getCurrentUser() {
-        if (currentUser != null) {
-            ensureNotificationJoined();
-            return currentUser;
-        }
+    public synchronized User getCurrentUser() {
         SharedPreferences sharedPreferences = activity.getSharedPreferences(SHARED_PREFERENCE_FILE, Context.MODE_PRIVATE);
         int userId = sharedPreferences.getInt(USER_ID_KEY, -1);
+        String password = sharedPreferences.getString(USER_PASSWORD_KEY, "");
+        String mailAddress = sharedPreferences.getString(USER_MAIL_ADDRESS_KEY, "");
         if (userId != -1) {
             currentUser = new User();
             currentUser.id = userId;
-            ensureNotificationJoined();
-            queryUserDetailFromId(new UserAction<>(userId, new ActionResultHandler<UserDetail, String>() {
+            LoginForm form = new LoginForm();
+            form.password = password;
+            form.mailAddress = mailAddress;
+            login(new UserAction<>(form, new ActionResultHandler<String, String>() {
                 @Override
-                public void onSuccess(UserDetail userDetail) {
-                    currentUser.nickname = userDetail.nickname;
-                    currentUser.avatar = userDetail.avatar;
-                    Log.d("getCurrentUser", "已登录");
+                public void onSuccess(String s) {
+                    queryUserDetailFromId(new UserAction<>(currentUser.id, new ActionResultHandler<UserDetail, String>() {
+                        @Override
+                        public void onSuccess(UserDetail userDetail) {
+                            currentUser.avatar = userDetail.avatar;
+                            currentUser.nickname = userDetail.nickname;
+                        }
+
+                        @Override
+                        public void onError(String s) {
+                            Log.d("getCurrentUser", s);
+                        }
+                    }));
                 }
 
                 @Override
                 public void onError(String s) {
-                    currentUser = null;
-                    Log.e("getCurrentUser", s);
+                    Log.d("getCurrentUser", s);
                 }
             }));
         } else {
@@ -149,20 +175,33 @@ public class AccountController extends RequestController implements IAccountCont
         return currentUser;
     }
 
-    private void ensureNotificationJoined() {
+    private void ensureNotificationJoined(ActionResultHandler<String, Throwable> handler) {
         String tag = "ensureNotificationJoined";
-        Log.d(tag, "正在确保与服务器构建了连接");
+        Log.d(tag, "正在确保加入了聊天室");
         if (!NotificationHub.getInstance().isJoined()) {
-            Log.d(tag, "没有加入服务器");
+            Log.d(tag, "没有加入服务器，需加入");
             if (!NotificationHub.getInstance().isConnected()) {
-                Log.d(tag, "构建连接");
-                NotificationHub.getInstance().connect();
+                Log.d(tag, "没有连接服务器，需连接");
+                NotificationHub.getInstance().connect(new ActionResultHandler<String, Throwable>() {
+                    @Override
+                    public void onSuccess(String o) {
+                        Log.d(tag, "调用joinAsUser");
+                        NotificationHub.getInstance().joinAsUser(currentUser.id, handler);
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        handler.onError(throwable);
+                    }
+                });
+            } else {
+                Log.d(tag, "调用joinAsUser");
+                NotificationHub.getInstance().joinAsUser(currentUser.id, handler);
             }
-            while (!NotificationHub.getInstance().isConnected()) {
-                Log.d(tag, "循环等待");
-            }
-            Log.d(tag, "调用joinAsUser");
-            NotificationHub.getInstance().joinAsUser(currentUser.id);
+
+        } else {
+            Log.d("ensureNotificationJoined", "已经加入");
+            handler.onSuccess("已经加入");
         }
     }
 }

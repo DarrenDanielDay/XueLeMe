@@ -16,7 +16,9 @@ import java.util.List;
 public class NotificationController extends RequestController implements INotificationController {
     @Override
     public void subscribeNotification(Subscriber<Notification> subscriber) {
-        NotificationHub.getInstance().notificationPublisher.attach(subscriber);
+        synchronized (NotificationHub.class) {
+            NotificationHub.getInstance().notificationPublisher.attach(subscriber);
+        }
     }
 
     @Override
